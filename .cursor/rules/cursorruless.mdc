@@ -1,0 +1,185 @@
+---
+alwaysApply: true
+---
+    Multi-tenant SaaS (React + Skote Vite + Node/Express + PostgreSQL).
+    Uses center_id for tenant isolation (enforced via JWT.user.center_id),
+    RBAC (Super Admin > Org Admin > Caseworker > Executive > Applicant),
+    and modules for Applicants, Employees, Suppliers, Inventory, Reports, Policies,
+    Chat, and File Storage. Authentication via JWT, bcrypt, and role-based middleware.
+
+context:
+  include:
+    - backend/src/
+    - src/
+  exclude:
+    - backend/node_modules/
+    - backend/dist/
+    - backend/build/
+    - src/.vite/
+    - dist/
+    - build/
+    - coverage/
+    - .vscode/
+    - .idea/
+    - node_modules/
+
+folder_structure:
+  - backend: Node.js/Express API, PostgreSQL queries, migrations, services, middleware.
+  - backend/src/models: table-specific models (auto-generated).
+  - backend/src/controllers: controllers per table + generic lookupController.
+  - backend/src/routes: routes for each model + lookup routes.
+  - backend/src/middlewares: auth, roleMiddleware, tenantMiddleware (optional).
+  - src/assets: images, fonts, icons.
+  - src/common: shared wrappers/utilities used across multiple pages.
+  - src/components: reusable Skote-based UI (Cards, Tables, Forms, Modals, Charts).
+  - src/constants: enums, roles, lookup lists, API URLs.
+  - src/helpers: formatting (date, number, currency), validators, hooks.
+  - src/locales: i18n translation JSON files.
+  - src/pages: feature pages (Dashboard, Applicants, Employees, Inventory, Suppliers, Reports).
+  - src/routes: routing, guards, layouts.
+  - src/store: global state (Redux/Context).
+  - Root files: App.jsx (entry), config.jsx (app config), main.jsx (React entrypoint).
+
+frontend_rules:
+  - Always scaffold new feature pages inside `src/pages/`.
+  - Always place reusable UI inside `src/components/`.
+  - Always store enums and role definitions in `src/constants/roles.js`.
+  - Always validate inputs with helpers from `src/helpers/`.
+  - Always use React Hook Form + Skote styled inputs for forms.
+  - Always use Skote DataTables with search/filter/pagination/export for tabular data.
+  - Always use Skote Cards for dashboards/metrics.
+  - Always load translation strings from `src/locales/`.
+  - Always use `import axiosApi from '../../helpers/api_helper';` instead of raw axios
+  - This ensures JWT auto-attach and auto-logout on token expiry (401/"Token is not valid")
+  - Raw axios should ONLY be used in backend/src/ (Node.js server code)
+
+backend_rules:
+  - Place route definitions in backend/src/routes/.
+  - Place controller functions in backend/src/controllers/.
+  - Place DB queries in backend/src/models/.
+  - Place middleware (auth, RBAC, tenant resolution) in backend/src/middlewares/.
+  - Always filter queries by `req.user.center_id` for tenant isolation,
+    except for SuperAdmin or global lookup tables.
+  - Tenant middleware is optional: if skipped, controllers must always use `req.user.center_id`.
+  - Always use parameterized queries with pg (`$1, $2`) to prevent SQL injection.
+  - Controllers should be slim → delegate logic to models or services.
+  - For file uploads, store temporary files in backend/src/uploads/, save metadata in DB,
+    and return URLs instead of inline base64 for large files.
+  - Store migrations and schema updates in backend/src/schema/.
+  - Use async/await consistently and wrap controllers in try/catch.
+  - JWT payloads must always include: user_id, role, center_id.
+  - Passwords must always be hashed using bcrypt before saving.
+
+rbac_rules:
+  - SuperAdmin → access across all centers, full CRUD.
+  - OrgAdmin → full CRUD within their center.
+  - Caseworker → CRUD Applicants, Visits, Assistance (own center).
+  - Executive → read-only dashboards/reports (own center).
+  - Applicant → self-service limited portal.
+  - Use `roleMiddleware(["Role1","Role2"])` in routes to enforce access.
+
+auth_rules:
+  - Login compares bcrypt-hashed passwords and returns JWT.
+  - JWT must include: id, username, user_type, center_id.
+  - authMiddleware validates tokens and attaches `req.user`.
+  - roleMiddleware enforces per-route RBAC.
+  - tenantMiddleware (optional) injects req.center_id for tenant-bound queries.
+
+database_rules:
+  - All tenant-aware tables must include center_id.
+  - Lookup tables (e.g., Gender, Nationality) are global → no tenant filter.
+  - Audit fields (Created_By, Created_At, Updated_By, Updated_At) must always be set via triggers or model logic.
+  - Financial totals must be calculated by triggers, not client code.
+  - Use UUIDs (pgcrypto) for primary keys unless legacy IDs are required.
+  - Views (e.g., Service_Rating_With_Score) are read-only.
+
+ui_guidelines:
+  - Dashboard → summary cards (Applicants, Assistance, Employees, Inventory).
+  - Applicant form → tabs (Demographics, Financials, Assistance, Relationships).
+  - Employee page → appraisals, initiatives, skills matrix with expiry highlighting.
+  - Inventory page → item grid with quantity triggers and transaction history.
+  - Supplier module → profile, evaluations, documents.
+  - Chat → conversation list + message pane.
+  - File storage → folders with tree navigation, file previews.
+
+reporting_rules:
+  - Reports must support search, filter, sort, group by, export (Excel/PDF).
+  - Use Skote’s charting library (ApexCharts).
+  - Backend auto-sends monthly summary reports by email (via Postmark/Nodemailer).
+
+testing_rules:
+  - Place backend tests in backend/src/tests/.
+  - Use Jest + Supertest for API integration tests.
+  - Frontend: use React Testing Library for components, Cypress for e2e flows.
+  - CI/CD must run lint + tests before merging.
+
+devops_rules:
+  - Run migrations automatically on deploy (backend/src/schema/).
+  - Use Liquibase tags for schema version control.
+  - Always run lint + tests in CI/CD pipeline.
+
+status:
+  backend:
+    - ✅ Models/controllers/routes auto-generated for all main tables
+    - ✅ Generic lookup controller/model implemented
+    - ✅ Auth (login, JWT, bcrypt, middleware) working
+    - 🚧 RBAC not applied to all routes yet
+    - 🚧 Tenant isolation (center_id filtering) not enforced everywhere
+    - 🚧 Reports/aggregations to be built
+    - 🚧 Monthly email jobs to be added
+  frontend:
+    - ✅ Skote Vite template set up
+    - 🚧 Auth UI (login, JWT storage, route guards) to be implemented
+    - 🚧 Core modules (Applicants, Employees, Inventory, Suppliers) to be built
+    - 🚧 Reports (charts, exports) to be built
+    - 🚧 Secondary features (Chat, File storage, Service ratings) to be added
+
+prompt_template: |
+  When scaffolding a new feature, always:
+  - Create frontend page under src/pages/[FeatureName]
+  - Use Skote UI (Cards, DataTable, React Hook Form)
+  - Wire API calls to backend routes that already exist
+  - Apply tenant isolation with req.user.center_id (unless SuperAdmin)
+  - Enforce roleMiddleware for access
+  - Add i18n entries in src/locales/en.json
+  - Provide both frontend + backend snippets if needed
+
+payload_rules:
+  - All backend API endpoints expect JSON payload keys in **lowercase**, matching PostgreSQL column names.
+  - Frontend form fields or UI labels may use friendly/display names (e.g., `Institute_Name`), 
+    but before sending to the backend, all keys must be converted to lowercase (e.g., `institute_name`).
+  - Similarly, when receiving data from the backend, map lowercase keys to frontend display field names where needed.
+  - Cursor must automatically maintain this mapping in generated frontend code (React forms, API calls, etc.).
+  - When generating Axios or Fetch API examples, always send lowercase JSON keys.
+  - When generating backend model or controller code, ensure database column names are all lowercase and match payload keys.
+
+frontend_rules:
+  - Always include `created_by` and `updated_by` fields automatically when creating or updating records.
+  - When creating new records, fetch the username from:
+      `const currentUser = JSON.parse(localStorage.getItem("UmmahAidUser"));`
+      and set:
+      `formData.created_by = currentUser?.username || "system";`
+  - When updating existing records, set:
+      `formData.updated_by = currentUser?.username || "system";`
+  - These fields must never be user-editable in the UI.
+  - The frontend must always send lowercase keys in the payload (e.g. `created_by`, `updated_by`).
+
+backend_rules:
+  - All tables should include `created_by`, `created_at`, `updated_by`, and `updated_at`.
+  - On `INSERT`, automatically store `created_by` from the request body or from `req.user.username` (if available).
+  - On `UPDATE`, automatically set `updated_by` from `req.user.username`.
+  - Controllers must not allow the client to overwrite `created_by` on update.
+  - Use the current timestamp for `created_at` and `updated_at`.
+  - Ensure audit fields are included in `RETURNING *` for consistency.
+
+cursor_injection_rules:
+  alwaysApply: true
+  inject_before_save:
+    - |
+      // 🔹 Auto-attach created_by / updated_by fields from localStorage
+      const currentUser = JSON.parse(localStorage.getItem("UmmahAidUser"));
+      if (editItem) {
+        formData.updated_by = currentUser?.username || "system";
+      } else {
+        formData.created_by = currentUser?.username || "system";
+      }

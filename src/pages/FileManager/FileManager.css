@@ -1,0 +1,156 @@
+/* File Manager Compact Styles */
+
+/* Basic hover effects */
+.hover-shadow:hover {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Folder tree card */
+.folder-tree-card {
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 100px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.folder-tree-card .card-body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Folder tree styles */
+.folder-tree {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  padding-right: 4px;
+}
+
+.folder-tree::-webkit-scrollbar {
+  width: 5px;
+}
+
+.folder-tree::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.folder-tree::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.folder-tree::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.folder-row {
+  transition: all 0.15s ease;
+  border-radius: 4px;
+  position: relative;
+}
+
+.folder-row:not(.bg-primary):hover {
+  background-color: rgba(85, 110, 230, 0.08) !important;
+}
+
+.folder-row.bg-primary {
+  background-color: #556ee6 !important;
+}
+
+.folder-row:hover .folder-actions {
+  opacity: 1;
+}
+
+.folder-actions {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.folder-item {
+  margin-bottom: 0;
+}
+
+.folder-children {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* File list styles */
+.form-control-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  border: 1px solid #dee2e6;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control-sm:focus {
+  border-color: #556ee6;
+  box-shadow: 0 0 0 0.2rem rgba(85, 110, 230, 0.25);
+  outline: 0;
+}
+
+/* Button group styling */
+.btn-group .btn {
+  border-color: #dee2e6;
+}
+
+.btn-group .btn:not(:last-child) {
+  border-right: none;
+}
+
+.btn-group .btn.active,
+.btn-group .btn:focus {
+  box-shadow: none;
+}
+
+/* Clean button styling */
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+}
+
+/* Table hover effects */
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Badge styles */
+.badge-soft-secondary {
+  background-color: rgba(116, 120, 141, 0.18);
+  color: #74788d;
+}
+
+/* Dropdown menu */
+.dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .search-box {
+    max-width: 100% !important;
+  }
+}

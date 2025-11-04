@@ -1,0 +1,28 @@
+{
+  "name": "hudasa-test-suite",
+  "version": "1.0.0",
+  "description": "Comprehensive test suite for Hudasa application",
+  "main": "test-runner.js",
+  "scripts": {
+    "test": "node test-runner.js staging",
+    "test:staging": "node test-runner.js staging",
+    "test:prod": "node test-runner.js production",
+    "test:api": "node api-test-runner.js staging",
+    "test:app-admin": "node app-admin-qa-test.js",
+    "test:hq": "node hq-qa-test.js",
+    "test:org-admin": "node org-admin-qa-test.js",
+    "test:org-executive": "node org-executive-qa-test.js",
+    "test:org-caseworker": "node org-caseworker-qa-test.js"
+  },
+  "keywords": [
+    "testing",
+    "rbac",
+    "sanity-testing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
+
