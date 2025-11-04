@@ -66,6 +66,13 @@ const reportsRoutes = require("./routes/reportsRoutes");
 // ?? Dashboard
 const dashboardRoutes = require("./routes/dashboardRoutes");
 
+// ?? Madressa Module
+const madressaApplicationRoutes = require("./routes/madressaApplicationRoutes");
+const conductAssessmentRoutes = require("./routes/conductAssessmentRoutes");
+const academicResultsRoutes = require("./routes/academicResultsRoutes");
+const islamicResultsRoutes = require("./routes/islamicResultsRoutes");
+const surveyRoutes = require("./routes/surveyRoutes");
+
 // ===========================
 // ?? ROUTE REGISTRATION
 // ===========================
@@ -127,6 +134,13 @@ app.use("/api/reports", reportsRoutes);
 
 // ?? Dashboard
 app.use("/api/dashboard", dashboardRoutes);
+
+// ?? Madressa Module
+app.use("/api/madressaApplication", madressaApplicationRoutes);
+app.use("/api/conductAssessment", conductAssessmentRoutes);
+app.use("/api/academicResults", academicResultsRoutes);
+app.use("/api/islamicResults", islamicResultsRoutes);
+app.use("/api/survey", surveyRoutes);
 
 // ? Export app for testing
 module.exports = app;

@@ -33,7 +33,10 @@ const lookupTables = {
   Period_As_Muslim: true,
   Training_Courses: true,
   Means_of_communication: true,
-  Departments: true
+  Departments: true,
+  Terms: true,
+  Academic_Subjects: true,
+  Islamic_Subjects: true
 };
 
 const lookupController = {

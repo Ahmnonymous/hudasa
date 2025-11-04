@@ -228,6 +228,22 @@ const SidebarContent = (props) => {
               </Link>
             </li>
 
+            {/* ✅ Madressa - All roles (1,2,3,4,5) */}
+            <li>
+              <Link to="/#" className="has-arrow ">
+                <i className="bx bx-book"></i>
+                <span>{props.t("Madressa")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/madressa/applications">
+                    <i className="bx bx-book-open me-2"></i>
+                    {props.t("Applications")}
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
             {/* ✅ Reports - App Admin, HQ, Org Admin (Org Executive and Caseworkers excluded) */}
             {hasRole([1, 2, 3]) && (
               <li>

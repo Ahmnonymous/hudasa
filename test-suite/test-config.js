@@ -174,6 +174,43 @@ module.exports = {
     reports: {
       applicantDetails: "/reports/applicant-details",
       financialAssistance: "/reports/financial-assistance"
+    },
+    madressa: {
+      applications: {
+        list: "/madressaApplication",
+        create: "/madressaApplication",
+        update: "/madressaApplication/:id",
+        delete: "/madressaApplication/:id",
+        getByRelationship: "/madressaApplication/relationship/:relationshipId"
+      },
+      academicResults: {
+        list: "/academicResults",
+        create: "/academicResults",
+        update: "/academicResults/:id",
+        delete: "/academicResults/:id",
+        getByAppId: "/academicResults/madressah-app/:madressahAppId"
+      },
+      islamicResults: {
+        list: "/islamicResults",
+        create: "/islamicResults",
+        update: "/islamicResults/:id",
+        delete: "/islamicResults/:id",
+        getByAppId: "/islamicResults/madressah-app/:madressahAppId"
+      },
+      conductAssessment: {
+        list: "/conductAssessment",
+        create: "/conductAssessment",
+        update: "/conductAssessment/:id",
+        delete: "/conductAssessment/:id",
+        getByAppId: "/conductAssessment/madressah-app/:madressahAppId"
+      },
+      survey: {
+        list: "/survey",
+        create: "/survey",
+        update: "/survey/:id",
+        delete: "/survey/:id",
+        getByAppId: "/survey/madressah-app/:madressahAppId"
+      }
     }
   },
 
@@ -189,7 +226,8 @@ module.exports = {
     reports: "/reports/applicant-details",
     lookups: "/lookups",
     chat: "/chat",
-    fileManager: "/FileManager"
+    fileManager: "/FileManager",
+    madressa: "/madressa"
   },
 
   // Expected response codes

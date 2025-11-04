@@ -4,6 +4,122 @@
 -- Removed set_created_updated_by_insert() and set_updated_by_at_timestamptz() triggers as they are handled by the application.
 -- Aligned code for consistent formatting and readability.
 
+-- ============================================================================
+-- DROP EXISTING SCHEMA (Run this section first to clean the database)
+-- ============================================================================
+-- WARNING: This will delete all data and schema objects!
+-- Use CASCADE to automatically handle foreign key dependencies
+
+-- Drop all triggers first
+DROP TRIGGER IF EXISTS Employee_password_hash ON Employee CASCADE;
+DROP TRIGGER IF EXISTS Financial_Assessment_update_totals ON Applicant_Income CASCADE;
+DROP TRIGGER IF EXISTS Applicant_Expense_update_totals ON Applicant_Expense CASCADE;
+DROP TRIGGER IF EXISTS Applicant_Details_create_financial_assessment ON Applicant_Details CASCADE;
+DROP TRIGGER IF EXISTS Inventory_Transactions_update_quantity ON Inventory_Transactions CASCADE;
+DROP TRIGGER IF EXISTS Inventory_Transactions_update_quantity_delete ON Inventory_Transactions CASCADE;
+
+-- Drop all tables (CASCADE handles foreign key dependencies)
+-- Dependent tables first (those with foreign keys), then parent tables
+DROP TABLE IF EXISTS Suburb_Concerns CASCADE;
+DROP TABLE IF EXISTS Suburb_Census CASCADE;
+DROP TABLE IF EXISTS Suburb_Masjids CASCADE;
+DROP TABLE IF EXISTS Site_Visits CASCADE;
+DROP TABLE IF EXISTS Maintenance CASCADE;
+DROP TABLE IF EXISTS Islamic_Results CASCADE;
+DROP TABLE IF EXISTS Academic_Results CASCADE;
+DROP TABLE IF EXISTS Survey CASCADE;
+DROP TABLE IF EXISTS Conduct_Assessment CASCADE;
+DROP TABLE IF EXISTS Madressah_Application CASCADE;
+DROP TABLE IF EXISTS Personal_Files CASCADE;
+DROP TABLE IF EXISTS Folders CASCADE;
+DROP TABLE IF EXISTS Messages CASCADE;
+DROP TABLE IF EXISTS Conversation_Participants CASCADE;
+DROP TABLE IF EXISTS Conversations CASCADE;
+DROP TABLE IF EXISTS Inventory_Transactions CASCADE;
+DROP TABLE IF EXISTS Inventory_Items CASCADE;
+DROP TABLE IF EXISTS Supplier_Document CASCADE;
+DROP TABLE IF EXISTS Supplier_Evaluation CASCADE;
+DROP TABLE IF EXISTS Supplier_Profile CASCADE;
+DROP TABLE IF EXISTS Service_Rating CASCADE;
+DROP TABLE IF EXISTS Applicant_Expense CASCADE;
+DROP TABLE IF EXISTS Applicant_Income CASCADE;
+DROP TABLE IF EXISTS Financial_Assessment CASCADE;
+DROP TABLE IF EXISTS Programs CASCADE;
+DROP TABLE IF EXISTS Attachments CASCADE;
+DROP TABLE IF EXISTS Food_Assistance CASCADE;
+DROP TABLE IF EXISTS Financial_Assistance CASCADE;
+DROP TABLE IF EXISTS Home_Visit CASCADE;
+DROP TABLE IF EXISTS Relationships CASCADE;
+DROP TABLE IF EXISTS Tasks CASCADE;
+DROP TABLE IF EXISTS Comments CASCADE;
+DROP TABLE IF EXISTS Applicant_Details CASCADE;
+DROP TABLE IF EXISTS HSEQ_Toolbox_Meeting_Tasks CASCADE;
+DROP TABLE IF EXISTS HSEQ_Toolbox_Meeting CASCADE;
+DROP TABLE IF EXISTS Employee_Skills CASCADE;
+DROP TABLE IF EXISTS Employee_Initiative CASCADE;
+DROP TABLE IF EXISTS Employee_Appraisal CASCADE;
+DROP TABLE IF EXISTS Employee CASCADE;
+DROP TABLE IF EXISTS Policy_and_Procedure CASCADE;
+DROP TABLE IF EXISTS Training_Courses CASCADE;
+DROP TABLE IF EXISTS Training_Institutions CASCADE;
+DROP TABLE IF EXISTS Center_Audits CASCADE;
+DROP TABLE IF EXISTS Center_Detail CASCADE;
+DROP TABLE IF EXISTS Islamic_Centers CASCADE;
+
+-- Drop lookup tables
+DROP TABLE IF EXISTS Municipalities CASCADE;
+DROP TABLE IF EXISTS Religion CASCADE;
+DROP TABLE IF EXISTS Occupation CASCADE;
+DROP TABLE IF EXISTS Allergies CASCADE;
+DROP TABLE IF EXISTS Home_Visit_Type CASCADE;
+DROP TABLE IF EXISTS Islamic_Subjects CASCADE;
+DROP TABLE IF EXISTS Academic_Subjects CASCADE;
+DROP TABLE IF EXISTS Terms CASCADE;
+DROP TABLE IF EXISTS Period_As_Muslim CASCADE;
+DROP TABLE IF EXISTS Born_Religion CASCADE;
+DROP TABLE IF EXISTS Hampers CASCADE;
+DROP TABLE IF EXISTS Expense_Type CASCADE;
+DROP TABLE IF EXISTS Income_Type CASCADE;
+DROP TABLE IF EXISTS Policy_Procedure_Field CASCADE;
+DROP TABLE IF EXISTS Policy_Procedure_Type CASCADE;
+DROP TABLE IF EXISTS User_Types CASCADE;
+DROP TABLE IF EXISTS Rating CASCADE;
+DROP TABLE IF EXISTS Blood_Type CASCADE;
+DROP TABLE IF EXISTS Training_Level CASCADE;
+DROP TABLE IF EXISTS Training_Outcome CASCADE;
+DROP TABLE IF EXISTS Gender CASCADE;
+DROP TABLE IF EXISTS Employment_Status CASCADE;
+DROP TABLE IF EXISTS Means_of_communication CASCADE;
+DROP TABLE IF EXISTS Education_Level CASCADE;
+DROP TABLE IF EXISTS Marital_Status CASCADE;
+DROP TABLE IF EXISTS Dwelling_Type CASCADE;
+DROP TABLE IF EXISTS Race CASCADE;
+DROP TABLE IF EXISTS Dwelling_Status CASCADE;
+DROP TABLE IF EXISTS File_Condition CASCADE;
+DROP TABLE IF EXISTS File_Status CASCADE;
+DROP TABLE IF EXISTS Assistance_Types CASCADE;
+DROP TABLE IF EXISTS Tasks_Status CASCADE;
+DROP TABLE IF EXISTS Relationship_Types CASCADE;
+DROP TABLE IF EXISTS Skills CASCADE;
+DROP TABLE IF EXISTS Health_Conditions CASCADE;
+DROP TABLE IF EXISTS Departments CASCADE;
+DROP TABLE IF EXISTS Nationality CASCADE;
+DROP TABLE IF EXISTS Suburb CASCADE;
+DROP TABLE IF EXISTS Supplier_Category CASCADE;
+
+-- Drop functions
+DROP FUNCTION IF EXISTS ensure_financial_assessment_for_applicant() CASCADE;
+DROP FUNCTION IF EXISTS update_inventory_quantity() CASCADE;
+DROP FUNCTION IF EXISTS update_financial_assessment_totals() CASCADE;
+DROP FUNCTION IF EXISTS hash_employee_password() CASCADE;
+
+-- Note: pgcrypto extension is kept as it's required by the application
+-- If you need to drop it: DROP EXTENSION IF EXISTS pgcrypto CASCADE;
+
+-- ============================================================================
+-- CREATE SCHEMA (Fresh creation)
+-- ============================================================================
+
 -- Extensions
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
@@ -357,6 +473,80 @@ CREATE TABLE Born_Religion (
 CREATE TABLE Period_As_Muslim (
     ID SERIAL PRIMARY KEY,
     Name VARCHAR(255) UNIQUE NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Additional Lookup Tables (from APEX migration)
+CREATE TABLE Terms (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(50) UNIQUE NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE Academic_Subjects (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(255) UNIQUE NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE Islamic_Subjects (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(255) UNIQUE NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE Home_Visit_Type (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(255) UNIQUE NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE Allergies (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(255) UNIQUE NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE Occupation (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(255) UNIQUE NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE Religion (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(255) UNIQUE NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE Municipalities (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(255) UNIQUE NOT NULL,
+    Province VARCHAR(100),
     Created_By VARCHAR(255),
     Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
     Updated_By VARCHAR(255),
@@ -1123,6 +1313,316 @@ CREATE TABLE Personal_Files (
     CONSTRAINT fk_center_id_file FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
 );
 
+-- Madressa Module Tables (from APEX migration)
+CREATE TABLE Madressah_Application (
+    ID SERIAL PRIMARY KEY,
+    Applicant_Relationship_ID BIGINT NOT NULL,
+    Chronic_Condition VARCHAR(255),
+    Blood_Type VARCHAR(50),
+    Family_Doctor VARCHAR(255),
+    Contact_Details VARCHAR(50),
+    Allegies VARCHAR(255),
+    Chronic_Medication_Required VARCHAR(255),
+    Allergy_Medication_Required VARCHAR(255),
+    center_id BIGINT NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_applicant_relationship_madressah FOREIGN KEY (Applicant_Relationship_ID) REFERENCES Relationships(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_center_id_madressah FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
+);
+
+CREATE TABLE Conduct_Assessment (
+    ID SERIAL PRIMARY KEY,
+    Madressah_App_ID BIGINT NOT NULL,
+    Question1 VARCHAR(255),
+    Question2 VARCHAR(255),
+    Question3 VARCHAR(255),
+    Question4 VARCHAR(255),
+    Question5 VARCHAR(255),
+    Jumah VARCHAR(255),
+    Eid VARCHAR(255),
+    Inclination VARCHAR(255),
+    Comment_On_Character VARCHAR(255),
+    center_id BIGINT NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_madressah_app_assessment FOREIGN KEY (Madressah_App_ID) REFERENCES Madressah_Application(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_center_id_assessment FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
+);
+
+CREATE TABLE Survey (
+    ID SERIAL PRIMARY KEY,
+    Madressah_App_ID BIGINT NOT NULL,
+    Question1 VARCHAR(255),
+    Question2 VARCHAR(255),
+    Question3 VARCHAR(255),
+    Question4 VARCHAR(255),
+    Question5 TEXT,
+    Question6 VARCHAR(255),
+    Question7 VARCHAR(255),
+    Question8 VARCHAR(255),
+    Question9 VARCHAR(255),
+    Question10 VARCHAR(255),
+    Question11 VARCHAR(255),
+    Question12 VARCHAR(255),
+    Question13 VARCHAR(255),
+    Question14 VARCHAR(255),
+    Question15 TEXT,
+    Question16 VARCHAR(255),
+    Question17 VARCHAR(255),
+    Question18 VARCHAR(255),
+    Question19 VARCHAR(255),
+    center_id BIGINT NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_madressah_app_survey FOREIGN KEY (Madressah_App_ID) REFERENCES Madressah_Application(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_center_id_survey FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
+);
+
+CREATE TABLE Academic_Results (
+    ID SERIAL PRIMARY KEY,
+    Madressah_App_ID BIGINT NOT NULL,
+    School VARCHAR(255),
+    Grade VARCHAR(50),
+    Term VARCHAR(50),
+    Subject1 VARCHAR(10),
+    Subject1Ave VARCHAR(10),
+    Subject1Name VARCHAR(100),
+    Subject2 VARCHAR(10),
+    Subject2Ave VARCHAR(10),
+    Subject2Name VARCHAR(100),
+    Subject3 VARCHAR(10),
+    Subject3Ave VARCHAR(10),
+    Subject3Name VARCHAR(100),
+    Subject4 VARCHAR(10),
+    Subject4Ave VARCHAR(10),
+    Subject4Name VARCHAR(100),
+    Subject5 VARCHAR(10),
+    Subject5Ave VARCHAR(10),
+    Subject5Name VARCHAR(100),
+    Subject6 VARCHAR(10),
+    Subject6Ave VARCHAR(10),
+    Subject6Name VARCHAR(100),
+    Subject7 VARCHAR(10),
+    Subject7Ave VARCHAR(10),
+    Subject7Name VARCHAR(100),
+    Subject8 VARCHAR(10),
+    Subject8Ave VARCHAR(10),
+    Subject8Name VARCHAR(100),
+    Subject9 VARCHAR(10),
+    Subject9Ave VARCHAR(10),
+    Subject9Name VARCHAR(100),
+    Days_Absent VARCHAR(100),
+    Comments TEXT,
+    Report_Upload BYTEA,
+    Report_Upload_Filename VARCHAR(255),
+    Report_Upload_Mime VARCHAR(255),
+    Report_Upload_Size INT,
+    center_id BIGINT NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_madressah_app_academic FOREIGN KEY (Madressah_App_ID) REFERENCES Madressah_Application(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_center_id_academic FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
+);
+
+CREATE TABLE Islamic_Results (
+    ID SERIAL PRIMARY KEY,
+    Madressah_App_ID BIGINT NOT NULL,
+    Grade VARCHAR(50),
+    Term VARCHAR(50),
+    Subject1 VARCHAR(10),
+    Subject1Ave VARCHAR(10),
+    Subject1Name VARCHAR(100),
+    Subject2 VARCHAR(10),
+    Subject2Ave VARCHAR(10),
+    Subject2Name VARCHAR(100),
+    Subject3 VARCHAR(10),
+    Subject3Ave VARCHAR(10),
+    Subject3Name VARCHAR(100),
+    Subject4 VARCHAR(10),
+    Subject4Ave VARCHAR(10),
+    Subject4Name VARCHAR(100),
+    Subject5 VARCHAR(10),
+    Subject5Ave VARCHAR(10),
+    Subject5Name VARCHAR(100),
+    Subject6 VARCHAR(10),
+    Subject6Ave VARCHAR(10),
+    Subject6Name VARCHAR(100),
+    Subject7 VARCHAR(10),
+    Subject7Ave VARCHAR(10),
+    Subject7Name VARCHAR(100),
+    Subject8 VARCHAR(10),
+    Subject8Ave VARCHAR(10),
+    Subject8Name VARCHAR(100),
+    Subject9 VARCHAR(10),
+    Subject9Ave VARCHAR(10),
+    Subject9Name VARCHAR(100),
+    Days_Absent VARCHAR(100),
+    Comments TEXT,
+    Report_Upload BYTEA,
+    Report_Upload_Filename VARCHAR(255),
+    Report_Upload_Mime VARCHAR(255),
+    Report_Upload_Size INT,
+    center_id BIGINT NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_madressah_app_islamic FOREIGN KEY (Madressah_App_ID) REFERENCES Madressah_Application(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_center_id_islamic FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
+);
+
+CREATE TABLE Islamic_Centers (
+    ID SERIAL PRIMARY KEY,
+    Center_Name VARCHAR(255) NOT NULL,
+    Suburb VARCHAR(255),
+    Address VARCHAR(500),
+    Ameer VARCHAR(255),
+    Contact_Number VARCHAR(50),
+    Name_Syllabus VARCHAR(255),
+    center_id BIGINT,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_center_id_islamic_centers FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
+);
+
+CREATE TABLE Maintenance (
+    ID SERIAL PRIMARY KEY,
+    Islamic_Center_ID BIGINT NOT NULL,
+    Type_Of_Maintenance VARCHAR(255),
+    Date_Of_Maintenance DATE,
+    Description_Of_Maintenance TEXT,
+    Cost DECIMAL(12,2),
+    Supplier VARCHAR(255),
+    Upload BYTEA,
+    Upload_Filename VARCHAR(255),
+    Upload_Mime VARCHAR(255),
+    Upload_Size INT,
+    center_id BIGINT NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_islamic_center_maintenance FOREIGN KEY (Islamic_Center_ID) REFERENCES Islamic_Centers(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_center_id_maintenance FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
+);
+
+CREATE TABLE Site_Visits (
+    ID SERIAL PRIMARY KEY,
+    Islamic_Center_ID BIGINT NOT NULL,
+    Representative VARCHAR(500),
+    Date_Of_Visit DATE,
+    Comments TEXT,
+    Comments_Of_Staff TEXT,
+    Uploads BYTEA,
+    Uploads_Filename VARCHAR(255),
+    Uploads_Mime VARCHAR(255),
+    Uploads_Size INT,
+    center_id BIGINT NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_islamic_center_site_visit FOREIGN KEY (Islamic_Center_ID) REFERENCES Islamic_Centers(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_center_id_site_visit FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
+);
+
+CREATE TABLE Suburb_Masjids (
+    ID SERIAL PRIMARY KEY,
+    Suburb_ID BIGINT NOT NULL,
+    Masjid_Name VARCHAR(255) NOT NULL,
+    Imaam_Name VARCHAR(255),
+    Imaam_Contact VARCHAR(255),
+    Facilities_Available TEXT,
+    center_id BIGINT NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_suburb_masjid FOREIGN KEY (Suburb_ID) REFERENCES Suburb(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_center_id_masjid FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
+);
+
+CREATE TABLE Suburb_Census (
+    ID SERIAL PRIMARY KEY,
+    Suburb_ID BIGINT NOT NULL,
+    Population_Size VARCHAR(100),
+    Muslim_Population_Size VARCHAR(100),
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_suburb_census FOREIGN KEY (Suburb_ID) REFERENCES Suburb(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Suburb_Concerns (
+    ID SERIAL PRIMARY KEY,
+    Suburb_ID BIGINT NOT NULL,
+    General_Perception TEXT,
+    Safety_Security TEXT,
+    Infrastructure_Transport TEXT,
+    Public_Services TEXT,
+    Environmental_Health_Concerns TEXT,
+    Social_Community_Wellbeing TEXT,
+    Development_Planning TEXT,
+    Assessment_Done_By TEXT,
+    Concerns_Discussed_With TEXT,
+    center_id BIGINT NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_suburb_concerns FOREIGN KEY (Suburb_ID) REFERENCES Suburb(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_center_id_concerns FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
+);
+
+-- Alter existing tables to add missing columns
+ALTER TABLE Relationships
+    ADD COLUMN IF NOT EXISTS Marital_Status BIGINT,
+    ADD COLUMN IF NOT EXISTS Religion BIGINT;
+
+ALTER TABLE Relationships
+    ADD CONSTRAINT fk_marital_status_rel FOREIGN KEY (Marital_Status) REFERENCES Marital_Status(ID),
+    ADD CONSTRAINT fk_religion_rel FOREIGN KEY (Religion) REFERENCES Religion(ID);
+
+ALTER TABLE Home_Visit
+    ADD COLUMN IF NOT EXISTS Home_Visit_Type BIGINT,
+    ADD COLUMN IF NOT EXISTS Short_Term TEXT,
+    ADD COLUMN IF NOT EXISTS Medium_Term TEXT,
+    ADD COLUMN IF NOT EXISTS Long_Term TEXT;
+
+ALTER TABLE Home_Visit
+    ADD CONSTRAINT fk_home_visit_type FOREIGN KEY (Home_Visit_Type) REFERENCES Home_Visit_Type(ID);
+
+ALTER TABLE Food_Assistance
+    ADD COLUMN IF NOT EXISTS Give_To VARCHAR(255);
+
+ALTER TABLE Financial_Assistance
+    ADD COLUMN IF NOT EXISTS Sector VARCHAR(255),
+    ADD COLUMN IF NOT EXISTS Program VARCHAR(255),
+    ADD COLUMN IF NOT EXISTS Project VARCHAR(255),
+    ADD COLUMN IF NOT EXISTS Give_To VARCHAR(255);
+
+ALTER TABLE Applicant_Details
+    ADD COLUMN IF NOT EXISTS Date_of_Birth DATE,
+    ADD COLUMN IF NOT EXISTS Alternative_Name VARCHAR(255),
+    ADD COLUMN IF NOT EXISTS Company_Name VARCHAR(255);
+
+ALTER TABLE Suburb
+    ADD COLUMN IF NOT EXISTS Province VARCHAR(100),
+    ADD COLUMN IF NOT EXISTS Municipality VARCHAR(255),
+    ADD COLUMN IF NOT EXISTS Organisations_Present TEXT;
+
 -- Indexes
 CREATE INDEX HSEQ_Toolbox_Meeting_Tasks_i1 ON HSEQ_Toolbox_Meeting_Tasks (HSEQ_Toolbox_Meeting_ID);
 CREATE INDEX idx_service_rating_datestamp ON Service_Rating (Datestamp);
@@ -1162,6 +1662,29 @@ CREATE INDEX idx_applicant_expense_assessment_id ON Applicant_Expense (Financial
 CREATE INDEX idx_applicant_expense_type_id ON Applicant_Expense (Expense_Type_ID);
 CREATE INDEX idx_applicant_income_assessment_id ON Applicant_Income (Financial_Assessment_ID);
 CREATE INDEX idx_applicant_income_type_id ON Applicant_Income (Income_Type_ID);
+CREATE INDEX idx_madressah_application_relationship ON Madressah_Application (Applicant_Relationship_ID);
+CREATE INDEX idx_madressah_application_center ON Madressah_Application (center_id);
+CREATE INDEX idx_conduct_assessment_madressah ON Conduct_Assessment (Madressah_App_ID);
+CREATE INDEX idx_conduct_assessment_center ON Conduct_Assessment (center_id);
+CREATE INDEX idx_survey_madressah ON Survey (Madressah_App_ID);
+CREATE INDEX idx_survey_center ON Survey (center_id);
+CREATE INDEX idx_academic_results_madressah ON Academic_Results (Madressah_App_ID);
+CREATE INDEX idx_academic_results_center ON Academic_Results (center_id);
+CREATE INDEX idx_academic_results_term ON Academic_Results (Term, Grade);
+CREATE INDEX idx_islamic_results_madressah ON Islamic_Results (Madressah_App_ID);
+CREATE INDEX idx_islamic_results_center ON Islamic_Results (center_id);
+CREATE INDEX idx_islamic_results_term ON Islamic_Results (Term, Grade);
+CREATE INDEX idx_islamic_centers_center ON Islamic_Centers (center_id);
+CREATE INDEX idx_maintenance_islamic_center ON Maintenance (Islamic_Center_ID);
+CREATE INDEX idx_maintenance_center ON Maintenance (center_id);
+CREATE INDEX idx_site_visits_islamic_center ON Site_Visits (Islamic_Center_ID);
+CREATE INDEX idx_site_visits_center ON Site_Visits (center_id);
+CREATE INDEX idx_site_visits_date ON Site_Visits (Date_Of_Visit);
+CREATE INDEX idx_suburb_masjids_suburb ON Suburb_Masjids (Suburb_ID);
+CREATE INDEX idx_suburb_masjids_center ON Suburb_Masjids (center_id);
+CREATE INDEX idx_suburb_census_suburb ON Suburb_Census (Suburb_ID);
+CREATE INDEX idx_suburb_concerns_suburb ON Suburb_Concerns (Suburb_ID);
+CREATE INDEX idx_suburb_concerns_center ON Suburb_Concerns (center_id);
 
 -- Views
 CREATE OR REPLACE VIEW Service_Rating_With_Score AS
@@ -1394,6 +1917,59 @@ INSERT INTO Policy_Procedure_Field (Name) VALUES
     ('Training'),
     ('Safety Protocols');
 
+-- Insert seed data for new lookup tables (from APEX migration)
+INSERT INTO Terms (Name, Created_By) VALUES
+    ('Term 1', 'system'),
+    ('Term 2', 'system'),
+    ('Term 3', 'system'),
+    ('Term 4', 'system');
+
+INSERT INTO Academic_Subjects (Name, Created_By) VALUES
+    ('Mathematics', 'system'),
+    ('English', 'system'),
+    ('Science', 'system'),
+    ('Geography', 'system'),
+    ('History', 'system');
+
+INSERT INTO Islamic_Subjects (Name, Created_By) VALUES
+    ('Quran', 'system'),
+    ('Hadith', 'system'),
+    ('Fiqh', 'system'),
+    ('Seerah', 'system'),
+    ('Arabic', 'system');
+
+INSERT INTO Home_Visit_Type (Name, Created_By) VALUES
+    ('Initial Assessment', 'system'),
+    ('Follow-up', 'system'),
+    ('Emergency', 'system'),
+    ('Routine Check', 'system');
+
+INSERT INTO Allergies (Name, Created_By) VALUES
+    ('Peanuts', 'system'),
+    ('Dairy', 'system'),
+    ('Gluten', 'system'),
+    ('Eggs', 'system'),
+    ('None', 'system');
+
+INSERT INTO Occupation (Name, Created_By) VALUES
+    ('Teacher', 'system'),
+    ('Engineer', 'system'),
+    ('Doctor', 'system'),
+    ('Business Owner', 'system'),
+    ('Unemployed', 'system');
+
+INSERT INTO Religion (Name, Created_By) VALUES
+    ('Islam', 'system'),
+    ('Christianity', 'system'),
+    ('Hinduism', 'system'),
+    ('Judaism', 'system'),
+    ('African Traditional', 'system');
+
+INSERT INTO Municipalities (Name, Province, Created_By) VALUES
+    ('City of Johannesburg', 'Gauteng', 'system'),
+    ('City of Cape Town', 'Western Cape', 'system'),
+    ('eThekwini', 'KwaZulu-Natal', 'system');
+
 -- Update audit fields for existing data
 UPDATE File_Status SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE File_Condition SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
@@ -1426,6 +2002,14 @@ UPDATE Skills SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now()
 UPDATE Relationship_Types SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Policy_Procedure_Type SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Policy_Procedure_Field SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
+UPDATE Terms SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
+UPDATE Academic_Subjects SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
+UPDATE Islamic_Subjects SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
+UPDATE Home_Visit_Type SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
+UPDATE Allergies SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
+UPDATE Occupation SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
+UPDATE Religion SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
+UPDATE Municipalities SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 
 -- ✅ Insert seed data: Center and Test Users
 -- Insert into Center_Detail

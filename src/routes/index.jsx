@@ -58,6 +58,9 @@ import ApplicantManagement from "../pages/Applicants/ApplicantManagement";
 import CreateApplicant from "../pages/Applicants/CreateApplicant";
 import SupplierManagement from "../pages/Suppliers/SupplierManagement";
 
+// Madressa
+import MadressaApplicationManagement from "../pages/Madressa/MadressaApplicationManagement";
+
 // Inventory
 import InventoryManagement from "../pages/Inventory/InventoryManagement";
 
@@ -402,6 +405,9 @@ const authProtectedRoutes = [
 
   // ✅ Applicant Statistics (backward compatibility) - All staff
   { path: "/applicant-statistics", component: <ProtectedRoute allowedRoles={[1, 2, 3, 4, 5]}><ApplicantStatistics /></ProtectedRoute> },
+
+  // ✅ Madressa Applications - All staff roles (1,2,3,4,5)
+  { path: "/madressa/applications", component: <ProtectedRoute allowedRoles={[1, 2, 3, 4, 5]}><MadressaApplicationManagement /></ProtectedRoute> },
 
   // ✅ Reports - App Admin, HQ, Org Admin (Org Executive and Caseworkers excluded)
   { path: "/reports/applicant-details", component: <ProtectedRoute allowedRoles={[1, 2, 3]}><ApplicantDetailsReport /></ProtectedRoute> },
