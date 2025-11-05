@@ -51,6 +51,10 @@ const FinancialAssistanceTab = ({ applicantId, financialAssistance, lookupData, 
         Financial_Amount: editItem?.financial_amount || "",
         Date_of_Assistance: editItem?.date_of_assistance || "",
         Assisted_By: editItem?.assisted_by || "",
+        Sector: editItem?.sector || "",
+        Program: editItem?.program || "",
+        Project: editItem?.project || "",
+        Give_To: editItem?.give_to || "",
       });
     }
   }, [editItem, modalOpen, reset]);
@@ -82,6 +86,10 @@ const FinancialAssistanceTab = ({ applicantId, financialAssistance, lookupData, 
         financial_amount: data.Financial_Amount ? parseFloat(data.Financial_Amount) : 0,
         date_of_assistance: data.Date_of_Assistance || null,
         assisted_by: data.Assisted_By ? parseInt(data.Assisted_By) : null,
+        sector: data.Sector || "",
+        program: data.Program || "",
+        project: data.Project || "",
+        give_to: data.Give_To || "",
       };
 
       if (editItem) {
@@ -181,7 +189,34 @@ const FinancialAssistanceTab = ({ applicantId, financialAssistance, lookupData, 
           return emp ? `${emp.name || ''} ${emp.surname || ''}`.trim() : "-";
         },
       },
-      
+      {
+        header: "Sector",
+        accessorKey: "sector",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => cell.getValue() || "-",
+      },
+      {
+        header: "Program",
+        accessorKey: "program",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => cell.getValue() || "-",
+      },
+      {
+        header: "Project",
+        accessorKey: "project",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => cell.getValue() || "-",
+      },
+      {
+        header: "Given To",
+        accessorKey: "give_to",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => cell.getValue() || "-",
+      },
       {
         header: "Created On",
         accessorKey: "created_at",
@@ -210,7 +245,7 @@ const FinancialAssistanceTab = ({ applicantId, financialAssistance, lookupData, 
         },
       },
     ],
-    [lookupData]
+    [lookupData, handleEdit]
   );
 
   const totalAmount = financialAssistance.reduce(
@@ -324,6 +359,82 @@ const FinancialAssistanceTab = ({ applicantId, financialAssistance, lookupData, 
                           </option>
                         ))}
                       </Input>
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="Sector">Sector</Label>
+                  <Controller
+                    name="Sector"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="Sector"
+                        type="text"
+                        placeholder="Enter sector"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      />
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="Program">Program</Label>
+                  <Controller
+                    name="Program"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="Program"
+                        type="text"
+                        placeholder="Enter program"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      />
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="Project">Project</Label>
+                  <Controller
+                    name="Project"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="Project"
+                        type="text"
+                        placeholder="Enter project"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      />
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="Give_To">Given To</Label>
+                  <Controller
+                    name="Give_To"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="Give_To"
+                        type="text"
+                        placeholder="Enter recipient"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      />
                     )}
                   />
                 </FormGroup>

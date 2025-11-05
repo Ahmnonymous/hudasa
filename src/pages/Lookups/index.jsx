@@ -90,6 +90,14 @@ const Lookups = () => {
         { name: "Supplier Categories", table: "Supplier_Category", icon: "bxs-truck" },
       ],
     },
+    {
+      title: "Community Setup",
+      color: "info",
+      icon: "bxs-mosque",
+      categories: [
+        { name: "Maintenance Type", table: "Maintenance_Type", icon: "bxs-wrench" },
+      ],
+    },
   ];
 
   // Meta title
@@ -183,12 +191,13 @@ const Lookups = () => {
             <div className="flex-grow-1"></div> {/* Spacer to fill remaining space */}
           </Col>
 
-          {/* Right Column: Employee Training (4) + Financial (2) + Policy (2) + Supplier (1) = 9 items */}
+          {/* Right Column: Employee Training (4) + Financial (2) + Policy (2) + Supplier (1) + Community (1) = 10 items */}
           <Col lg={6} className="d-flex flex-column">
             {renderGroupCard(lookupGroups[3], 3)} {/* Employee Training */}
             {renderGroupCard(lookupGroups[4], 4)} {/* Financial Setup */}
             {renderGroupCard(lookupGroups[5], 5)} {/* Policy Setup */}
             {renderGroupCard(lookupGroups[6], 6)} {/* Supplier Setup */}
+            {renderGroupCard(lookupGroups[7], 7)} {/* Community Setup */}
             <div className="flex-grow-1"></div> {/* Spacer to fill remaining space */}
           </Col>
         </Row>

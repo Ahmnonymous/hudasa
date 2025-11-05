@@ -181,9 +181,9 @@ const CommentsTab = ({ applicantId, comments, onUpdate, showAlert }) => {
             return `${dateStr} (${timeStr})`;
           };
           return (
-            <div className="d-flex align-items-start">
+            <div className="d-flex align-items-center">
               <div
-                className="me-2 rounded-circle bg-secondary text-white text-center shadow-sm"
+                className="me-2 rounded-circle bg-secondary text-white text-center shadow-sm flex-shrink-0"
                 style={{ width: 34, minWidth: 34, height: 34, lineHeight: "34px", fontSize: 11, fontWeight: 700 }}
                 title={creatorName}
               >
@@ -191,7 +191,7 @@ const CommentsTab = ({ applicantId, comments, onUpdate, showAlert }) => {
               </div>
               <div className="flex-grow-1">
                 <div className="position-relative border rounded bg-light px-2 py-2 shadow-sm" style={{ whiteSpace: "pre-wrap", fontSize: 13 }}>
-                  <div className="d-flex">
+                  <div className="d-flex align-items-center">
                     <div className="flex-grow-1 text-dark" style={{ lineHeight: 1.4 }}>
                       {cell.getValue()}
                       {isEdited && <span className="ms-2 text-muted">(edited)</span>}

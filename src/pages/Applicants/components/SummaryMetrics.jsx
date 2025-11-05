@@ -1,12 +1,12 @@
 import React from "react";
 import { Row, Col, Card, CardBody } from "reactstrap";
 
-const SummaryMetrics = ({ applicantId, financialAssistance, foodAssistance, homeVisits, programs }) => {
+const SummaryMetrics = ({ applicantId, financialAssistance, foodAssistance, homeVisits, relationships }) => {
   // Ensure metrics reflect ONLY the selected applicant
   const faForApplicant = (financialAssistance || []).filter((x) => String(x.file_id) === String(applicantId));
   const foodForApplicant = (foodAssistance || []).filter((x) => String(x.file_id) === String(applicantId));
   const visitsForApplicant = (homeVisits || []).filter((x) => String(x.file_id) === String(applicantId));
-  const programsForApplicant = (programs || []).filter((x) => String(x.person_trained_id) === String(applicantId));
+  const relationshipsForApplicant = (relationships || []).filter((x) => String(x.file_id) === String(applicantId));
 
   // Calculate totals
   const totalFinancialAssistance = faForApplicant.reduce(
@@ -20,7 +20,7 @@ const SummaryMetrics = ({ applicantId, financialAssistance, foodAssistance, home
   );
 
   const homeVisitCount = visitsForApplicant.length;
-  const programCount = programsForApplicant.length;
+  const relationshipCount = relationshipsForApplicant.length;
 
   const metrics = [
     {
@@ -42,9 +42,9 @@ const SummaryMetrics = ({ applicantId, financialAssistance, foodAssistance, home
       color: "warning"
     },
     {
-      title: "Programs",
-      value: programCount,
-      icon: "bxs-graduation",
+      title: "Relationships",
+      value: relationshipCount,
+      icon: "bx-group",
       color: "info"
     },
   ];

@@ -118,6 +118,7 @@ const ApplicantManagement = () => {
         trainingOutcomesRes,
         incomeTypesRes,
         expenseTypesRes,
+        homeVisitTypesRes,
       ] = await Promise.all([
         axiosApi.get(`${API_BASE_URL}/lookup/Race`),
         axiosApi.get(`${API_BASE_URL}/lookup/Nationality`),
@@ -145,6 +146,7 @@ const ApplicantManagement = () => {
         axiosApi.get(`${API_BASE_URL}/lookup/Training_Outcome`),
         axiosApi.get(`${API_BASE_URL}/lookup/Income_Type`),
         axiosApi.get(`${API_BASE_URL}/lookup/Expense_Type`),
+        axiosApi.get(`${API_BASE_URL}/lookup/Home_Visit_Type`),
       ]);
 
       setLookupData({
@@ -174,6 +176,7 @@ const ApplicantManagement = () => {
         trainingOutcomes: trainingOutcomesRes.data || [],
         incomeTypes: incomeTypesRes.data || [],
         expenseTypes: expenseTypesRes.data || [],
+        homeVisitTypes: homeVisitTypesRes.data || [],
       });
     } catch (error) {
       console.error("Error fetching lookup data:", error);
@@ -369,7 +372,7 @@ const ApplicantManagement = () => {
                   financialAssistance={financialAssistance}
                   foodAssistance={foodAssistance}
                   homeVisits={homeVisits}
-                  programs={programs}
+                  relationships={relationships}
                 />
 
                 {/* Applicant Summary */}

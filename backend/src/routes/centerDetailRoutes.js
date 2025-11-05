@@ -18,18 +18,19 @@ const upload = multer({ storage });
 router.get('/:id/view-logo', optionalAuthMiddleware, centerDetailController.viewLogo);
 router.get('/:id/view-qrcode', optionalAuthMiddleware, centerDetailController.viewQRCode);
 
-// ? All other endpoints - require authentication, RBAC, and tenant filtering
-// Center management: App Admin ONLY (role 1)
+// ? GET endpoints - require authentication (all users can read centers for lookups)
 router.use(authMiddleware);
-router.use(roleMiddleware([1])); // Only App Admin can manage centers
 router.use(filterMiddleware);
 
+// Read endpoints - accessible to all authenticated users
 router.get('/', centerDetailController.getAll);
 router.get('/:id/download-logo', centerDetailController.downloadLogo);
 router.get('/:id/download-qrcode', centerDetailController.downloadQRCode);
 router.get('/:id', centerDetailController.getById);
-router.post('/', upload.fields([{ name: 'logo' }, { name: 'qr_code_service_url' }]), centerDetailController.create);
-router.put('/:id', upload.fields([{ name: 'logo' }, { name: 'qr_code_service_url' }]), centerDetailController.update);
-router.delete('/:id', centerDetailController.delete);
+
+// Write endpoints - App Admin ONLY (role 1) can manage centers
+router.post('/', roleMiddleware([1]), upload.fields([{ name: 'logo' }, { name: 'qr_code_service_url' }]), centerDetailController.create);
+router.put('/:id', roleMiddleware([1]), upload.fields([{ name: 'logo' }, { name: 'qr_code_service_url' }]), centerDetailController.update);
+router.delete('/:id', roleMiddleware([1]), centerDetailController.delete);
 
 module.exports = router;

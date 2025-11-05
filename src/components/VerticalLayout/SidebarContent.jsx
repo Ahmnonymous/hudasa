@@ -244,6 +244,30 @@ const SidebarContent = (props) => {
               </ul>
             </li>
 
+            {/* ✅ Islamic Centers & Community - All except Caseworkers (roles 1,2,3,4) */}
+            {hasRole([1, 2, 3, 4]) && (
+              <li>
+                <Link to="/#" className="has-arrow ">
+                  <i className="bx bx-group"></i>
+                  <span>{props.t("Community")}</span>
+                </Link>
+                <ul className="sub-menu" aria-expanded="false">
+                  <li>
+                    <Link to="/islamic-centers">
+                      <i className="bx bxs-building-house me-2"></i>
+                      {props.t("Islamic Centers")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/suburb-masjids">
+                      <i className="bx bx-map me-2"></i>
+                      {props.t("Suburb Masjids")}
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+            )}
+
             {/* ✅ Reports - App Admin, HQ, Org Admin (Org Executive and Caseworkers excluded) */}
             {hasRole([1, 2, 3]) && (
               <li>

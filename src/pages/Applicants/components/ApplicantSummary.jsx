@@ -1034,10 +1034,11 @@ const ApplicantSummary = ({ applicant, lookupData, onUpdate, showAlert }) => {
                   </Col>
                   <Col md={12}>
                     <FormGroup check>
-                      <Label check>
+                      <Label check className="d-flex align-items-start">
                         <Controller
                           name="POPIA_Agreement"
                           control={control}
+                          rules={{ required: "You must agree to the POPIA terms to continue" }}
                           render={({ field }) => (
                             <Input
                               type="checkbox"
@@ -1046,11 +1047,21 @@ const ApplicantSummary = ({ applicant, lookupData, onUpdate, showAlert }) => {
                               onBlur={field.onBlur}
                               name={field.name}
                               innerRef={field.ref}
+                              className="me-2 mt-1"
+                              style={{ flexShrink: 0 }}
+                              invalid={!!errors.POPIA_Agreement}
                             />
                           )}
                         />
-                        <span className="ms-2">I agree to the POPIA terms and conditions</span>
+                        <span className="text-muted" style={{ fontSize: '0.875rem', lineHeight: '1.5' }}>
+                          By completing this application form, you acknowledge and consent to the collection, processing, and storage of your personal information in accordance with the Protection of Personal Information Act (POPIA), Act 4 of 2013. Your personal information will be used solely for the purpose of processing your application and facilitating your enrollment in the Madressa
+                        </span>
                       </Label>
+                      {errors.POPIA_Agreement && (
+                        <FormFeedback className="d-block">
+                          {errors.POPIA_Agreement.message}
+                        </FormFeedback>
+                      )}
                     </FormGroup>
                   </Col>
                 </Row>

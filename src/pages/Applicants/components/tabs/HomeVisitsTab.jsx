@@ -22,7 +22,7 @@ import axiosApi from "../../../../helpers/api_helper";
 import { API_BASE_URL, API_STREAM_BASE_URL } from "../../../../helpers/url_helper";
 import { getAuditName } from "../../../../helpers/userStorage";
 
-const HomeVisitsTab = ({ applicantId, homeVisits, onUpdate, showAlert }) => {
+const HomeVisitsTab = ({ applicantId, homeVisits, lookupData, onUpdate, showAlert }) => {
   const { isOrgExecutive } = useRole(); // Read-only check
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
@@ -60,6 +60,10 @@ const HomeVisitsTab = ({ applicantId, homeVisits, onUpdate, showAlert }) => {
       reset({
         Visit_Date: editItem?.visit_date || "",
         Representative: editItem?.representative || "",
+        Home_Visit_Type: editItem?.home_visit_type || "",
+        Short_Term: editItem?.short_term || "",
+        Medium_Term: editItem?.medium_term || "",
+        Long_Term: editItem?.long_term || "",
         Comments: editItem?.comments || "",
         Attachment_1: null,
         Attachment_2: null,
@@ -111,6 +115,10 @@ const HomeVisitsTab = ({ applicantId, homeVisits, onUpdate, showAlert }) => {
         formData.append("file_id", applicantId);
         formData.append("visit_date", data.Visit_Date || "");
         formData.append("representative", data.Representative);
+        formData.append("home_visit_type", data.Home_Visit_Type ? parseInt(data.Home_Visit_Type) : null);
+        formData.append("short_term", data.Short_Term || "");
+        formData.append("medium_term", data.Medium_Term || "");
+        formData.append("long_term", data.Long_Term || "");
         formData.append("comments", data.Comments);
 
         if (hasAttachment1) {
@@ -137,6 +145,10 @@ const HomeVisitsTab = ({ applicantId, homeVisits, onUpdate, showAlert }) => {
           file_id: applicantId,
           visit_date: data.Visit_Date || null,
           representative: data.Representative,
+          home_visit_type: data.Home_Visit_Type ? parseInt(data.Home_Visit_Type) : null,
+          short_term: data.Short_Term || "",
+          medium_term: data.Medium_Term || "",
+          long_term: data.Long_Term || "",
           comments: data.Comments,
         };
 
@@ -181,6 +193,12 @@ const HomeVisitsTab = ({ applicantId, homeVisits, onUpdate, showAlert }) => {
     });
   };
 
+  const getLookupName = (lookupArray, id) => {
+    if (!id) return "-";
+    const item = lookupArray?.find((l) => l.id == id);
+    return item ? item.name : "-";
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -211,6 +229,43 @@ const HomeVisitsTab = ({ applicantId, homeVisits, onUpdate, showAlert }) => {
         cell: (cell) => {
           const date = cell.getValue();
           return date ? new Date(date).toLocaleDateString() : "-";
+        },
+      },
+      {
+        header: "Visit Type",
+        accessorKey: "home_visit_type",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => getLookupName(lookupData?.homeVisitTypes, cell.getValue()),
+      },
+      {
+        header: "Short Term Goal",
+        accessorKey: "short_term",
+        enableSorting: false,
+        enableColumnFilter: false,
+        cell: (cell) => {
+          const goal = cell.getValue() || "";
+          return goal.length > 50 ? `${goal.substring(0, 50)}...` : goal || "-";
+        },
+      },
+      {
+        header: "Medium Term Goal",
+        accessorKey: "medium_term",
+        enableSorting: false,
+        enableColumnFilter: false,
+        cell: (cell) => {
+          const goal = cell.getValue() || "";
+          return goal.length > 50 ? `${goal.substring(0, 50)}...` : goal || "-";
+        },
+      },
+      {
+        header: "Long Term Goal",
+        accessorKey: "long_term",
+        enableSorting: false,
+        enableColumnFilter: false,
+        cell: (cell) => {
+          const goal = cell.getValue() || "";
+          return goal.length > 50 ? `${goal.substring(0, 50)}...` : goal || "-";
         },
       },
       {
@@ -312,7 +367,7 @@ const HomeVisitsTab = ({ applicantId, homeVisits, onUpdate, showAlert }) => {
         },
       },
     ],
-    []
+    [lookupData, handleEdit]
   );
 
   return (
@@ -404,6 +459,59 @@ const HomeVisitsTab = ({ applicantId, homeVisits, onUpdate, showAlert }) => {
                     )}
                   />
                   {errors.Representative && <FormFeedback>{errors.Representative.message}</FormFeedback>}
+                </FormGroup>
+              </Col>
+
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="Home_Visit_Type">Visit Type</Label>
+                  <Controller
+                    name="Home_Visit_Type"
+                    control={control}
+                    render={({ field }) => (
+                      <Input id="Home_Visit_Type" type="select" disabled={isOrgExecutive} {...field}>
+                        <option value="">Select Visit Type</option>
+                        {(lookupData?.homeVisitTypes || []).map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </Input>
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="Short_Term">Short Term Goal</Label>
+                  <Controller
+                    name="Short_Term"
+                    control={control}
+                    render={({ field }) => <Input id="Short_Term" type="textarea" rows="3" disabled={isOrgExecutive} {...field} />}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="Medium_Term">Medium Term Goal</Label>
+                  <Controller
+                    name="Medium_Term"
+                    control={control}
+                    render={({ field }) => <Input id="Medium_Term" type="textarea" rows="3" disabled={isOrgExecutive} {...field} />}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="Long_Term">Long Term Goal</Label>
+                  <Controller
+                    name="Long_Term"
+                    control={control}
+                    render={({ field }) => <Input id="Long_Term" type="textarea" rows="3" disabled={isOrgExecutive} {...field} />}
+                  />
                 </FormGroup>
               </Col>
 

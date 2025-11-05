@@ -15,7 +15,7 @@ const conductAssessmentModel = {
         params.push(centerId);
       }
       
-      query += ` ORDER BY created_on DESC`;
+      query += ` ORDER BY created_at DESC`;
       
       const res = await pool.query(query, params);
       return res.rows;
@@ -57,7 +57,7 @@ const conductAssessmentModel = {
         params.push(centerId);
       }
       
-      const query = `SELECT * FROM ${tableName} WHERE ${where} ORDER BY created_on DESC`;
+      const query = `SELECT * FROM ${tableName} WHERE ${where} ORDER BY created_at DESC`;
       const res = await pool.query(query, params);
       return res.rows;
     } catch (err) {

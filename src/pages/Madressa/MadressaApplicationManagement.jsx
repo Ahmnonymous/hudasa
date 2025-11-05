@@ -31,6 +31,7 @@ const MadressaApplicationManagement = () => {
     terms: [],
     academicSubjects: [],
     islamicSubjects: [],
+    healthConditions: [],
   });
 
   // Create modal state
@@ -67,12 +68,13 @@ const MadressaApplicationManagement = () => {
 
   const fetchLookupData = async () => {
     try {
-      const [relationshipsRes, bloodTypesRes, termsRes, academicSubjectsRes, islamicSubjectsRes] = await Promise.all([
+      const [relationshipsRes, bloodTypesRes, termsRes, academicSubjectsRes, islamicSubjectsRes, healthConditionsRes] = await Promise.all([
         axiosApi.get(`${API_BASE_URL}/relationships`),
         axiosApi.get(`${API_BASE_URL}/lookup/Blood_Type`),
         axiosApi.get(`${API_BASE_URL}/lookup/Terms`),
         axiosApi.get(`${API_BASE_URL}/lookup/Academic_Subjects`),
         axiosApi.get(`${API_BASE_URL}/lookup/Islamic_Subjects`),
+        axiosApi.get(`${API_BASE_URL}/lookup/Health_Conditions`),
       ]);
 
       setLookupData({
@@ -81,6 +83,7 @@ const MadressaApplicationManagement = () => {
         terms: termsRes.data || [],
         academicSubjects: academicSubjectsRes.data || [],
         islamicSubjects: islamicSubjectsRes.data || [],
+        healthConditions: healthConditionsRes.data || [],
       });
     } catch (error) {
       console.error("Error fetching lookup data:", error);

@@ -7,11 +7,13 @@ const employeeModel = {
   // ? Org Admin (allowedUserTypes=[3,4,5]) only sees employees with user_type IN (3, 4, 5)
   getAll: async (centerId = null, allowedUserTypes = null) => {
     try {
+      // Note: Employee table column is Center_ID (unquoted), so PostgreSQL converts to lowercase center_id
+      // SELECT * will return center_id (lowercase)
       let query = `SELECT * FROM ${tableName} WHERE 1=1`;
       const params = [];
       let paramIndex = 1;
       
-      // ? Center filtering: WHERE ($X::int IS NULL OR center_id = $X)
+      // ? Center filtering: use center_id (lowercase) as PostgreSQL converts unquoted identifiers
       // - App Admin: centerId = null ? Shows all records
       // - Other roles: centerId = user.center_id ? Shows only their center
       if (centerId !== null && centerId !== undefined) {

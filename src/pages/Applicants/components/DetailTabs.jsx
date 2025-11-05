@@ -3,13 +3,13 @@ import { Card, CardBody, Nav, NavItem, NavLink, TabContent, TabPane } from "reac
 import classnames from "classnames";
 import { useRole } from "../../../helpers/useRole";
 import CommentsTab from "./tabs/CommentsTab";
-import TasksTab from "./tabs/TasksTab";
+// import TasksTab from "./tabs/TasksTab";
 import RelationshipsTab from "./tabs/RelationshipsTab";
 import HomeVisitsTab from "./tabs/HomeVisitsTab";
 import FinancialAssistanceTab from "./tabs/FinancialAssistanceTab";
 import FoodAssistanceTab from "./tabs/FoodAssistanceTab";
 import AttachmentsTab from "./tabs/AttachmentsTab";
-import ProgramsTab from "./tabs/ProgramsTab";
+// import ProgramsTab from "./tabs/ProgramsTab";
 import FinancialAssessmentTab from "./tabs/FinancialAssessmentTab";
 
 const DetailTabs = ({
@@ -40,7 +40,7 @@ const DetailTabs = ({
   const safeNum = (v) => (v === null || v === undefined || v === "" ? NaN : Number(v));
 
   const commentsForApplicant = (comments || []).filter((x) => safeNum(x.file_id) === currentId);
-  const tasksForApplicant = (tasks || []).filter((x) => safeNum(x.file_id) === currentId);
+  // const tasksForApplicant = (tasks || []).filter((x) => safeNum(x.file_id) === currentId);
   const relationshipsForApplicant = (relationships || []).filter((x) => safeNum(x.file_id) === currentId);
   const homeVisitsForApplicant = (homeVisits || []).filter((x) => safeNum(x.file_id) === currentId);
   const financialAssistanceForApplicant = (financialAssistance || []).filter((x) => safeNum(x.file_id) === currentId);
@@ -54,13 +54,13 @@ const DetailTabs = ({
   const tabs = [
     { id: "all", label: "Show All" },
     { id: "comments", label: "Comments" },
-    { id: "tasks", label: "Tasks" },
+    // { id: "tasks", label: "Tasks" },
     { id: "relationships", label: "Relationships" },
     { id: "homeVisits", label: "Home Visits" },
     { id: "financialAid", label: "Financial Aid" },
     { id: "foodAid", label: "Food Aid" },
     { id: "files", label: "Files" },
-    { id: "programs", label: "Programs" },
+    // { id: "programs", label: "Programs" },
     { id: "finance", label: "Finance" },
   ];
 
@@ -87,16 +87,16 @@ const DetailTabs = ({
               <CommentsTab applicantId={applicantId} comments={commentsForApplicant} onUpdate={onUpdate} showAlert={showAlert} />
             </div>
             
-            <div className="border rounded p-3 mb-3">
+            {/* <div className="border rounded p-3 mb-3">
               <TasksTab applicantId={applicantId} tasks={tasksForApplicant} onUpdate={onUpdate} showAlert={showAlert} />
-            </div>
+            </div> */}
             
             <div className="border rounded p-3 mb-3">
               <RelationshipsTab applicantId={applicantId} relationships={relationshipsForApplicant} lookupData={lookupData} onUpdate={onUpdate} showAlert={showAlert} />
             </div>
             
             <div className="border rounded p-3 mb-3">
-              <HomeVisitsTab applicantId={applicantId} homeVisits={homeVisitsForApplicant} onUpdate={onUpdate} showAlert={showAlert} />
+              <HomeVisitsTab applicantId={applicantId} homeVisits={homeVisitsForApplicant} lookupData={lookupData} onUpdate={onUpdate} showAlert={showAlert} />
             </div>
             
             <div className="border rounded p-3 mb-3">
@@ -112,10 +112,6 @@ const DetailTabs = ({
             </div>
             
             <div className="border rounded p-3 mb-3">
-              <ProgramsTab applicantId={applicantId} programs={programsForApplicant} lookupData={lookupData} onUpdate={onUpdate} showAlert={showAlert} />
-            </div>
-            
-            <div className="border rounded p-3 mb-3">
               <FinancialAssessmentTab applicantId={applicantId} financialAssessment={financialAssessmentForApplicant} lookupData={lookupData} onUpdate={onUpdate} showAlert={showAlert} />
             </div>
           </TabPane>
@@ -128,14 +124,14 @@ const DetailTabs = ({
             />
           </TabPane>
 
-          <TabPane tabId="tasks">
+          {/* <TabPane tabId="tasks">
             <TasksTab
               applicantId={applicantId}
               tasks={tasksForApplicant}
               onUpdate={onUpdate}
               showAlert={showAlert}
             />
-          </TabPane>
+          </TabPane> */}
 
           <TabPane tabId="relationships">
             <RelationshipsTab
@@ -151,6 +147,7 @@ const DetailTabs = ({
             <HomeVisitsTab
               applicantId={applicantId}
               homeVisits={homeVisitsForApplicant}
+              lookupData={lookupData}
               onUpdate={onUpdate}
               showAlert={showAlert}
             />
@@ -185,7 +182,7 @@ const DetailTabs = ({
             />
           </TabPane>
 
-          <TabPane tabId="programs">
+          {/* <TabPane tabId="programs">
             <ProgramsTab
               applicantId={applicantId}
               programs={programsForApplicant}
@@ -193,7 +190,7 @@ const DetailTabs = ({
               onUpdate={onUpdate}
               showAlert={showAlert}
             />
-          </TabPane>
+          </TabPane> */}
 
           <TabPane tabId="finance">
             <FinancialAssessmentTab

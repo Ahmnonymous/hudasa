@@ -436,6 +436,37 @@ const EmployeeDetails = () => {
         cell: (cell) => getLookupName(cell.getValue(), departments),
       },
       {
+        id: "center",
+        header: "Center",
+        accessorFn: (row) => {
+          // Try both lowercase and uppercase field names (PostgreSQL case sensitivity)
+          return row.center_id || row.Center_ID || null;
+        },
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => {
+          // Try both lowercase and uppercase field names (PostgreSQL case sensitivity)
+          const centerId = cell.row.original.center_id || cell.row.original.Center_ID;
+          if (centerId === null || centerId === undefined) return "N/A (App Admin)";
+          
+          // Find center by ID (handle both lowercase and uppercase)
+          const center = centers.find((c) => {
+            const cId = c.id || c.ID;
+            return Number(cId) === Number(centerId);
+          });
+          
+          if (center) {
+            return center.organisation_name || center.Organisation_Name || center.name || center.Name || center.center_name || "-";
+          }
+          
+          // Debug: log if center not found (only in development)
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`[DEBUG] Center not found for center_id: ${centerId}, available centers:`, centers.map(c => ({ id: c.id || c.ID, name: c.organisation_name || c.Organisation_Name || c.name })));
+          }
+          return "-";
+        },
+      },
+      {
         header: "Created By",
         accessorKey: "created_by",
         enableSorting: true,
@@ -470,7 +501,7 @@ const EmployeeDetails = () => {
         },
       },
     ],
-    [employees, userTypes, departments]
+    [employees, userTypes, departments, centers]
   );
 
   return (

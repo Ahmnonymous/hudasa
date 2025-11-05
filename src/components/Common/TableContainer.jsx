@@ -136,24 +136,6 @@ const TableContainer = ({
     <Fragment>
 
       <Row className="mb-2">
-        {isCustomPageSize && (
-          <Col sm={2}>
-            <select
-              className="form-select pageSize mb-2"
-              value={table.getState().pagination.pageSize}
-              onChange={e => {
-                table.setPageSize(Number(e.target.value))
-              }}
-            >
-              {[10, 20, 30, 40, 50].map(pageSize => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
-          </Col>
-        )}
-
         {isGlobalFilter && <DebouncedInput
           value={globalFilter ?? ''}
           onChange={value => setGlobalFilter(String(value))}
@@ -238,25 +220,47 @@ const TableContainer = ({
 
       {
         isPagination && (
-          <Row>
-            <Col sm={12} md={5}>
+          <Row className="align-items-center">
+            <Col sm={12} md={5} className="d-flex align-items-center">
               <div className="dataTables_info">Showing {getState().pagination.pageIndex * getState().pagination.pageSize + 1} to {Math.min((getState().pagination.pageIndex + 1) * getState().pagination.pageSize, data.length)} of {data.length} Results</div>
             </Col>
-            <Col sm={12} md={7}>
-              <div className={paginationWrapper}>
-                <ul className={pagination}>
-                  <li className={`paginate_button page-item previous ${!getCanPreviousPage() ? "disabled" : ""}`}>
-                    <Link to="#" className="page-link" onClick={previousPage}><i className="mdi mdi-chevron-left"></i></Link>
-                  </li>
-                  {getPageOptions().map((item, key) => (
-                    <li key={key} className={`paginate_button page-item ${getState().pagination.pageIndex === item ? "active" : ""}`}>
-                      <Link to="#" className="page-link" onClick={() => setPageIndex(item)}>{item + 1}</Link>
+            <Col sm={12} md={7} className="d-flex align-items-center">
+              <div className="d-flex align-items-center justify-content-end gap-2 ms-auto">
+                {isCustomPageSize && (
+                  <select
+                    className="form-select pageSize align-middle"
+                    style={{ 
+                      width: 'auto', 
+                      minWidth: '100px',
+                      height: '38px'
+                    }}
+                    value={table.getState().pagination.pageSize}
+                    onChange={e => {
+                      table.setPageSize(Number(e.target.value))
+                    }}
+                  >
+                    {[10, 20, 30, 40, 50].map(pageSize => (
+                      <option key={pageSize} value={pageSize}>
+                        Show {pageSize}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                <div className={paginationWrapper} style={{ display: 'flex', alignItems: 'center', height: '38px' }}>
+                  <ul className={pagination} style={{ marginBottom: 0 }}>
+                    <li className={`paginate_button page-item previous ${!getCanPreviousPage() ? "disabled" : ""}`}>
+                      <Link to="#" className="page-link" onClick={previousPage}><i className="mdi mdi-chevron-left"></i></Link>
                     </li>
-                  ))}
-                  <li className={`paginate_button page-item next ${!getCanNextPage() ? "disabled" : ""}`}>
-                    <Link to="#" className="page-link" onClick={nextPage}><i className="mdi mdi-chevron-right"></i></Link>
-                  </li>
-                </ul>
+                    {getPageOptions().map((item, key) => (
+                      <li key={key} className={`paginate_button page-item ${getState().pagination.pageIndex === item ? "active" : ""}`}>
+                        <Link to="#" className="page-link" onClick={() => setPageIndex(item)}>{item + 1}</Link>
+                      </li>
+                    ))}
+                    <li className={`paginate_button page-item next ${!getCanNextPage() ? "disabled" : ""}`}>
+                      <Link to="#" className="page-link" onClick={nextPage}><i className="mdi mdi-chevron-right"></i></Link>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </Col>
           </Row>

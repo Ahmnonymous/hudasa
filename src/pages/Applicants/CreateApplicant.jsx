@@ -948,15 +948,18 @@ const CreateApplicant = () => {
                               control={control}
                               rules={{ required: "You must agree to the POPIA terms to continue" }}
                               render={({ field }) => (
-                                <Label check className="d-flex align-items-center">
+                                <Label check className="d-flex align-items-start">
                                   <Input
                                     type="checkbox"
                                     defaultChecked={false}
                                     onChange={(e) => field.onChange(e.target.checked)}
                                     invalid={!!errors.POPIA_Agreement}
-                                    className="me-2"
+                                    className="me-2 mt-1"
+                                    style={{ flexShrink: 0 }}
                                   />
-                                  I agree to the POPIA terms and conditions
+                                  <span className="text-muted" style={{ fontSize: '0.875rem', lineHeight: '1.5' }}>
+                                    By completing this application form, you acknowledge and consent to the collection, processing, and storage of your personal information in accordance with the Protection of Personal Information Act (POPIA), Act 4 of 2013. Your personal information will be used solely for the purpose of processing your application and facilitating your enrollment in the Madressa
+                                  </span>
                                 </Label>
                               )}
                             />

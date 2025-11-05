@@ -36,7 +36,9 @@ const lookupTables = {
   Departments: true,
   Terms: true,
   Academic_Subjects: true,
-  Islamic_Subjects: true
+  Islamic_Subjects: true,
+  Maintenance_Type: true,
+  Home_Visit_Type: true
 };
 
 const lookupController = {

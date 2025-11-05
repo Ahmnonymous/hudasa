@@ -153,9 +153,11 @@ const MadressaApplicationSummary = ({ application, lookupData, onUpdate, showAle
   };
 
   const getRelationshipName = (relationshipId) => {
-    const relationship = lookupData.relationships?.find((r) => r.id === relationshipId);
+    if (!relationshipId) return "N/A";
+    const relationship = lookupData.relationships?.find((r) => Number(r.id) === Number(relationshipId));
     if (relationship) {
-      return `${relationship.name || ""} ${relationship.surname || ""}`.trim() || "N/A";
+      const name = `${relationship.name || ""} ${relationship.surname || ""}`.trim();
+      return name || "N/A";
     }
     return "N/A";
   };
@@ -237,11 +239,17 @@ const MadressaApplicationSummary = ({ application, lookupData, onUpdate, showAle
                     render={({ field }) => (
                       <Input
                         id="chronic_condition"
-                        type="text"
-                        placeholder="e.g., Diabetes"
+                        type="select"
                         disabled={isOrgExecutive}
                         {...field}
-                      />
+                      >
+                        <option value="">Select Condition</option>
+                        {(lookupData.healthConditions || []).map((condition) => (
+                          <option key={condition.id} value={condition.name}>
+                            {condition.name}
+                          </option>
+                        ))}
+                      </Input>
                     )}
                   />
                 </FormGroup>
@@ -519,11 +527,17 @@ const MadressaApplicationSummary = ({ application, lookupData, onUpdate, showAle
                     render={({ field }) => (
                       <Input
                         id="chronic_condition"
-                        type="text"
-                        placeholder="e.g., Diabetes"
+                        type="select"
                         disabled={isOrgExecutive}
                         {...field}
-                      />
+                      >
+                        <option value="">Select Condition</option>
+                        {(lookupData.healthConditions || []).map((condition) => (
+                          <option key={condition.id} value={condition.name}>
+                            {condition.name}
+                          </option>
+                        ))}
+                      </Input>
                     )}
                   />
                 </FormGroup>

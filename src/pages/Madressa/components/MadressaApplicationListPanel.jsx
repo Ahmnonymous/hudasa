@@ -24,9 +24,11 @@ const MadressaApplicationListPanel = ({
   const navigate = useNavigate();
 
   const getRelationshipName = (relationshipId) => {
-    const relationship = lookupData.relationships?.find((r) => r.id === relationshipId);
+    if (!relationshipId) return "N/A";
+    const relationship = lookupData.relationships?.find((r) => Number(r.id) === Number(relationshipId));
     if (relationship) {
-      return `${relationship.name || ""} ${relationship.surname || ""}`.trim() || "N/A";
+      const name = `${relationship.name || ""} ${relationship.surname || ""}`.trim();
+      return name || "N/A";
     }
     return "N/A";
   };

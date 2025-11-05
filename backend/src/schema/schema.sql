@@ -507,6 +507,15 @@ CREATE TABLE Islamic_Subjects (
     Updated_At TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE TABLE Maintenance_Type (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(255) UNIQUE NOT NULL,
+    Created_By VARCHAR(255),
+    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
+    Updated_By VARCHAR(255),
+    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE Home_Visit_Type (
     ID SERIAL PRIMARY KEY,
     Name VARCHAR(255) UNIQUE NOT NULL,
@@ -1891,7 +1900,9 @@ INSERT INTO Assistance_Types (Name) VALUES
 INSERT INTO Suburb (Name) VALUES
     ('Soweto'),
     ('Sandton'),
-    ('Durban Central');
+    ('Durban Central'),
+    ('Alexandra'),
+    ('Lenasia');
 
 INSERT INTO Health_Conditions (Name) VALUES
     ('None'),
@@ -1938,11 +1949,25 @@ INSERT INTO Islamic_Subjects (Name, Created_By) VALUES
     ('Seerah', 'system'),
     ('Arabic', 'system');
 
+INSERT INTO Maintenance_Type (Name, Created_By) VALUES
+    ('Plumbing', 'system'),
+    ('Electrical', 'system'),
+    ('HVAC', 'system'),
+    ('Carpentry', 'system'),
+    ('Painting', 'system'),
+    ('Roofing', 'system'),
+    ('Flooring', 'system'),
+    ('General Maintenance', 'system');
+
 INSERT INTO Home_Visit_Type (Name, Created_By) VALUES
     ('Initial Assessment', 'system'),
     ('Follow-up', 'system'),
     ('Emergency', 'system'),
-    ('Routine Check', 'system');
+    ('Routine Check', 'system'),
+    ('Dawah Visits', 'system'),
+    ('Madressa Visit', 'system'),
+    ('Schooling Visit', 'system'),
+    ('Welfare Visit', 'system');
 
 INSERT INTO Allergies (Name, Created_By) VALUES
     ('Peanuts', 'system'),
@@ -2005,6 +2030,7 @@ UPDATE Policy_Procedure_Field SET Created_By = 'admin', Updated_By = 'admin', Up
 UPDATE Terms SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Academic_Subjects SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Islamic_Subjects SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
+UPDATE Maintenance_Type SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Home_Visit_Type SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Allergies SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Occupation SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
@@ -2014,15 +2040,27 @@ UPDATE Municipalities SET Created_By = 'admin', Updated_By = 'admin', Updated_At
 -- ✅ Insert seed data: Center and Test Users
 -- Insert into Center_Detail
 INSERT INTO Center_Detail (
-    Organisation_Name, Date_of_Establishment, Contact_Number, Email_Address, Address, Area, NPO_Number, Created_By
+    Organisation_Name, Date_of_Establishment, Contact_Number, Email_Address, Address, Area, NPO_Number, Ameer, Cell1, Created_By
 ) VALUES
-    ('Welfare Center Alpha', '2020-01-01', '+27123456789', 'center.alpha@example.com', '123 Main St, Soweto', 1, 'NPO-2020-001', 'admin');
+    ('Welfare Center Alpha', '2020-01-01', '+27123456789', 'center.alpha@example.com', '123 Main St, Soweto', 1, 'NPO-2020-001', 'Ameer Alpha', '+27123456789', 'admin'),
+    ('Welfare Center Beta', '2020-06-15', '+27123456790', 'center.beta@example.com', '456 Oak Ave, Sandton', 2, 'NPO-2020-002', 'Ameer Beta', '+27123456790', 'admin'),
+    ('Welfare Center Gamma', '2021-03-20', '+27123456791', 'center.gamma@example.com', '789 Pine Rd, Lenasia', 3, 'NPO-2021-001', 'Ameer Gamma', '+27123456791', 'admin'),
+    ('Welfare Center Delta', '2021-09-10', '+27123456792', 'center.delta@example.com', '321 Elm St, Fordsburg', 4, 'NPO-2021-002', 'Ameer Delta', '+27123456792', 'admin'),
+    ('Welfare Center Epsilon', '2022-01-05', '+27123456793', 'center.epsilon@example.com', '654 Maple Dr, Mayfair', 5, 'NPO-2022-001', 'Ameer Epsilon', '+27123456793', 'admin');
+
+-- Update Center_Detail audit fields
+UPDATE Center_Detail SET Updated_By = 'admin', Updated_At = now();
 
 -- Insert into Center_Audits
 INSERT INTO Center_Audits (
     audit_date, audit_type, findings, recommendations, conducted_by, center_id, Created_By
 ) VALUES
-    ('2024-01-15', 'Financial Audit', 'Compliant with regulations', 'Improve record-keeping', 'Auditor Jane', 1, 'admin');
+    ('2024-01-15', 'Financial Audit', 'Compliant with regulations', 'Improve record-keeping', 'Auditor Jane', 1, 'admin'),
+    ('2024-06-20', 'Operational Audit', 'All procedures followed correctly', 'Continue current practices', 'Auditor John', 2, 'admin'),
+    ('2024-03-10', 'Compliance Audit', 'Minor documentation gaps found', 'Update documentation', 'Auditor Sarah', 3, 'admin');
+
+-- Update Center_Audits audit fields
+UPDATE Center_Audits SET Updated_By = 'admin', Updated_At = now();
 
 -- Insert into Policy_and_Procedure
 INSERT INTO Policy_and_Procedure (
@@ -2033,7 +2071,16 @@ INSERT INTO Policy_and_Procedure (
      '2023-06-01',
      (SELECT ID FROM File_Status WHERE Name = 'Active'),
      (SELECT ID FROM Policy_Procedure_Field WHERE Name = 'Compliance'),
+     'admin'),
+    ('Data Protection Policy', 'Guidelines for handling personal data',
+     (SELECT ID FROM Policy_Procedure_Type WHERE Name = 'Compliance'),
+     '2023-08-15',
+     (SELECT ID FROM File_Status WHERE Name = 'Active'),
+     (SELECT ID FROM Policy_Procedure_Field WHERE Name = 'Compliance'),
      'admin');
+
+-- Update Policy_and_Procedure audit fields
+UPDATE Policy_and_Procedure SET Updated_By = 'admin', Updated_At = now();
 
 -- ✅ Seed Test Users with proper role assignments
 -- User 1: App Admin (NO center_id - has access to all centers)
@@ -2143,7 +2190,10 @@ INSERT INTO Relationships (
     File_ID, Relationship_Type, Name, Surname, ID_Number, Date_of_Birth, Employment_Status, Gender,
     Highest_Education, Health_Condition, center_id, Created_By
 ) VALUES
-    (1, 2, 'Aisha', 'raza', '1505051234082', '2015-05-05', 2, 2, 1, 1, 1, 'admin');
+    (1, 2, 'Aisha', 'raza', '1505051234082', '2015-05-05', 2, 2, 1, 1, 1, 'admin'),
+    (1, 1, 'Fatima', 'Ahmed', '2010121545083', '2010-12-15', 1, 2, 1, 1, 1, 'admin'),
+    (1, 1, 'Yusuf', 'Ahmed', '2008082045084', '2008-08-20', 1, 1, 2, 1, 1, 'admin'),
+    (1, 1, 'Zainab', 'Ahmed', '2013061045085', '2013-06-10', 1, 2, 1, 1, 1, 'admin');
 
 -- Insert into Home_Visit
 INSERT INTO Home_Visit (
@@ -2262,3 +2312,82 @@ INSERT INTO Personal_Files (
     Name, Folder_ID, Employee_ID, center_id, Created_By
 ) VALUES
     ('Performance Review Q1', (SELECT ID FROM Folders WHERE Name = 'Case Files 2024'), 1, 1, 'admin');
+
+-- Insert into Islamic_Centers
+INSERT INTO Islamic_Centers (
+    Center_Name, Suburb, Address, Ameer, Contact_Number, Name_Syllabus, center_id, Created_By
+) VALUES
+    ('Al-Noor Islamic Center', 'Soweto', '123 Main Street, Soweto, Johannesburg', 'Sheikh Ahmed Ibrahim', '+27123456701', 'Standard Islamic Curriculum', 1, 'admin'),
+    ('Iqra Islamic Center', 'Sandton', '456 Oak Avenue, Sandton, Johannesburg', 'Sheikh Yusuf Khan', '+27123456702', 'Advanced Islamic Studies', 1, 'admin'),
+    ('An-Nur Madressa', 'Alexandra', '789 Elm Road, Alexandra, Johannesburg', 'Sheikh Hassan Ali', '+27123456703', 'Basic Islamic Education', 1, 'admin'),
+    ('Darul Uloom Center', 'Lenasia', '321 Pine Street, Lenasia, Johannesburg', 'Maulana Abdullah', '+27123456704', 'Traditional Islamic Learning', 1, 'admin');
+
+-- Insert into Maintenance
+INSERT INTO Maintenance (
+    Islamic_Center_ID, Type_Of_Maintenance, Date_Of_Maintenance, Description_Of_Maintenance, Cost, Supplier, center_id, Created_By
+) VALUES
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Al-Noor Islamic Center'), 'Plumbing', '2024-01-15', 'Fixed leaking pipes in main washroom area', 3500.00, 'ABC Plumbing Services', 1, 'admin'),
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Al-Noor Islamic Center'), 'Electrical', '2024-02-10', 'Replaced faulty lighting fixtures in prayer hall', 5200.00, 'XYZ Electrical Works', 1, 'admin'),
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Iqra Islamic Center'), 'HVAC', '2024-01-20', 'Serviced air conditioning units', 6800.00, 'Cool Air Solutions', 1, 'admin'),
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Iqra Islamic Center'), 'Painting', '2024-03-05', 'Repainted classroom walls and hallways', 4200.00, 'Pro Painters', 1, 'admin'),
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'An-Nur Madressa'), 'Roofing', '2024-02-28', 'Repaired damaged roof tiles', 8500.00, 'Roof Masters', 1, 'admin'),
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Darul Uloom Center'), 'General Maintenance', '2024-03-12', 'General maintenance and cleaning of facilities', 1500.00, 'Maintenance Pro', 1, 'admin');
+
+-- Insert into Site_Visits
+INSERT INTO Site_Visits (
+    Islamic_Center_ID, Representative, Date_Of_Visit, Comments, Comments_Of_Staff, center_id, Created_By
+) VALUES
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Al-Noor Islamic Center'), 'Org Admin', '2024-01-25', 'Routine inspection of facilities. All areas clean and well-maintained. Prayer hall is in excellent condition.', 'Staff are cooperative and facilities are well managed. No immediate concerns.', 1, 'admin'),
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Al-Noor Islamic Center'), 'HQ User', '2024-02-15', 'Follow-up visit after maintenance work. Plumbing issues resolved. Building is in good condition.', 'Maintenance work completed to satisfaction. Center is operational.', 1, 'admin'),
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Iqra Islamic Center'), 'Org Admin', '2024-02-20', 'Monthly inspection visit. Educational programs running smoothly. Student attendance is good.', 'Teaching staff are dedicated. Curriculum implementation is effective.', 1, 'admin'),
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'An-Nur Madressa'), 'Org Admin', '2024-03-01', 'Quarterly review visit. New students enrolled. Facilities need minor repairs.', 'Staff meeting scheduled for next week to discuss improvements.', 1, 'admin'),
+    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Darul Uloom Center'), 'HQ User', '2024-03-10', 'Annual audit visit. All documentation in order. Financial records are accurate.', 'Center is compliant with all requirements. Excellent management.', 1, 'admin');
+
+-- Insert into Suburb_Masjids
+INSERT INTO Suburb_Masjids (
+    Suburb_ID, Masjid_Name, Imaam_Name, Imaam_Contact, Facilities_Available, center_id, Created_By
+) VALUES
+    (1, 'Masjid Al-Sunnah', 'Imaam Muhammad Ali', '+27123456711', 'Prayer hall, Wudhu facilities, Library, Parking area', 1, 'admin'),
+    (1, 'Masjid Al-Furqan', 'Imaam Ibrahim Hassan', '+27123456712', 'Prayer hall, Wudhu facilities, Community center, Playground', 1, 'admin'),
+    ((SELECT ID FROM Suburb WHERE Name = 'Sandton' LIMIT 1), 'Masjid Al-Rahman', 'Imaam Ahmed Yusuf', '+27123456713', 'Prayer hall, Wudhu facilities, Office space, Parking', 1, 'admin'),
+    ((SELECT ID FROM Suburb WHERE Name = 'Alexandra' LIMIT 1), 'Masjid Al-Huda', 'Imaam Abdullah Khan', '+27123456714', 'Prayer hall, Wudhu facilities, Small library', 1, 'admin'),
+    ((SELECT ID FROM Suburb WHERE Name = 'Lenasia' LIMIT 1), 'Masjid Al-Noor', 'Imaam Hassan Malik', '+27123456715', 'Prayer hall, Wudhu facilities, Community hall, Kitchen', 1, 'admin');
+
+-- Insert into Suburb_Census
+INSERT INTO Suburb_Census (
+    Suburb_ID, Population_Size, Muslim_Population_Size, Created_By
+) VALUES
+    (1, '45000', '8500', 'admin'),
+    (1, '48000', '9200', 'admin'),
+    ((SELECT ID FROM Suburb WHERE Name = 'Sandton' LIMIT 1), '120000', '15000', 'admin'),
+    ((SELECT ID FROM Suburb WHERE Name = 'Alexandra' LIMIT 1), '75000', '12000', 'admin'),
+    ((SELECT ID FROM Suburb WHERE Name = 'Lenasia' LIMIT 1), '95000', '85000', 'admin');
+
+-- Insert into Suburb_Concerns
+INSERT INTO Suburb_Concerns (
+    Suburb_ID, General_Perception, Safety_Security, Infrastructure_Transport, Public_Services, Environmental_Health_Concerns, Social_Community_Wellbeing, Development_Planning, Assessment_Done_By, Concerns_Discussed_With, center_id, Created_By
+) VALUES
+    (1, 'Community is generally stable with good neighborly relations. Some areas need improvement in public facilities.', 'Safety is a concern in certain areas, especially at night. Need for better street lighting and community watch programs.', 'Public transport is adequate but could be improved. Roads are generally in good condition.', 'Healthcare facilities are available but can be overcrowded. Schools need more resources.', 'Air quality is acceptable. Waste management could be improved in some areas.', 'Community cohesion is strong. More recreational facilities needed for youth.', 'Urban development plans are in place. Housing projects ongoing.', 'Org Admin', 'Community leaders and municipality representatives', 1, 'admin'),
+    ((SELECT ID FROM Suburb WHERE Name = 'Sandton' LIMIT 1), 'Affluent area with well-maintained infrastructure. High standard of living.', 'Generally safe area with good security measures in place. Private security common.', 'Excellent transport links. Well-maintained roads and public transport.', 'High-quality public services. Good healthcare and education facilities.', 'Environmental standards are high. Good waste management.', 'Strong community networks. Active social programs.', 'Well-planned development. Ongoing infrastructure improvements.', 'HQ User', 'Business district representatives and community association', 1, 'admin'),
+    ((SELECT ID FROM Suburb WHERE Name = 'Alexandra' LIMIT 1), 'Densely populated area with mixed housing conditions. Community spirit is strong despite challenges.', 'Safety concerns in certain areas. Need for increased police presence and community initiatives.', 'Transport infrastructure is basic. Need for better road maintenance and public transport.', 'Public services are limited. Healthcare and education need more resources.', 'Air quality and waste management need improvement. Informal settlements pose challenges.', 'Community support networks are active. Youth programs needed.', 'Development plans exist but implementation is slow. Housing upgrades ongoing.', 'Org Admin', 'Local community organizations and government officials', 1, 'admin');
+
+-- Insert into Madressah_Application
+INSERT INTO Madressah_Application (
+    Applicant_Relationship_ID, Chronic_Condition, Blood_Type, Family_Doctor, Contact_Details, 
+    Allegies, Chronic_Medication_Required, Allergy_Medication_Required, center_id, Created_By
+) VALUES
+    ((SELECT ID FROM Relationships WHERE Name = 'Aisha' AND Surname = 'raza' LIMIT 1), 
+     'None', 'A Positive', 'Dr. Sarah Khan', '+27123456789', 
+     'Peanuts, Shellfish', 'None', 'Antihistamine tablets (when needed)', 1, 'admin'),
+    ((SELECT ID FROM Relationships WHERE Name = 'Fatima' AND Surname = 'Ahmed' LIMIT 1), 
+     'Asthma', 'O Positive', 'Dr. Ahmed Hassan', '+27123456790', 
+     'Dust, Pollen', 'Inhaler (Salbutamol)', 'EpiPen (for severe allergic reactions)', 1, 'admin'),
+    ((SELECT ID FROM Relationships WHERE Name = 'Yusuf' AND Surname = 'Ahmed' LIMIT 1), 
+     'None', 'B Positive', 'Dr. Fatima Ali', '+27123456791', 
+     'None', 'None', 'None', 1, 'admin'),
+    ((SELECT ID FROM Relationships WHERE Name = 'Zainab' AND Surname = 'Ahmed' LIMIT 1), 
+     'Diabetes Type 1', 'AB Positive', 'Dr. Muhammad Yusuf', '+27123456792', 
+     'Bee stings', 'Insulin injections', 'Antihistamine cream', 1, 'admin'),
+    ((SELECT ID FROM Relationships WHERE Name = 'Aisha' AND Surname = 'raza' LIMIT 1), 
+     'Epilepsy', 'A Positive', 'Dr. Sarah Khan', '+27123456789', 
+     'Dairy products', 'Epilepsy medication (Daily)', 'Antihistamine tablets', 1, 'admin');
