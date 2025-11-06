@@ -18,11 +18,13 @@ const upload = multer({ storage });
 router.get('/:id/view-logo', optionalAuthMiddleware, centerDetailController.viewLogo);
 router.get('/:id/view-qrcode', optionalAuthMiddleware, centerDetailController.viewQRCode);
 
-// ? GET endpoints - require authentication (all users can read centers for lookups)
+// ? GET endpoints - require authentication and RBAC
+// Center management (GET/POST/PUT/DELETE) is restricted to App Admin only
 router.use(authMiddleware);
+router.use(roleMiddleware([1])); // Only App Admin can access center management
 router.use(filterMiddleware);
 
-// Read endpoints - accessible to all authenticated users
+// Read endpoints - App Admin only (center management is restricted)
 router.get('/', centerDetailController.getAll);
 router.get('/:id/download-logo', centerDetailController.downloadLogo);
 router.get('/:id/download-qrcode', centerDetailController.downloadQRCode);

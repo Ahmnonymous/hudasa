@@ -48,10 +48,12 @@ const CenterManagement = () => {
 
   // Detail data states
   const [audits, setAudits] = useState([]);
+  const [maintenance, setMaintenance] = useState([]);
 
   // Lookup data states
   const [lookupData, setLookupData] = useState({
     suburbs: [],
+    maintenanceTypes: [],
   });
 
   // Create form
@@ -95,12 +97,14 @@ const CenterManagement = () => {
 
   const fetchLookupData = async () => {
     try {
-      const [suburbsRes] = await Promise.all([
+      const [suburbsRes, maintenanceTypesRes] = await Promise.all([
         axiosApi.get(`${API_BASE_URL}/lookup/Suburb`),
+        axiosApi.get(`${API_BASE_URL}/lookup/Maintenance_Type`),
       ]);
 
       setLookupData({
         suburbs: suburbsRes.data || [],
+        maintenanceTypes: maintenanceTypesRes.data || [],
       });
     } catch (error) {
       console.error("Error fetching lookup data:", error);
@@ -110,11 +114,13 @@ const CenterManagement = () => {
 
   const fetchCenterDetails = async (centerId) => {
     try {
-      const [auditsRes] = await Promise.all([
+      const [auditsRes, maintenanceRes] = await Promise.all([
         axiosApi.get(`${API_BASE_URL}/centerAudits?center_id=${centerId}`),
+        axiosApi.get(`${API_BASE_URL}/maintenance/center-detail/${centerId}`),
       ]);
 
       setAudits(auditsRes.data || []);
+      setMaintenance(maintenanceRes.data || []);
     } catch (error) {
       console.error("Error fetching center details:", error);
       showAlert("Failed to fetch center details", "warning");
@@ -390,6 +396,7 @@ const CenterManagement = () => {
                   key={selectedCenter.id}
                   centerId={selectedCenter.id}
                   audits={audits}
+                  maintenance={maintenance}
                   lookupData={lookupData}
                   onUpdate={handleDetailUpdate}
                   showAlert={showAlert}

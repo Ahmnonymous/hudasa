@@ -61,8 +61,7 @@ import SupplierManagement from "../pages/Suppliers/SupplierManagement";
 // Madressa
 import MadressaApplicationManagement from "../pages/Madressa/MadressaApplicationManagement";
 
-// Islamic Centers & Community
-import IslamicCentersManagement from "../pages/IslamicCenters/IslamicCentersManagement";
+// Community
 import SuburbMasjidsManagement from "../pages/SuburbMasjids/SuburbMasjidsManagement";
 
 // Inventory
@@ -413,8 +412,6 @@ const authProtectedRoutes = [
   // ✅ Madressa Applications - All staff roles (1,2,3,4,5)
   { path: "/madressa/applications", component: <ProtectedRoute allowedRoles={[1, 2, 3, 4, 5]}><MadressaApplicationManagement /></ProtectedRoute> },
 
-  // ✅ Islamic Centers & Community - All except Caseworkers (roles 1,2,3,4)
-  { path: "/islamic-centers", component: <ProtectedRoute allowedRoles={[1, 2, 3, 4]}><IslamicCentersManagement /></ProtectedRoute> },
   { path: "/suburb-masjids", component: <ProtectedRoute allowedRoles={[1, 2, 3, 4]}><SuburbMasjidsManagement /></ProtectedRoute> },
 
   // ✅ Reports - App Admin, HQ, Org Admin (Org Executive and Caseworkers excluded)

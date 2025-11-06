@@ -94,13 +94,15 @@ class MadressaQATest {
         url: `${this.baseURL}${path}`,
         headers: {
           'Authorization': `Bearer ${token}`
-        }
+        },
+        validateStatus: () => true // Don't throw on non-2xx status
       };
 
-      if (isFormData) {
+      if (isFormData && data instanceof FormData) {
+        // For FormData, let axios handle the headers (including boundary)
         config.headers = {
           ...config.headers,
-          ...data.getHeaders()
+          ...data.getHeaders() // This sets Content-Type with boundary
         };
         config.data = data;
       } else {
@@ -112,15 +114,17 @@ class MadressaQATest {
 
       const response = await axios(config);
       return {
-        success: true,
+        success: response.status >= 200 && response.status < 300,
         status: response.status,
-        data: response.data
+        data: response.data,
+        error: response.status >= 300 ? response.data : null
       };
     } catch (error) {
       return {
         success: false,
-        status: error.response?.status,
-        error: error.response?.data || error.message
+        status: error.response?.status || 500,
+        error: error.response?.data || error.message,
+        data: null
       };
     }
   }
@@ -293,7 +297,16 @@ class MadressaQATest {
       if (appResponse.success && appResponse.data && appResponse.data.length > 0) {
         madressahAppId = appResponse.data[0].id;
       } else {
-        console.warn(`⚠️  No MadressaApplication found, skipping AcademicResults tests`);
+        console.warn(`⚠️  No MadressaApplication found, skipping AcademicResults CREATE/UPDATE/DELETE tests`);
+        // Still test GET endpoints
+        const getAllResult = await this.makeRequest('GET', '/academicResults', token);
+        this.recordTest({
+          test: `AcademicResults - GET all (${user.roleName})`,
+          user: user.username,
+          passed: getAllResult.success && getAllResult.status === 200,
+          status: getAllResult.status,
+          error: getAllResult.error
+        });
         return;
       }
     }
@@ -318,10 +331,16 @@ class MadressaQATest {
       error: getByAppResult.error
     });
 
-    if (!isReadOnly) {
+    if (!isReadOnly && madressahAppId) {
       // Test CREATE with FormData (file upload)
       const formData = new FormData();
-      formData.append('madressah_app_id', madressahAppId);
+      // Ensure madressah_app_id is properly set as a string
+      if (madressahAppId) {
+        formData.append('madressah_app_id', String(madressahAppId));
+      } else {
+        console.warn(`⚠️  Cannot create AcademicResults - madressahAppId is null`);
+        return;
+      }
       formData.append('school', 'Test School');
       formData.append('grade', 'Grade 7');
       formData.append('term', 'Term 1');
@@ -401,7 +420,16 @@ class MadressaQATest {
       if (appResponse.success && appResponse.data && appResponse.data.length > 0) {
         madressahAppId = appResponse.data[0].id;
       } else {
-        console.warn(`⚠️  No MadressaApplication found, skipping IslamicResults tests`);
+        console.warn(`⚠️  No MadressaApplication found, skipping IslamicResults CREATE/UPDATE/DELETE tests`);
+        // Still test GET endpoints
+        const getAllResult = await this.makeRequest('GET', '/islamicResults', token);
+        this.recordTest({
+          test: `IslamicResults - GET all (${user.roleName})`,
+          user: user.username,
+          passed: getAllResult.success && getAllResult.status === 200,
+          status: getAllResult.status,
+          error: getAllResult.error
+        });
         return;
       }
     }
@@ -426,10 +454,16 @@ class MadressaQATest {
       error: getByAppResult.error
     });
 
-    if (!isReadOnly) {
+    if (!isReadOnly && madressahAppId) {
       // Test CREATE with FormData
       const formData = new FormData();
-      formData.append('madressah_app_id', madressahAppId);
+      // Ensure madressah_app_id is properly set as a string
+      if (madressahAppId) {
+        formData.append('madressah_app_id', String(madressahAppId));
+      } else {
+        console.warn(`⚠️  Cannot create IslamicResults - madressahAppId is null`);
+        return;
+      }
       formData.append('grade', 'Grade 7');
       formData.append('term', 'Term 1');
       formData.append('subject1', 'A+');
@@ -531,10 +565,29 @@ class MadressaQATest {
       error: getByAppResult.error
     });
 
-    if (!isReadOnly) {
+    if (!isReadOnly && madressahAppId) {
+      // Get center_id from the madressa application if available
+      let centerId = user.center_id;
+      if (!centerId || user.role === 1) {
+        // For App Admin or if center_id is not set, try to get it from the application
+        const appResponse = await this.makeRequest('GET', `/madressaApplication/${madressahAppId}`, token);
+        if (appResponse.success && appResponse.data && appResponse.data.center_id) {
+          centerId = appResponse.data.center_id;
+        } else {
+          // Fallback: try to get from relationships
+          const relResponse = await this.makeRequest('GET', '/relationships', token);
+          if (relResponse.success && relResponse.data && relResponse.data.length > 0) {
+            centerId = relResponse.data[0].center_id || 1;
+          } else {
+            centerId = 1; // Final fallback
+          }
+        }
+      }
+      
       // Test CREATE
       const createData = {
         madressah_app_id: madressahAppId,
+        center_id: centerId, // Ensure center_id is set
         question1: 'How is the student\'s behavior?',
         question2: 'Is the student respectful?',
         question3: 'Does the student attend regularly?',
@@ -640,10 +693,29 @@ class MadressaQATest {
       error: getByAppResult.error
     });
 
-    if (!isReadOnly) {
+    if (!isReadOnly && madressahAppId) {
+      // Get center_id from the madressa application if available
+      let centerId = user.center_id;
+      if (!centerId || user.role === 1) {
+        // For App Admin or if center_id is not set, try to get it from the application
+        const appResponse = await this.makeRequest('GET', `/madressaApplication/${madressahAppId}`, token);
+        if (appResponse.success && appResponse.data && appResponse.data.center_id) {
+          centerId = appResponse.data.center_id;
+        } else {
+          // Fallback: try to get from relationships
+          const relResponse = await this.makeRequest('GET', '/relationships', token);
+          if (relResponse.success && relResponse.data && relResponse.data.length > 0) {
+            centerId = relResponse.data[0].center_id || 1;
+          } else {
+            centerId = 1; // Final fallback
+          }
+        }
+      }
+      
       // Test CREATE (with all 19 questions)
       const createData = {
         madressah_app_id: madressahAppId,
+        center_id: centerId, // Ensure center_id is set
         question1: 'Answer 1',
         question2: 'Answer 2',
         question3: 'Answer 3',
@@ -974,11 +1046,42 @@ class MadressaQATest {
       // Test all endpoints
       await this.testMadressaApplication(user);
       
-      // Get a valid app ID for related tests
+      // Get a valid app ID for related tests - try to use an existing one or create one
       const appResponse = await this.makeRequest('GET', '/madressaApplication', this.tokens[user.username]);
       let appId = null;
       if (appResponse.success && appResponse.data && appResponse.data.length > 0) {
         appId = appResponse.data[0].id;
+        console.log(`✅ Found existing MadressaApplication ID: ${appId}`);
+      } else if (!user.readOnly && user.role !== 5) {
+        // Try to create an application for testing if none exists
+        console.log(`⚠️  No existing MadressaApplication found, attempting to create one...`);
+        const relResponse = await this.makeRequest('GET', '/relationships', this.tokens[user.username]);
+        if (relResponse.success && relResponse.data && relResponse.data.length > 0) {
+          const relationshipId = relResponse.data[0].id;
+          const createAppData = {
+            applicant_relationship_id: relationshipId,
+            chronic_condition: 'None',
+            blood_type: 'O+'
+          };
+          if (user.role === 1 && relResponse.data[0].center_id) {
+            createAppData.center_id = relResponse.data[0].center_id;
+          }
+          const createAppResult = await this.makeRequest('POST', '/madressaApplication', this.tokens[user.username], createAppData);
+          if (createAppResult.success && createAppResult.data) {
+            appId = createAppResult.data.id;
+            this.testData.madressaApplications.push(appId);
+            console.log(`✅ Created new MadressaApplication ID: ${appId}`);
+          } else {
+            console.error(`❌ Failed to create MadressaApplication: ${createAppResult.error}`);
+          }
+        } else {
+          console.warn(`⚠️  No relationships found, cannot create MadressaApplication`);
+        }
+      }
+      
+      // Validate appId before proceeding
+      if (!appId) {
+        console.warn(`⚠️  No valid madressahAppId available for ${user.roleName}, skipping related entity tests`);
       }
 
       await this.testAcademicResults(user, appId);
@@ -1007,6 +1110,9 @@ class MadressaQATest {
     
     // Save results
     await this.saveResults();
+    
+    // Return results for comprehensive test runner
+    return this.results;
   }
 
   /**

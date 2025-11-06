@@ -4,9 +4,10 @@
   "description": "Comprehensive test suite for Hudasa application",
   "main": "test-runner.js",
   "scripts": {
-    "test": "node test-runner.js staging",
-    "test:staging": "node test-runner.js staging",
-    "test:prod": "node test-runner.js production",
+    "test": "node comprehensive-test-runner.js staging",
+    "test:staging": "node comprehensive-test-runner.js staging",
+    "test:prod": "node comprehensive-test-runner.js production",
+    "test:comprehensive": "node comprehensive-test-runner.js staging",
     "test:api": "node api-test-runner.js staging",
     "test:app-admin": "node app-admin-qa-test.js",
     "test:hq": "node hq-qa-test.js",
@@ -15,7 +16,8 @@
     "test:org-caseworker": "node org-caseworker-qa-test.js",
     "test:madressa": "node madressa-qa-test.js staging",
     "test:madressa:staging": "node madressa-qa-test.js staging",
-    "test:madressa:prod": "node madressa-qa-test.js production"
+    "test:madressa:prod": "node madressa-qa-test.js production",
+    "test:attachments": "node attachment-qa-test.js 1 staging"
   },
   "keywords": [
     "testing",

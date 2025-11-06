@@ -73,10 +73,8 @@ const academicResultsRoutes = require("./routes/academicResultsRoutes");
 const islamicResultsRoutes = require("./routes/islamicResultsRoutes");
 const surveyRoutes = require("./routes/surveyRoutes");
 
-// ?? Islamic Centers & Community Module
-const islamicCentersRoutes = require("./routes/islamicCentersRoutes");
+// ?? Community Module
 const maintenanceRoutes = require("./routes/maintenanceRoutes");
-const siteVisitsRoutes = require("./routes/siteVisitsRoutes");
 const suburbMasjidsRoutes = require("./routes/suburbMasjidsRoutes");
 const suburbCensusRoutes = require("./routes/suburbCensusRoutes");
 const suburbConcernsRoutes = require("./routes/suburbConcernsRoutes");
@@ -151,9 +149,7 @@ app.use("/api/islamicResults", islamicResultsRoutes);
 app.use("/api/survey", surveyRoutes);
 
 // ?? Islamic Centers & Community Module
-app.use("/api/islamicCenters", islamicCentersRoutes);
 app.use("/api/maintenance", maintenanceRoutes);
-app.use("/api/siteVisits", siteVisitsRoutes);
 app.use("/api/suburbMasjids", suburbMasjidsRoutes);
 app.use("/api/suburbCensus", suburbCensusRoutes);
 app.use("/api/suburbConcerns", suburbConcernsRoutes);

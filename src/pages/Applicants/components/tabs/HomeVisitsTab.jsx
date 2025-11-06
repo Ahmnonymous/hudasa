@@ -239,6 +239,16 @@ const HomeVisitsTab = ({ applicantId, homeVisits, lookupData, onUpdate, showAler
         cell: (cell) => getLookupName(lookupData?.homeVisitTypes, cell.getValue()),
       },
       {
+        header: "Comments",
+        accessorKey: "comments",
+        enableSorting: false,
+        enableColumnFilter: false,
+        cell: (cell) => {
+          const comment = cell.getValue() || "";
+          return comment.length > 50 ? `${comment.substring(0, 50)}...` : comment || "-";
+        },
+      },
+      {
         header: "Short Term Goal",
         accessorKey: "short_term",
         enableSorting: false,
@@ -266,16 +276,6 @@ const HomeVisitsTab = ({ applicantId, homeVisits, lookupData, onUpdate, showAler
         cell: (cell) => {
           const goal = cell.getValue() || "";
           return goal.length > 50 ? `${goal.substring(0, 50)}...` : goal || "-";
-        },
-      },
-      {
-        header: "Comments",
-        accessorKey: "comments",
-        enableSorting: false,
-        enableColumnFilter: false,
-        cell: (cell) => {
-          const comment = cell.getValue() || "";
-          return comment.length > 50 ? `${comment.substring(0, 50)}...` : comment || "-";
         },
       },
       {
@@ -484,6 +484,17 @@ const HomeVisitsTab = ({ applicantId, homeVisits, lookupData, onUpdate, showAler
 
               <Col md={12}>
                 <FormGroup>
+                  <Label for="Comments">Comments</Label>
+                  <Controller
+                    name="Comments"
+                    control={control}
+                    render={({ field }) => <Input id="Comments" type="textarea" rows="5" disabled={isOrgExecutive} {...field} />}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
                   <Label for="Short_Term">Short Term Goal</Label>
                   <Controller
                     name="Short_Term"
@@ -511,17 +522,6 @@ const HomeVisitsTab = ({ applicantId, homeVisits, lookupData, onUpdate, showAler
                     name="Long_Term"
                     control={control}
                     render={({ field }) => <Input id="Long_Term" type="textarea" rows="3" disabled={isOrgExecutive} {...field} />}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col md={12}>
-                <FormGroup>
-                  <Label for="Comments">Comments</Label>
-                  <Controller
-                    name="Comments"
-                    control={control}
-                    render={({ field }) => <Input id="Comments" type="textarea" rows="5" disabled={isOrgExecutive} {...field} />}
                   />
                 </FormGroup>
               </Col>

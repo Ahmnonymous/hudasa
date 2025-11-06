@@ -228,43 +228,21 @@ const SidebarContent = (props) => {
               </Link>
             </li>
 
-            {/* ✅ Madressa - All roles (1,2,3,4,5) */}
+            {/* ✅ Madressa Applications - All roles (1,2,3,4,5) */}
             <li>
-              <Link to="/#" className="has-arrow ">
+              <Link to="/madressa/applications">
                 <i className="bx bx-book"></i>
-                <span>{props.t("Madressa")}</span>
+                <span>{props.t("Madressa Applications")}</span>
               </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/madressa/applications">
-                    <i className="bx bx-book-open me-2"></i>
-                    {props.t("Applications")}
-                  </Link>
-                </li>
-              </ul>
             </li>
 
-            {/* ✅ Islamic Centers & Community - All except Caseworkers (roles 1,2,3,4) */}
+            {/* ✅ Community - All except Caseworkers (roles 1,2,3,4) */}
             {hasRole([1, 2, 3, 4]) && (
               <li>
-                <Link to="/#" className="has-arrow ">
-                  <i className="bx bx-group"></i>
-                  <span>{props.t("Community")}</span>
+                <Link to="/suburb-masjids">
+                  <i className="bx bx-map"></i>
+                  <span>{props.t("Suburb Masjids")}</span>
                 </Link>
-                <ul className="sub-menu" aria-expanded="false">
-                  <li>
-                    <Link to="/islamic-centers">
-                      <i className="bx bxs-building-house me-2"></i>
-                      {props.t("Islamic Centers")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/suburb-masjids">
-                      <i className="bx bx-map me-2"></i>
-                      {props.t("Suburb Masjids")}
-                    </Link>
-                  </li>
-                </ul>
               </li>
             )}
 

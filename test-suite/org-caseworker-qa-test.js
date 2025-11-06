@@ -688,111 +688,28 @@ class OrgCaseworkerQATest {
    */
   async generateReport() {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const reportPath = path.join(__dirname, 'test-results', `org-caseworker-qa-report-${timestamp}.md`);
+    const reportPath = path.join(__dirname, 'test-results', `org-caseworker-qa-report-${timestamp}.json`);
     
     const total = this.results.summary.totalTests;
     const passed = this.results.summary.passed;
     const failed = this.results.summary.failed;
     const successRate = total > 0 ? ((passed / total) * 100).toFixed(2) : 0;
 
-    let report = `# Org Caseworker Role QA Test Report\n\n`;
-    report += `**Generated:** ${this.results.timestamp}\n`;
-    report += `**Environment:** ${this.results.environment}\n`;
-    report += `**User:** ${this.results.user.username} (${this.results.user.roleName})\n`;
-    report += `**Role ID:** ${this.results.user.role}\n`;
-    report += `**Center ID:** ${this.results.user.center_id}\n\n`;
-    report += `## Executive Summary\n\n`;
-    report += `- **Total Tests:** ${total}\n`;
-    report += `- **Passed:** ${passed} ✅\n`;
-    report += `- **Failed:** ${failed} ❌\n`;
-    report += `- **Success Rate:** ${successRate}%\n\n`;
-
-    // Restricted Access Tests
-    if (this.results.restrictedAccessTests.length > 0) {
-      report += `## Restricted Access Tests (Should Be Blocked)\n\n`;
-      report += `| Operation | Endpoint | Status | Expected | Result |\n`;
-      report += `|-----------|----------|--------|----------|--------|\n`;
-      this.results.restrictedAccessTests.forEach(test => {
-        const statusMark = test.status === 'PASS' ? '✅' : '❌';
-        report += `| ${test.name} | ${test.endpoint} | ${test.httpStatus || 'N/A'} | Blocked | ${statusMark} |\n`;
-      });
-      report += `\n`;
-    }
-
-      // Frontend Tests
-    if (this.results.frontendTests.length > 0) {
-      report += `## Frontend Page Access Tests\n\n`;
-      report += `| Page | Route | Should Access | HTTP Status | Result |\n`;
-      report += `|------|-------|---------------|-------------|--------|\n`;
-      this.results.frontendTests.forEach(test => {
-        const statusMark = test.status === 'PASS' ? '✅' : '❌';
-        const httpStatus = test.httpStatus || 'N/A';
-        report += `| ${test.name} | ${test.route} | ${test.shouldAccess ? 'Yes' : 'No'} | ${httpStatus} | ${statusMark} |\n`;
-      });
-      report += `\n`;
-    }
-
-    // CRUD Tests
-    if (this.results.crudTests.length > 0) {
-      report += `## CRUD Operation Tests\n\n`;
-      report += `**Note:** Tests marked with ✅ PASS indicate correct behavior:\n`;
-      report += `- Blocked operations (403) are expected and marked as ✅\n`;
-      report += `- Allowed operations (200/201) are expected and marked as ✅\n\n`;
-      report += `| Operation | Endpoint | Method | HTTP Status | Expected | Result |\n`;
-      report += `|-----------|----------|--------|-------------|----------|--------|\n`;
-      this.results.crudTests.forEach(test => {
-        const statusMark = test.status === 'PASS' ? '✅' : '❌';
-        const expected = test.endpoint.includes('folders') || test.endpoint.includes('conversations') || test.endpoint.includes('messages') || test.endpoint.includes('lookup') || test.endpoint.includes('applicantDetails')
-          ? 'Allowed (200/201)' 
-          : 'Blocked (403)';
-        const httpStatus = test.httpStatus || 'N/A';
-        report += `| ${test.name} | ${test.endpoint} | ${test.method} | ${httpStatus} | ${expected} | ${statusMark} |\n`;
-      });
-      report += `\n`;
-    }
-
-    // Data Correctness
-    if (this.results.dataCorrectnessTests.length > 0) {
-      report += `## Data Correctness Tests (Center Filtering)\n\n`;
-      report += `**Verification:** Caseworker should see data ONLY from their own center (center_id=${this.results.user.center_id})\n\n`;
-      report += `| Module | Total Records | Expected Center | Wrong Center | Null Center | Status |\n`;
-      report += `|--------|---------------|-----------------|--------------|-------------|--------|\n`;
-      this.results.dataCorrectnessTests.forEach(test => {
-        const statusMark = test.status === 'PASS' ? '✅' : '❌';
-        report += `| ${test.name} | ${test.totalRecords || 0} | ${test.expectedCenter || 'N/A'} | ${test.wrongCenterRecords || 0} | ${test.nullCenterRecords || 0} | ${statusMark} |\n`;
-      });
-      report += `\n`;
-    }
-
-    // Backend Tests
-    if (this.results.backendTests.length > 0) {
-      report += `## Backend API Endpoint Tests\n\n`;
-      report += `| Endpoint | Method | HTTP Status | Record Count | Result |\n`;
-      report += `|----------|--------|-------------|--------------|--------|\n`;
-      this.results.backendTests.forEach(test => {
-        const statusMark = test.status === 'PASS' ? '✅' : '❌';
-        const httpStatus = test.httpStatus || 'N/A';
-        const recordCount = test.recordCount !== undefined ? test.recordCount : 'N/A';
-        report += `| ${test.name} | ${test.method || 'GET'} | ${httpStatus} | ${recordCount} | ${statusMark} |\n`;
-      });
-      report += `\n`;
-      
-      const backendPassed = this.results.backendTests.filter(t => t.status === 'PASS').length;
-      const backendFailed = this.results.backendTests.filter(t => t.status === 'FAIL').length;
-      report += `**Summary:** Total: ${this.results.backendTests.length} | Passed: ${backendPassed} ✅ | Failed: ${backendFailed} ❌\n\n`;
-    }
-
+    // Save JSON only
     await fs.mkdir(path.dirname(reportPath), { recursive: true });
-    await fs.writeFile(reportPath, report);
-
+    await fs.writeFile(reportPath, JSON.stringify(this.results, null, 2));
+    
+    console.log(`📄 Report saved to: ${reportPath}`);
+    
     console.log(`\n${'='.repeat(60)}`);
     console.log(`📊 Test Summary:`);
     console.log(`   Total: ${total}`);
     console.log(`   Passed: ${passed} ✅`);
     console.log(`   Failed: ${failed} ❌`);
     console.log(`   Success Rate: ${successRate}%\n`);
-    console.log(`📄 Report saved to: ${reportPath}`);
     console.log(`${'='.repeat(60)}`);
+    
+    return reportPath;
   }
 }
 

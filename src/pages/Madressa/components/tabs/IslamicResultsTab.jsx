@@ -218,11 +218,11 @@ const IslamicResultsTab = ({ application, islamicResults, onUpdate, showAlert, l
       try {
         await axiosApi.delete(`${API_BASE_URL}/islamicResults/${editItem.id}`);
         showAlert("Islamic result has been deleted successfully", "success");
-        onUpdate();
+      onUpdate();
         if (modalOpen) {
           setModalOpen(false);
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error deleting Islamic result:", error);
         showAlert(error?.response?.data?.message || "Failed to delete Islamic result", "danger");
         throw error; // Re-throw so the hook knows there was an error
@@ -352,7 +352,7 @@ const IslamicResultsTab = ({ application, islamicResults, onUpdate, showAlert, l
         )}
       </div>
 
-             {islamicResults && islamicResults.length > 0 ? (
+      {islamicResults && islamicResults.length > 0 ? (
          <TableContainer
            columns={columns}
            data={islamicResults || []}

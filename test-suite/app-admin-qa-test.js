@@ -575,20 +575,14 @@ class AppAdminQATest {
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const jsonReportFile = path.join(reportDir, `app-admin-qa-report-${timestamp}.json`);
-    const markdownReportFile = path.join(reportDir, `app-admin-qa-report-${timestamp}.md`);
 
-    // Save JSON report
+    // Save JSON report only
     await fs.writeFile(jsonReportFile, JSON.stringify(this.results, null, 2));
 
-    // Generate Markdown report
-    const markdownReport = this.generateMarkdownReport();
-    await fs.writeFile(markdownReportFile, markdownReport);
-
     console.log(`\n${'='.repeat(80)}`);
-    console.log('📄 REPORTS GENERATED');
+    console.log('📄 REPORT SAVED');
     console.log('='.repeat(80));
     console.log(`JSON Report: ${jsonReportFile}`);
-    console.log(`Markdown Report: ${markdownReportFile}`);
 
     // Print summary
     console.log(`\n${'='.repeat(80)}`);

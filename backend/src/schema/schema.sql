@@ -1489,25 +1489,9 @@ CREATE TABLE Islamic_Results (
     CONSTRAINT fk_center_id_islamic FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
 );
 
-CREATE TABLE Islamic_Centers (
-    ID SERIAL PRIMARY KEY,
-    Center_Name VARCHAR(255) NOT NULL,
-    Suburb VARCHAR(255),
-    Address VARCHAR(500),
-    Ameer VARCHAR(255),
-    Contact_Number VARCHAR(50),
-    Name_Syllabus VARCHAR(255),
-    center_id BIGINT,
-    Created_By VARCHAR(255),
-    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
-    Updated_By VARCHAR(255),
-    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
-    CONSTRAINT fk_center_id_islamic_centers FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
-);
-
 CREATE TABLE Maintenance (
     ID SERIAL PRIMARY KEY,
-    Islamic_Center_ID BIGINT NOT NULL,
+    Center_Detail_ID BIGINT NOT NULL,
     Type_Of_Maintenance VARCHAR(255),
     Date_Of_Maintenance DATE,
     Description_Of_Maintenance TEXT,
@@ -1522,28 +1506,8 @@ CREATE TABLE Maintenance (
     Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
     Updated_By VARCHAR(255),
     Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
-    CONSTRAINT fk_islamic_center_maintenance FOREIGN KEY (Islamic_Center_ID) REFERENCES Islamic_Centers(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_center_detail_maintenance FOREIGN KEY (Center_Detail_ID) REFERENCES Center_Detail(ID) ON DELETE CASCADE,
     CONSTRAINT fk_center_id_maintenance FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
-);
-
-CREATE TABLE Site_Visits (
-    ID SERIAL PRIMARY KEY,
-    Islamic_Center_ID BIGINT NOT NULL,
-    Representative VARCHAR(500),
-    Date_Of_Visit DATE,
-    Comments TEXT,
-    Comments_Of_Staff TEXT,
-    Uploads BYTEA,
-    Uploads_Filename VARCHAR(255),
-    Uploads_Mime VARCHAR(255),
-    Uploads_Size INT,
-    center_id BIGINT NOT NULL,
-    Created_By VARCHAR(255),
-    Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
-    Updated_By VARCHAR(255),
-    Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
-    CONSTRAINT fk_islamic_center_site_visit FOREIGN KEY (Islamic_Center_ID) REFERENCES Islamic_Centers(ID) ON DELETE CASCADE,
-    CONSTRAINT fk_center_id_site_visit FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
 );
 
 CREATE TABLE Suburb_Masjids (
@@ -1683,12 +1647,8 @@ CREATE INDEX idx_academic_results_term ON Academic_Results (Term, Grade);
 CREATE INDEX idx_islamic_results_madressah ON Islamic_Results (Madressah_App_ID);
 CREATE INDEX idx_islamic_results_center ON Islamic_Results (center_id);
 CREATE INDEX idx_islamic_results_term ON Islamic_Results (Term, Grade);
-CREATE INDEX idx_islamic_centers_center ON Islamic_Centers (center_id);
-CREATE INDEX idx_maintenance_islamic_center ON Maintenance (Islamic_Center_ID);
+CREATE INDEX idx_maintenance_center_detail ON Maintenance (Center_Detail_ID);
 CREATE INDEX idx_maintenance_center ON Maintenance (center_id);
-CREATE INDEX idx_site_visits_islamic_center ON Site_Visits (Islamic_Center_ID);
-CREATE INDEX idx_site_visits_center ON Site_Visits (center_id);
-CREATE INDEX idx_site_visits_date ON Site_Visits (Date_Of_Visit);
 CREATE INDEX idx_suburb_masjids_suburb ON Suburb_Masjids (Suburb_ID);
 CREATE INDEX idx_suburb_masjids_center ON Suburb_Masjids (center_id);
 CREATE INDEX idx_suburb_census_suburb ON Suburb_Census (Suburb_ID);
@@ -2031,6 +1991,8 @@ UPDATE Terms SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Academic_Subjects SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Islamic_Subjects SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Maintenance_Type SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
+
+UPDATE Maintenance SET Updated_By = 'admin', Updated_At = now();
 UPDATE Home_Visit_Type SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Allergies SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
 UPDATE Occupation SET Created_By = 'admin', Updated_By = 'admin', Updated_At = now();
@@ -2313,35 +2275,16 @@ INSERT INTO Personal_Files (
 ) VALUES
     ('Performance Review Q1', (SELECT ID FROM Folders WHERE Name = 'Case Files 2024'), 1, 1, 'admin');
 
--- Insert into Islamic_Centers
-INSERT INTO Islamic_Centers (
-    Center_Name, Suburb, Address, Ameer, Contact_Number, Name_Syllabus, center_id, Created_By
-) VALUES
-    ('Al-Noor Islamic Center', 'Soweto', '123 Main Street, Soweto, Johannesburg', 'Sheikh Ahmed Ibrahim', '+27123456701', 'Standard Islamic Curriculum', 1, 'admin'),
-    ('Iqra Islamic Center', 'Sandton', '456 Oak Avenue, Sandton, Johannesburg', 'Sheikh Yusuf Khan', '+27123456702', 'Advanced Islamic Studies', 1, 'admin'),
-    ('An-Nur Madressa', 'Alexandra', '789 Elm Road, Alexandra, Johannesburg', 'Sheikh Hassan Ali', '+27123456703', 'Basic Islamic Education', 1, 'admin'),
-    ('Darul Uloom Center', 'Lenasia', '321 Pine Street, Lenasia, Johannesburg', 'Maulana Abdullah', '+27123456704', 'Traditional Islamic Learning', 1, 'admin');
-
--- Insert into Maintenance
+-- Insert into Maintenance (related to Center_Detail)
 INSERT INTO Maintenance (
-    Islamic_Center_ID, Type_Of_Maintenance, Date_Of_Maintenance, Description_Of_Maintenance, Cost, Supplier, center_id, Created_By
+    Center_Detail_ID, Type_Of_Maintenance, Date_Of_Maintenance, Description_Of_Maintenance, Cost, Supplier, center_id, Created_By
 ) VALUES
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Al-Noor Islamic Center'), 'Plumbing', '2024-01-15', 'Fixed leaking pipes in main washroom area', 3500.00, 'ABC Plumbing Services', 1, 'admin'),
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Al-Noor Islamic Center'), 'Electrical', '2024-02-10', 'Replaced faulty lighting fixtures in prayer hall', 5200.00, 'XYZ Electrical Works', 1, 'admin'),
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Iqra Islamic Center'), 'HVAC', '2024-01-20', 'Serviced air conditioning units', 6800.00, 'Cool Air Solutions', 1, 'admin'),
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Iqra Islamic Center'), 'Painting', '2024-03-05', 'Repainted classroom walls and hallways', 4200.00, 'Pro Painters', 1, 'admin'),
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'An-Nur Madressa'), 'Roofing', '2024-02-28', 'Repaired damaged roof tiles', 8500.00, 'Roof Masters', 1, 'admin'),
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Darul Uloom Center'), 'General Maintenance', '2024-03-12', 'General maintenance and cleaning of facilities', 1500.00, 'Maintenance Pro', 1, 'admin');
-
--- Insert into Site_Visits
-INSERT INTO Site_Visits (
-    Islamic_Center_ID, Representative, Date_Of_Visit, Comments, Comments_Of_Staff, center_id, Created_By
-) VALUES
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Al-Noor Islamic Center'), 'Org Admin', '2024-01-25', 'Routine inspection of facilities. All areas clean and well-maintained. Prayer hall is in excellent condition.', 'Staff are cooperative and facilities are well managed. No immediate concerns.', 1, 'admin'),
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Al-Noor Islamic Center'), 'HQ User', '2024-02-15', 'Follow-up visit after maintenance work. Plumbing issues resolved. Building is in good condition.', 'Maintenance work completed to satisfaction. Center is operational.', 1, 'admin'),
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Iqra Islamic Center'), 'Org Admin', '2024-02-20', 'Monthly inspection visit. Educational programs running smoothly. Student attendance is good.', 'Teaching staff are dedicated. Curriculum implementation is effective.', 1, 'admin'),
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'An-Nur Madressa'), 'Org Admin', '2024-03-01', 'Quarterly review visit. New students enrolled. Facilities need minor repairs.', 'Staff meeting scheduled for next week to discuss improvements.', 1, 'admin'),
-    ((SELECT ID FROM Islamic_Centers WHERE Center_Name = 'Darul Uloom Center'), 'HQ User', '2024-03-10', 'Annual audit visit. All documentation in order. Financial records are accurate.', 'Center is compliant with all requirements. Excellent management.', 1, 'admin');
+    (1, 'Plumbing', '2024-01-15', 'Fixed leaking pipes in main washroom area', 3500.00, 'ABC Plumbing Services', 1, 'admin'),
+    (1, 'Electrical', '2024-02-10', 'Replaced faulty lighting fixtures in prayer hall', 5200.00, 'XYZ Electrical Works', 1, 'admin'),
+    (2, 'HVAC', '2024-01-20', 'Serviced air conditioning units', 6800.00, 'Cool Air Solutions', 1, 'admin'),
+    (2, 'Painting', '2024-03-05', 'Repainted classroom walls and hallways', 4200.00, 'Pro Painters', 1, 'admin'),
+    (3, 'Roofing', '2024-02-28', 'Repaired damaged roof tiles', 8500.00, 'Roof Masters', 1, 'admin'),
+    (4, 'General Maintenance', '2024-03-12', 'General maintenance and cleaning of facilities', 1500.00, 'Maintenance Pro', 1, 'admin');
 
 -- Insert into Suburb_Masjids
 INSERT INTO Suburb_Masjids (

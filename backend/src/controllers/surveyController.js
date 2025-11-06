@@ -51,13 +51,23 @@ const surveyController = {
       fields.created_by = username;
       fields.updated_by = username;
       
-      // ? Add center_id
-      fields.center_id = req.center_id || req.user?.center_id;
+      // ? Add center_id - ensure it's set (required field)
+      if (!fields.center_id) {
+        fields.center_id = req.center_id || req.user?.center_id;
+      }
+      
+      // Convert to integer if string
+      if (fields.center_id) {
+        fields.center_id = parseInt(fields.center_id);
+      }
+      if (fields.madressah_app_id) {
+        fields.madressah_app_id = parseInt(fields.madressah_app_id);
+      }
       
       const data = await surveyModel.create(fields); 
       res.status(201).json(data); 
     } catch(err){ 
-      res.status(500).json({error: err.message}); 
+      res.status(500).json({error: "Error creating record in Survey: " + err.message}); 
     } 
   },
   

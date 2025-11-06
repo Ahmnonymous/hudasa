@@ -20,7 +20,7 @@ import useDeleteConfirmation from "../../../../hooks/useDeleteConfirmation";
 import { useRole } from "../../../../helpers/useRole";
 import axiosApi from "../../../../helpers/api_helper";
 import { API_BASE_URL } from "../../../../helpers/url_helper";
-import { getHudasaUser } from "../../../../helpers/userStorage";
+import { getAuditName } from "../../../../helpers/userStorage";
 
 const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showAlert, lookupData = {} }) => {
   const { isOrgExecutive } = useRole();
@@ -42,6 +42,67 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
     formState: { errors, isSubmitting },
     reset,
   } = useForm();
+
+  // Question options
+  const question1Options = [
+    { value: "Always", label: "Always" },
+    { value: "Never", label: "Never" },
+    { value: "Often", label: "Often" },
+    { value: "Rarely", label: "Rarely" },
+    { value: "Sometimes", label: "Sometimes" },
+  ];
+
+  const question2Options = [
+    { value: "Does not pray", label: "Does not pray" },
+    { value: "Misses 1-2 occasionally", label: "Misses 1-2 occasionally" },
+    { value: "Performs all five daily prayers", label: "Performs all five daily prayers" },
+    { value: "Prays sometimes", label: "Prays sometimes" },
+    { value: "Rarely prays", label: "Rarely prays" },
+  ];
+
+  const question3Options = [
+    { value: "Always", label: "Always" },
+    { value: "Never", label: "Never" },
+    { value: "Often", label: "Often" },
+    { value: "Rarely", label: "Rarely" },
+    { value: "Sometimes", label: "Sometimes" },
+  ];
+
+  const question4Options = [
+    { value: "Excellent adab and control", label: "Excellent adab and control" },
+    { value: "Frequently escalates conflict", label: "Frequently escalates conflict" },
+    { value: "Often reacts impulsively", label: "Often reacts impulsively" },
+    { value: "Sometimes struggles with patience", label: "Sometimes struggles with patience" },
+    { value: "Usually calm and respectful", label: "Usually calm and respectful" },
+  ];
+
+  const question5Options = [
+    { value: "Frequently untidy", label: "Frequently untidy" },
+    { value: "Generally maintains good hygiene", label: "Generally maintains good hygiene" },
+    { value: "Poor hygiene and grooming", label: "Poor hygiene and grooming" },
+    { value: "Sometimes neglects it", label: "Sometimes neglects it" },
+    { value: "Very clean and well-groomed", label: "Very clean and well-groomed" },
+  ];
+
+  const jumahOptions = [
+    { value: "Always", label: "Always" },
+    { value: "Never", label: "Never" },
+    { value: "Sometimes", label: "Sometimes" },
+  ];
+
+  const eidOptions = [
+    { value: "Always", label: "Always" },
+    { value: "Never", label: "Never" },
+    { value: "Sometimes", label: "Sometimes" },
+  ];
+
+  const inclinationOptions = [
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "4", label: "4" },
+    { value: "5", label: "5" },
+  ];
 
   useEffect(() => {
     if (editItem && modalOpen) {
@@ -90,16 +151,15 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
 
   const onSubmit = async (data) => {
     try {
-      const currentUser = JSON.parse(localStorage.getItem("UmmahAidUser"));
       const formData = {
         ...data,
         madressah_app_id: application.id,
-        created_by: currentUser?.username || "system",
-        updated_by: currentUser?.username || "system",
+        created_by: getAuditName(),
+        updated_by: getAuditName(),
       };
 
       if (editItem) {
-        formData.updated_by = currentUser?.username || "system";
+        formData.updated_by = getAuditName();
         await axiosApi.put(
           `${API_BASE_URL}/conductAssessment/${editItem.id}`,
           formData
@@ -144,20 +204,16 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
       } catch (error) {
         console.error("Error deleting assessment:", error);
         showAlert(error?.response?.data?.message || "Failed to delete assessment", "danger");
-        throw error; // Re-throw so the hook knows there was an error
+        throw error;
       }
     });
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString();
   };
 
   const columns = useMemo(
     () => [
       {
-        header: "Question 1",
+        id: "question1",
+        header: "Respect & Kindness",
         accessorKey: "question1",
         enableSorting: true,
         enableColumnFilter: false,
@@ -177,16 +233,63 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
         ),
       },
       {
-        header: "Date",
-        accessorKey: "created_on",
+        id: "question2",
+        header: "Daily Prayers",
+        accessorKey: "question2",
         enableSorting: true,
         enableColumnFilter: false,
-        cell: (cell) => {
-          const v = cell.getValue();
-          return v ? new Date(v).toLocaleDateString() : "-";
-        },
+        cell: (cell) => cell.getValue() || "-",
       },
       {
+        id: "question3",
+        header: "Honesty",
+        accessorKey: "question3",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => cell.getValue() || "-",
+      },
+      {
+        id: "question4",
+        header: "Conflict Handling",
+        accessorKey: "question4",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => cell.getValue() || "-",
+      },
+      {
+        id: "question5",
+        header: "Cleanliness",
+        accessorKey: "question5",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => cell.getValue() || "-",
+      },
+      {
+        id: "jumah",
+        header: "Jumu'ah",
+        accessorKey: "jumah",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => cell.getValue() || "-",
+      },
+      {
+        id: "eid",
+        header: "Eid Salah",
+        accessorKey: "eid",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => cell.getValue() || "-",
+      },
+      {
+        id: "inclination",
+        header: "Inclination",
+        accessorKey: "inclination",
+        enableSorting: true,
+        enableColumnFilter: false,
+        cell: (cell) => cell.getValue() || "-",
+      },
+      {
+        id: "comment_on_character",
         header: "Character Comment",
         accessorKey: "comment_on_character",
         enableSorting: false,
@@ -197,6 +300,7 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
         },
       },
       {
+        id: "created_by",
         header: "Created By",
         accessorKey: "created_by",
         enableSorting: true,
@@ -204,6 +308,7 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
         cell: (cell) => cell.getValue() || "-",
       },
       {
+        id: "created_at",
         header: "Created On",
         accessorKey: "created_at",
         enableSorting: true,
@@ -213,26 +318,9 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
           return v ? new Date(v).toLocaleDateString() : "-";
         },
       },
-      {
-        header: "Updated By",
-        accessorKey: "updated_by",
-        enableSorting: true,
-        enableColumnFilter: false,
-        cell: (cell) => cell.getValue() || "-",
-      },
-      {
-        header: "Updated On",
-        accessorKey: "updated_at",
-        enableSorting: true,
-        enableColumnFilter: false,
-        cell: (cell) => {
-          const v = cell.getValue();
-          return v ? new Date(v).toLocaleDateString() : "-";
-        },
-      },
-         ],
-     []
-   );
+    ],
+    [handleEdit]
+  );
 
   return (
     <>
@@ -267,158 +355,33 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
       <Modal isOpen={modalOpen} toggle={toggleModal} centered size="lg" backdrop="static">
         <ModalHeader toggle={toggleModal}>
           <i className={`bx ${editItem ? "bx-edit" : "bx-plus-circle"} me-2`}></i>
-          {editItem ? "Edit" : "Add"} Assessment
+          {editItem ? "Edit" : "Add"} Conduct Assessment
         </ModalHeader>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <ModalBody>
+          <ModalBody style={{ maxHeight: "70vh", overflowY: "auto" }}>
             <Row>
-              <Col md={6}>
+              <Col md={12}>
                 <FormGroup>
-                  <Label for="question1">Question 1</Label>
+                  <Label for="question1">
+                    1. Does the student show respect and kindness to teachers, elders, and peers?
+                  </Label>
                   <Controller
                     name="question1"
                     control={control}
                     render={({ field }) => (
                       <Input
                         id="question1"
-                        type="text"
-                        placeholder="Question 1"
+                        type="select"
                         disabled={isOrgExecutive}
                         {...field}
-                      />
-                    )}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="question2">Question 2</Label>
-                  <Controller
-                    name="question2"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="question2"
-                        type="text"
-                        placeholder="Question 2"
-                        disabled={isOrgExecutive}
-                        {...field}
-                      />
-                    )}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="question3">Question 3</Label>
-                  <Controller
-                    name="question3"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="question3"
-                        type="text"
-                        placeholder="Question 3"
-                        disabled={isOrgExecutive}
-                        {...field}
-                      />
-                    )}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="question4">Question 4</Label>
-                  <Controller
-                    name="question4"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="question4"
-                        type="text"
-                        placeholder="Question 4"
-                        disabled={isOrgExecutive}
-                        {...field}
-                      />
-                    )}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="question5">Question 5</Label>
-                  <Controller
-                    name="question5"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="question5"
-                        type="text"
-                        placeholder="Question 5"
-                        disabled={isOrgExecutive}
-                        {...field}
-                      />
-                    )}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="jumah">Jumah</Label>
-                  <Controller
-                    name="jumah"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="jumah"
-                        type="text"
-                        placeholder="Jumah attendance"
-                        disabled={isOrgExecutive}
-                        {...field}
-                      />
-                    )}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="eid">Eid</Label>
-                  <Controller
-                    name="eid"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="eid"
-                        type="text"
-                        placeholder="Eid attendance"
-                        disabled={isOrgExecutive}
-                        {...field}
-                      />
-                    )}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="inclination">Inclination</Label>
-                  <Controller
-                    name="inclination"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="inclination"
-                        type="text"
-                        placeholder="Inclination"
-                        disabled={isOrgExecutive}
-                        {...field}
-                      />
+                      >
+                        <option value="">Select an answer</option>
+                        {question1Options.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Input>
                     )}
                   />
                 </FormGroup>
@@ -426,7 +389,194 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
 
               <Col md={12}>
                 <FormGroup>
-                  <Label for="comment_on_character">Comment on Character</Label>
+                  <Label for="question2">
+                    2. How consistent is the student in performing their daily prayers (Salah)?
+                  </Label>
+                  <Controller
+                    name="question2"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="question2"
+                        type="select"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      >
+                        <option value="">Select an answer</option>
+                        {question2Options.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Input>
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="question3">
+                    3. Does the student show honesty and trustworthiness in words and actions?
+                  </Label>
+                  <Controller
+                    name="question3"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="question3"
+                        type="select"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      >
+                        <option value="">Select an answer</option>
+                        {question3Options.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Input>
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="question4">
+                    4. How does the student handle conflict? Do they show patience, humility, and forgiveness?
+                  </Label>
+                  <Controller
+                    name="question4"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="question4"
+                        type="select"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      >
+                        <option value="">Select an answer</option>
+                        {question4Options.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Input>
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="question5">
+                    5. Does the student maintain cleanliness and hygiene, following the example of taharah?
+                  </Label>
+                  <Controller
+                    name="question5"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="question5"
+                        type="select"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      >
+                        <option value="">Select an answer</option>
+                        {question5Options.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Input>
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="jumah">
+                    6. Does the student regularly attend Jumu'ah (Friday) prayers?
+                  </Label>
+                  <Controller
+                    name="jumah"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="jumah"
+                        type="select"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      >
+                        <option value="">Select an answer</option>
+                        {jumahOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Input>
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="eid">
+                    7. Does the student attend Eid Salah regularly with their family or community?
+                  </Label>
+                  <Controller
+                    name="eid"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="eid"
+                        type="select"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      >
+                        <option value="">Select an answer</option>
+                        {eidOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Input>
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="inclination">8. Inclination</Label>
+                  <Controller
+                    name="inclination"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="inclination"
+                        type="select"
+                        disabled={isOrgExecutive}
+                        {...field}
+                      >
+                        <option value="">Select an answer</option>
+                        {inclinationOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Input>
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="comment_on_character">9. Comment On Character</Label>
                   <Controller
                     name="comment_on_character"
                     control={control}
@@ -435,7 +585,7 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
                         id="comment_on_character"
                         type="textarea"
                         rows={3}
-                        placeholder="Character assessment comments"
+                        placeholder="Enter character assessment comments"
                         disabled={isOrgExecutive}
                         {...field}
                       />
@@ -505,4 +655,3 @@ const ConductAssessmentTab = ({ application, conductAssessments, onUpdate, showA
 };
 
 export default ConductAssessmentTab;
-

@@ -384,18 +384,12 @@ class AttachmentQATest {
     // Ensure directory exists
     await fs.mkdir(reportDir, { recursive: true });
 
-    // Generate JSON report
+    // Generate JSON report only
     const jsonPath = path.join(reportDir, `attachment-run-${this.environment}-${timestamp}.json`);
     await fs.writeFile(jsonPath, JSON.stringify(this.results, null, 2));
     console.log(`📄 JSON Report saved to: ${jsonPath}`);
 
-    // Generate Markdown report
-    const mdPath = path.join(reportDir, `attachment-report-${this.environment}-${timestamp}.md`);
-    const mdReport = this.generateMarkdownReport();
-    await fs.writeFile(mdPath, mdReport);
-    console.log(`📄 Markdown Report saved to: ${mdPath}`);
-
-    return { jsonPath, mdPath };
+    return { jsonPath };
   }
 
   generateMarkdownReport() {

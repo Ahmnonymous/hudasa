@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Card, CardBody, Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
 import classnames from "classnames";
 import AuditsTab from "./tabs/AuditsTab";
+import MaintenanceTab from "./tabs/MaintenanceTab";
 
 const DetailTabs = ({
   centerId,
   audits,
+  maintenance,
   lookupData,
   onUpdate,
   showAlert,
@@ -19,10 +21,12 @@ const DetailTabs = ({
   };
 
   const auditsForCenter = (audits || []).filter((x) => String(x.center_id) === String(centerId));
+  const maintenanceForCenter = (maintenance || []).filter((x) => String(x.center_detail_id) === String(centerId));
 
   const tabs = [
     { id: "all", label: "Show All" },
     { id: "audits", label: "Audits" },
+    { id: "maintenance", label: "Maintenance" },
   ];
 
   return (
@@ -53,12 +57,31 @@ const DetailTabs = ({
                 showAlert={showAlert}
               />
             </div>
+            <div className="border rounded p-3 mb-3">
+              <MaintenanceTab
+                centerId={centerId}
+                maintenance={maintenanceForCenter}
+                lookupData={lookupData}
+                onUpdate={onUpdate}
+                showAlert={showAlert}
+              />
+            </div>
           </TabPane>
 
           <TabPane tabId="audits">
             <AuditsTab
               centerId={centerId}
               audits={auditsForCenter}
+              lookupData={lookupData}
+              onUpdate={onUpdate}
+              showAlert={showAlert}
+            />
+          </TabPane>
+
+          <TabPane tabId="maintenance">
+            <MaintenanceTab
+              centerId={centerId}
+              maintenance={maintenanceForCenter}
               lookupData={lookupData}
               onUpdate={onUpdate}
               showAlert={showAlert}

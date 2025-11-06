@@ -792,18 +792,13 @@ class OrgAdminQATest {
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const jsonReportFile = path.join(reportDir, `org-admin-qa-report-${timestamp}.json`);
-    const markdownReportFile = path.join(reportDir, `org-admin-qa-report-${timestamp}.md`);
 
     await fs.writeFile(jsonReportFile, JSON.stringify(this.results, null, 2));
 
-    const markdownReport = this.generateMarkdownReport();
-    await fs.writeFile(markdownReportFile, markdownReport);
-
     console.log(`\n${'='.repeat(80)}`);
-    console.log('📄 REPORTS GENERATED');
+    console.log('📄 REPORT SAVED');
     console.log('='.repeat(80));
     console.log(`JSON Report: ${jsonReportFile}`);
-    console.log(`Markdown Report: ${markdownReportFile}`);
 
     console.log(`\n${'='.repeat(80)}`);
     console.log('TEST SUMMARY');
