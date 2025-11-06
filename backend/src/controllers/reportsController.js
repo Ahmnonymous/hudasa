@@ -145,28 +145,6 @@ class ReportsController {
         }
     }
 
-    // Get Applicant Programs Report
-    static async getApplicantPrograms(req, res) {
-        try {
-            const centerId = req.center_id; // Set by filterMiddleware
-            const data = await ReportsModel.getApplicantPrograms(centerId);
-            
-            res.status(200).json({
-                success: true,
-                data: data,
-                count: data.length,
-                message: 'Applicant programs report retrieved successfully'
-            });
-        } catch (error) {
-            console.error('Error in getApplicantPrograms:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Error retrieving applicant programs report',
-                error: error.message
-            });
-        }
-    }
-
     // Get Financial Assessment Report
     static async getFinancialAssessment(req, res) {
         try {

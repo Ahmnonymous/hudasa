@@ -33,7 +33,7 @@ class MadressaQATest {
       academicResults: [],
       islamicResults: [],
       conductAssessments: [],
-      surveys: [],
+      parentQuestionnaires: [],
       relationships: [] // Store relationship IDs for linking applications
     };
     
@@ -649,18 +649,19 @@ class MadressaQATest {
   }
 
   /**
-   * Test Survey endpoints
+   * Test Parent Questionnaire endpoints
    */
-  async testSurvey(user, madressahAppId = null) {
+  async testParentQuestionnaire(user, madressahAppId = null) {
     const token = this.tokens[user.username];
     const isReadOnly = user.readOnly || false;
     
-    // Caseworkers (role 5) are not allowed to access Madressa endpoints
+    // Caseworkers (role 5) have restricted access to reports module
     if (user.role === 5) {
-      return; // Skip all tests for Caseworkers
+      console.log(`⏭️  Skipping parent questionnaire tests for ${user.roleName} (caseworker access not permitted)`);
+      return;
     }
     
-    console.log(`\n📋 Testing Survey endpoints for ${user.roleName}...`);
+    console.log(`\n📋 Testing Parent Questionnaire endpoints for ${user.roleName}...`);
 
     // If no app ID provided, try to get one
     if (!madressahAppId) {
@@ -668,15 +669,32 @@ class MadressaQATest {
       if (appResponse.success && appResponse.data && appResponse.data.length > 0) {
         madressahAppId = appResponse.data[0].id;
       } else {
-        console.warn(`⚠️  No MadressaApplication found, skipping Survey tests`);
+        console.warn(`⚠️  No MadressahApplication found, skipping Parent Questionnaire tests`);
         return;
       }
     }
 
+    // Get center_id for the madressa application
+    let centerId = user.center_id;
+    if (!centerId || user.role === 1) {
+      const appResponse = await this.makeRequest('GET', `/madressaApplication/${madressahAppId}`, token);
+      if (appResponse.success && appResponse.data && appResponse.data.center_id) {
+        centerId = appResponse.data.center_id;
+      } else {
+        // Fallback: try to get from relationships
+        const relResponse = await this.makeRequest('GET', '/relationships', token);
+        if (relResponse.success && relResponse.data && relResponse.data.length > 0) {
+          centerId = relResponse.data[0].center_id || 1;
+        } else {
+          centerId = 1; // Final fallback
+        }
+      }
+    }
+
     // Test GET all
-    const getAllResult = await this.makeRequest('GET', '/survey', token);
+    const getAllResult = await this.makeRequest('GET', '/parent-questionnaire', token);
     this.recordTest({
-      test: `Survey - GET all (${user.roleName})`,
+      test: `Parent Questionnaire - GET all (${user.roleName})`,
       user: user.username,
       passed: getAllResult.success && getAllResult.status === 200,
       status: getAllResult.status,
@@ -684,9 +702,9 @@ class MadressaQATest {
     });
 
     // Test GET by Madressah App ID
-    const getByAppResult = await this.makeRequest('GET', `/survey/madressah-app/${madressahAppId}`, token);
+    const getByAppResult = await this.makeRequest('GET', `/parent-questionnaire/madressah-app/${madressahAppId}`, token);
     this.recordTest({
-      test: `Survey - GET by Madressah App ID (${user.roleName})`,
+      test: `Parent Questionnaire - GET by Madressah App ID (${user.roleName})`,
       user: user.username,
       passed: getByAppResult.success && getByAppResult.status === 200,
       status: getByAppResult.status,
@@ -694,66 +712,56 @@ class MadressaQATest {
     });
 
     if (!isReadOnly && madressahAppId) {
-      // Get center_id from the madressa application if available
-      let centerId = user.center_id;
-      if (!centerId || user.role === 1) {
-        // For App Admin or if center_id is not set, try to get it from the application
-        const appResponse = await this.makeRequest('GET', `/madressaApplication/${madressahAppId}`, token);
-        if (appResponse.success && appResponse.data && appResponse.data.center_id) {
-          centerId = appResponse.data.center_id;
-        } else {
-          // Fallback: try to get from relationships
-          const relResponse = await this.makeRequest('GET', '/relationships', token);
-          if (relResponse.success && relResponse.data && relResponse.data.length > 0) {
-            centerId = relResponse.data[0].center_id || 1;
-          } else {
-            centerId = 1; // Final fallback
-          }
-        }
-      }
-      
-      // Test CREATE (with all 19 questions)
+      // Test CREATE (with full payload including multi-selects)
       const createData = {
         madressah_app_id: madressahAppId,
-        center_id: centerId, // Ensure center_id is set
-        question1: 'Answer 1',
-        question2: 'Answer 2',
-        question3: 'Answer 3',
-        question4: 'Answer 4',
-        question5: 'Longer answer for question 5',
-        question6: 'Answer 6',
-        question7: 'Answer 7',
-        question8: 'Answer 8',
-        question9: 'Answer 9',
-        question10: 'Answer 10',
-        question11: 'Answer 11',
-        question12: 'Answer 12',
-        question13: 'Answer 13',
-        question14: 'Answer 14',
-        question15: 'Longer answer for question 15',
-        question16: 'Answer 16',
-        question17: 'Answer 17',
-        question18: 'Answer 18',
-        question19: 'Answer 19'
+        center_id: centerId,
+        expectations: [
+          'We are interested in moral and character development (Akhlaq)',
+          'Other (please specify)'
+        ],
+        expectations_other: 'We would like weekly mentoring feedback',
+        prior_duration: '1–3 months',
+        future_engagement: 'Until they understand basic Islamic values and teachings',
+        attendance_frequency: '4 days per week',
+        commitment_level: 'Fully Committed – I will ensure my child attends regularly and arrives on time without fail.',
+        policy_support: 'Fully Willing – I support all policies and rules and will reinforce them at home.',
+        communication_channel: 'WhatsApp Message',
+        engagement_level: 'Yes, I’m willing to attend and participate',
+        contribution_type: 'Volunteering time or skills',
+        medical_consent: 'Yes, I authorise emergency medical treatment',
+        media_consent: 'Yes, but only group photos (no individual close-ups)',
+        policy_compliance: 'Yes, I fully agree to comply with all policies and procedures',
+        monthly_contribution: 'R200 – Full contribution',
+        halal_preference: 'Yes, strictly Halal only',
+        worship_attendance: 'Only attends Islamic places of worship (Masjid, Madressa)',
+        fasting_support: 'Yes, we fully support our child observing Islamic practices including fasting',
+        name_change_support: 'We fully support the name change and will use the Muslim name at home and in public',
+        burial_consent: 'Yes, we fully consent to an Islamic burial in accordance with Shariah',
+        parent_interest: 'Yes, I’m curious and would like to learn more'
       };
 
-      const createResult = await this.makeRequest('POST', '/survey', token, createData);
+      const createResult = await this.makeRequest('POST', '/parent-questionnaire', token, createData);
       this.recordTest({
-        test: `Survey - CREATE (${user.roleName})`,
+        test: `Parent Questionnaire - CREATE (${user.roleName})`,
         user: user.username,
-        passed: createResult.success && createResult.status === 201,
+        passed:
+          createResult.success && [200, 201].includes(createResult.status),
         status: createResult.status,
         error: createResult.error
       });
 
       if (createResult.success && createResult.data) {
         const createdId = createResult.data.id;
-        this.testData.surveys.push(createdId);
+        if (!this.testData.parentQuestionnaires) {
+          this.testData.parentQuestionnaires = [];
+        }
+        this.testData.parentQuestionnaires.push(createdId);
 
         // Test GET by ID
-        const getByIdResult = await this.makeRequest('GET', `/survey/${createdId}`, token);
+        const getByIdResult = await this.makeRequest('GET', `/parent-questionnaire/${createdId}`, token);
         this.recordTest({
-          test: `Survey - GET by ID (${user.roleName})`,
+          test: `Parent Questionnaire - GET by ID (${user.roleName})`,
           user: user.username,
           passed: getByIdResult.success && getByIdResult.status === 200,
           status: getByIdResult.status,
@@ -762,11 +770,12 @@ class MadressaQATest {
 
         // Test UPDATE
         const updateData = {
-          question1: 'Updated Answer 1'
+          attendance_frequency: '2 days per week',
+          expectations: ['We are grateful for the support and meals provided']
         };
-        const updateResult = await this.makeRequest('PUT', `/survey/${createdId}`, token, updateData);
+        const updateResult = await this.makeRequest('PUT', `/parent-questionnaire/${createdId}`, token, updateData);
         this.recordTest({
-          test: `Survey - UPDATE (${user.roleName})`,
+          test: `Parent Questionnaire - UPDATE (${user.roleName})`,
           user: user.username,
           passed: updateResult.success && updateResult.status === 200,
           status: updateResult.status,
@@ -774,14 +783,36 @@ class MadressaQATest {
         });
 
         // Test DELETE
-        const deleteResult = await this.makeRequest('DELETE', `/survey/${createdId}`, token);
+        const deleteResult = await this.makeRequest('DELETE', `/parent-questionnaire/${createdId}`, token);
         this.recordTest({
-          test: `Survey - DELETE (${user.roleName})`,
+          test: `Parent Questionnaire - DELETE (${user.roleName})`,
           user: user.username,
           passed: deleteResult.success && (deleteResult.status === 200 || deleteResult.status === 204),
           status: deleteResult.status,
           error: deleteResult.error
         });
+
+        // Test aggregated report endpoint (read-only even for executives)
+        const reportResult = await this.makeRequest('GET', '/parent-questionnaire/reports', token);
+        this.recordTest({
+          test: `Parent Questionnaire - Reports (${user.roleName})`,
+          user: user.username,
+          passed: reportResult.success && reportResult.status === 200,
+          status: reportResult.status,
+          error: reportResult.error
+        });
+
+        // Test flags endpoint (only for roles 1-3)
+        if ([1, 2, 3].includes(user.role)) {
+          const flagsResult = await this.makeRequest('GET', '/parent-questionnaire/flags', token);
+          this.recordTest({
+            test: `Parent Questionnaire - Flags (${user.roleName})`,
+            user: user.username,
+            passed: flagsResult.success && flagsResult.status === 200,
+            status: flagsResult.status,
+            error: flagsResult.error
+          });
+        }
       }
     }
   }
@@ -1087,7 +1118,7 @@ class MadressaQATest {
       await this.testAcademicResults(user, appId);
       await this.testIslamicResults(user, appId);
       await this.testConductAssessment(user, appId);
-      await this.testSurvey(user, appId);
+      await this.testParentQuestionnaire(user, appId);
       await this.testErrorHandling(user);
     }
 

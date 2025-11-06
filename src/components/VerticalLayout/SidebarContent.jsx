@@ -285,9 +285,9 @@ const SidebarContent = (props) => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/reports/applicant-programs">
-                    <i className="bx bx-book-open"></i>
-                    {props.t("Applicant Programs")}
+                  <Link to="/reports/parent-questionnaire">
+                    <i className="bx bx-analyse"></i>
+                    {props.t("Parent Questionnaire")}
                   </Link>
                 </li>
                 <li>

@@ -28,6 +28,7 @@ DROP TABLE IF EXISTS Maintenance CASCADE;
 DROP TABLE IF EXISTS Islamic_Results CASCADE;
 DROP TABLE IF EXISTS Academic_Results CASCADE;
 DROP TABLE IF EXISTS Survey CASCADE;
+DROP TABLE IF EXISTS parent_questionnaire CASCADE;
 DROP TABLE IF EXISTS Conduct_Assessment CASCADE;
 DROP TABLE IF EXISTS Madressah_Application CASCADE;
 DROP TABLE IF EXISTS Personal_Files CASCADE;
@@ -1394,6 +1395,47 @@ CREATE TABLE Survey (
     CONSTRAINT fk_center_id_survey FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
 );
 
+CREATE TABLE parent_questionnaire (
+    id SERIAL PRIMARY KEY,
+    madressah_app_id BIGINT NOT NULL,
+    center_id BIGINT NOT NULL,
+    expectations JSONB,
+    expectations_other TEXT,
+    prior_duration VARCHAR(255),
+    future_engagement VARCHAR(255),
+    attendance_frequency VARCHAR(255),
+    attendance_frequency_other TEXT,
+    commitment_level VARCHAR(255),
+    policy_support VARCHAR(255),
+    communication_channel VARCHAR(255),
+    communication_channel_other TEXT,
+    engagement_level VARCHAR(255),
+    contribution_type VARCHAR(255),
+    contribution_other TEXT,
+    medical_consent VARCHAR(255),
+    media_consent VARCHAR(255),
+    policy_compliance VARCHAR(255),
+    monthly_contribution VARCHAR(255),
+    monthly_contribution_other TEXT,
+    halal_preference VARCHAR(255),
+    worship_attendance VARCHAR(255),
+    fasting_support VARCHAR(255),
+    name_change_support VARCHAR(255),
+    burial_consent VARCHAR(255),
+    parent_interest VARCHAR(255),
+    commitment_score INT DEFAULT 0,
+    commitment_category VARCHAR(50),
+    flag_level VARCHAR(20),
+    inconsistency_flags JSONB DEFAULT '[]'::jsonb,
+    created_by VARCHAR(255),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_by VARCHAR(255),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT fk_parent_questionnaire_app FOREIGN KEY (madressah_app_id) REFERENCES Madressah_Application(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_parent_questionnaire_center FOREIGN KEY (center_id) REFERENCES Center_Detail(ID),
+    CONSTRAINT uq_parent_questionnaire_app UNIQUE (madressah_app_id)
+);
+
 CREATE TABLE Academic_Results (
     ID SERIAL PRIMARY KEY,
     Madressah_App_ID BIGINT NOT NULL,
@@ -1641,6 +1683,9 @@ CREATE INDEX idx_conduct_assessment_madressah ON Conduct_Assessment (Madressah_A
 CREATE INDEX idx_conduct_assessment_center ON Conduct_Assessment (center_id);
 CREATE INDEX idx_survey_madressah ON Survey (Madressah_App_ID);
 CREATE INDEX idx_survey_center ON Survey (center_id);
+CREATE INDEX idx_parent_questionnaire_app ON parent_questionnaire (madressah_app_id);
+CREATE INDEX idx_parent_questionnaire_center ON parent_questionnaire (center_id);
+CREATE INDEX idx_parent_questionnaire_flag ON parent_questionnaire (flag_level);
 CREATE INDEX idx_academic_results_madressah ON Academic_Results (Madressah_App_ID);
 CREATE INDEX idx_academic_results_center ON Academic_Results (center_id);
 CREATE INDEX idx_academic_results_term ON Academic_Results (Term, Grade);
@@ -2334,3 +2379,226 @@ INSERT INTO Madressah_Application (
     ((SELECT ID FROM Relationships WHERE Name = 'Aisha' AND Surname = 'raza' LIMIT 1), 
      'Epilepsy', 'A Positive', 'Dr. Sarah Khan', '+27123456789', 
      'Dairy products', 'Epilepsy medication (Daily)', 'Antihistamine tablets', 1, 'admin');
+
+-- Insert sample Parent Questionnaire responses for reporting
+INSERT INTO parent_questionnaire (
+    madressah_app_id,
+    center_id,
+    expectations,
+    expectations_other,
+    prior_duration,
+    future_engagement,
+    attendance_frequency,
+    attendance_frequency_other,
+    commitment_level,
+    policy_support,
+    communication_channel,
+    communication_channel_other,
+    engagement_level,
+    contribution_type,
+    contribution_other,
+    medical_consent,
+    media_consent,
+    policy_compliance,
+    monthly_contribution,
+    monthly_contribution_other,
+    halal_preference,
+    worship_attendance,
+    fasting_support,
+    name_change_support,
+    burial_consent,
+    parent_interest,
+    commitment_score,
+    commitment_category,
+    flag_level,
+    inconsistency_flags,
+    created_by,
+    updated_by
+) VALUES
+(
+    (SELECT id FROM Madressah_Application ORDER BY id LIMIT 1),
+    (SELECT center_id FROM Madressah_Application ORDER BY id LIMIT 1),
+    jsonb_build_array(
+        'We are interested in moral and character development (Akhlaq)',
+        'We are grateful for the support and meals provided'
+    ),
+    NULL,
+    '1–3 months',
+    'Until they complete the full Madressa curriculum',
+    '4 days per week',
+    NULL,
+    'Fully Committed – I will ensure my child attends regularly and arrives on time without fail.',
+    'Fully Willing – I support all policies and rules and will reinforce them at home.',
+    'WhatsApp Message',
+    NULL,
+    'Yes, I’m willing to attend and participate',
+    'Volunteering time or skills',
+    NULL,
+    'Yes, I authorise emergency medical treatment',
+    'Yes, but only group photos (no individual close-ups)',
+    'Yes, I fully agree to comply with all policies and procedures',
+    'R200 – Full contribution',
+    NULL,
+    'Yes, strictly Halal only',
+    'Only attends Islamic places of worship (Masjid, Madressa)',
+    'Yes, we fully support our child observing Islamic practices including fasting',
+    'We fully support the name change and will use the Muslim name at home and in public',
+    'Yes, we fully consent to an Islamic burial in accordance with Shariah',
+    'Yes, I’m curious and would like to learn more',
+    4,
+    'high',
+    'green',
+    '[]'::jsonb,
+    'system',
+    'system'
+),
+(
+    (SELECT id FROM Madressah_Application ORDER BY id LIMIT 1 OFFSET 1),
+    (SELECT center_id FROM Madressah_Application ORDER BY id LIMIT 1 OFFSET 1),
+    jsonb_build_array(
+        'We are primarily interested in the welfare and material benefits provided',
+        'Other (please specify)'
+    ),
+    'Requesting meal support during weekdays',
+    'Less than 1 month (new enrolment)',
+    'As long as welfare and support services are available',
+    '1 day per week',
+    NULL,
+    'Somewhat Committed – I may face difficulties ensuring consistent attendance or punctuality.',
+    'Willing with Conditions – I generally support the policies but have specific concerns.',
+    'Printed Report sent via child',
+    NULL,
+    'Yes, but only occasionally',
+    'Not able to contribute at this time',
+    NULL,
+    'Yes, but only basic first aid until I am contacted',
+    'Yes, but exclude social media platforms',
+    'Yes, pending review of the full policy document',
+    'Unable to contribute at this time',
+    NULL,
+    'Yes, Halal preferred but flexible if not available',
+    'Attends Islamic and other religious places (e.g. Christian church, Shembe Church/ Ancestor events etc)',
+    'Undecided / Prefer to discuss further',
+    'We support the name change but will continue using the birth name in some settings',
+    'We are open to discussing this further with the Madressa',
+    'I support my child’s learning but am not personally interested',
+    1,
+    'low',
+    'amber',
+    jsonb_build_array(
+        'Low attendance commitment paired with welfare-focused expectations.'
+    ),
+    'system',
+    'system'
+),
+(
+    (SELECT id FROM Madressah_Application ORDER BY id LIMIT 1 OFFSET 2),
+    (SELECT center_id FROM Madressah_Application ORDER BY id LIMIT 1 OFFSET 2),
+    jsonb_build_array(
+        'We want our child to be safe after school and be part of a safe community',
+        'We hope our child will learn about Islam and eventually embrace the faith'
+    ),
+    NULL,
+    '4–6 months',
+    'Until they understand basic Islamic values and teachings',
+    '3 days per week',
+    NULL,
+    'Mostly Committed – I will do my best to ensure regular attendance and punctuality, with occasional challenges.',
+    'Fully Willing – I support all policies and rules and will reinforce them at home.',
+    'Email Report',
+    NULL,
+    'Yes, I’m willing to attend and participate',
+    'Offering professional expertise (e.g. teaching, counselling)',
+    NULL,
+    'Yes, but only after verbal consent via phone',
+    'Yes, but only for internal newsletters or donor reports',
+    'Yes, but I would like clarification on certain policies',
+    'R150 – Partial contribution',
+    NULL,
+    'Yes, strictly Halal only',
+    'Attends religious events occasionally, not regularly',
+    'Yes, if the child chooses to fast and is physically able',
+    'We are open to the idea but would prefer to understand the significance first',
+    'Yes, if the child has embraced Islam before passing',
+    'Yes, I’m actively seeking knowledge and spiritual growth',
+    3,
+    'moderate',
+    'amber',
+    '[]'::jsonb,
+    'system',
+    'system'
+),
+(
+    (SELECT id FROM Madressah_Application ORDER BY id LIMIT 1 OFFSET 3),
+    (SELECT center_id FROM Madressah_Application ORDER BY id LIMIT 1 OFFSET 3),
+    jsonb_build_array(
+        'We are interested in moral and character development (Akhlaq)'
+    ),
+    NULL,
+    '7–12 months',
+    'As long as they continue to benefit morally and socially',
+    'Flexible / Varies weekly',
+    'Alternate weekends due to custody arrangements',
+    'Mostly Committed – I will do my best to ensure regular attendance and punctuality, with occasional challenges.',
+    'Unsure – I need more clarity before committing to support.',
+    'Phone Call',
+    NULL,
+    'Unsure at this time',
+    'Promoting Madressa initiatives in the community',
+    NULL,
+    'No, I do not authorise any medical treatment',
+    'No, I do not consent to any media use',
+    'Yes, but I would like clarification on certain policies',
+    'R50 – Token contribution',
+    NULL,
+    'Unsure / Prefer to discuss further',
+    'Primarily attends non-Islamic places of worship',
+    'Yes, but only partial fasting or symbolic participation',
+    'We do not support changing the child’s name for religious reasons',
+    'No, we prefer burial according to our family’s religious tradition',
+    'No, I do not have interest at this time',
+    3,
+    'moderate',
+    'amber',
+    jsonb_build_array(
+        'Parent declined medical consent but agreed to policy compliance.'
+    ),
+    'system',
+    'system'
+),
+(
+    (SELECT id FROM Madressah_Application ORDER BY id LIMIT 1 OFFSET 4),
+    (SELECT center_id FROM Madressah_Application ORDER BY id LIMIT 1 OFFSET 4),
+    jsonb_build_array(
+        'We are grateful for the support and meals provided'
+    ),
+    NULL,
+    'Not sure / irregular attendance',
+    'As long as welfare and support services are available',
+    'Not sure / irregular attendance',
+    NULL,
+    'Not Committed – I cannot guarantee regular attendance or punctuality at this time.',
+    'Unsure – I need more clarity before committing to support.',
+    'In-person Meeting',
+    NULL,
+    'No, I’m unable to attend',
+    'Donating physical resources (books, stationery, etc.)',
+    NULL,
+    'Yes, but only basic first aid until I am contacted',
+    'Yes, but exclude social media platforms',
+    'Yes, pending review of the full policy document',
+    'Unable to contribute at this time',
+    NULL,
+    'No, child does not follow Halal dietary guidelines',
+    'Does not attend any place of worship',
+    'Undecided / Prefer to discuss further',
+    'We are open to the idea but would prefer to understand the significance first',
+    'Yes, if the child has embraced Islam before passing',
+    'Prefer not to answer',
+    1,
+    'low',
+    'red',
+    '[]'::jsonb,
+    'system',
+    'system'
+);

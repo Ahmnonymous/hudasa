@@ -444,7 +444,6 @@ class OrgAdminQATest {
       { name: 'Reports - Financial Assistance', method: 'GET', endpoint: '/reports/financial-assistance' },
       { name: 'Reports - Food Assistance', method: 'GET', endpoint: '/reports/food-assistance' },
       { name: 'Reports - Home Visits', method: 'GET', endpoint: '/reports/home-visits' },
-      { name: 'Reports - Applicant Programs', method: 'GET', endpoint: '/reports/applicant-programs' },
       { name: 'Reports - Relationship Report', method: 'GET', endpoint: '/reports/relationship-report' },
       { name: 'Reports - Skills Matrix', method: 'GET', endpoint: '/reports/skills-matrix' },
       

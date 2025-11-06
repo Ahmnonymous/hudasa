@@ -3,10 +3,11 @@ import { Container, Card, CardBody, Row, Col, Table, Spinner, Alert, Button, Inp
 import { Link } from 'react-router-dom';
 import axiosApi from '../../helpers/api_helper';
 import Breadcrumbs from '../../components/Common/Breadcrumb';
-import { GET_FOOD_ASSISTANCE_REPORT } from '../../helpers/url_helper';
+import { GET_FOOD_ASSISTANCE_REPORT, API_BASE_URL } from '../../helpers/url_helper';
 
 const FoodAssistanceReport = () => {
     const [data, setData] = useState([]);
+    const [centers, setCenters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -25,6 +26,10 @@ const FoodAssistanceReport = () => {
 
     useEffect(() => {
         fetchData();
+    }, []);
+
+    useEffect(() => {
+        fetchCenters();
     }, []);
 
     const fetchData = async () => {
@@ -51,6 +56,29 @@ const FoodAssistanceReport = () => {
         }
     };
 
+    const fetchCenters = async () => {
+        try {
+            const response = await axiosApi.get(`${API_BASE_URL}/centerDetail`);
+            setCenters(response.data || []);
+        } catch (err) {
+            console.error('Error fetching centers for food assistance report:', err);
+        }
+    };
+
+    const getCenterName = (item) => {
+        if (!item) return 'N/A';
+        const centerId = item.center_id ?? item.Center_ID ?? item.centre_id ?? item.centreId ?? null;
+        const fallbackName = item.center_name || item.centre_name || item.center || item.centerName || null;
+        if (centerId !== null && centerId !== undefined) {
+            const center = centers.find(c => Number(c.id || c.ID) === Number(centerId));
+            if (center) {
+                return center.organisation_name || center.Organisation_Name || center.center_name || center.Center_Name || center.name || `Center ${centerId}`;
+            }
+            return fallbackName || `Center ${centerId}`;
+        }
+        return fallbackName || 'N/A';
+    };
+
     const getUniqueValues = (field) => {
         return [...new Set(data.map(item => item[field]).filter(Boolean))].sort();
     };
@@ -63,7 +91,8 @@ const FoodAssistanceReport = () => {
         item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.surname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.file_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.cell_number?.toLowerCase().includes(searchTerm.toLowerCase())
+                item.cell_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                getCenterName(item).toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -83,7 +112,7 @@ const FoodAssistanceReport = () => {
         }
 
         return result;
-    }, [data, searchTerm, filters, sortConfig]);
+    }, [data, searchTerm, filters, sortConfig, centers]);
 
     const groupedData = useMemo(() => {
         if (!groupBy) return null;
@@ -121,12 +150,13 @@ const FoodAssistanceReport = () => {
 
     const exportToCSV = () => {
         const headers = [
-            'File Number', 'Name', 'Surname', 'Cell Number', 'Hamper Type',
+            'File Number', 'Center', 'Name', 'Surname', 'Cell Number', 'Hamper Type',
             'Financial Cost', 'Distributed Date', 'Assisted By', 'Created At'
         ];
 
         const csvData = processedData.map(item => [
             item.file_number || '',
+            getCenterName(item),
             item.name || '',
             item.surname || '',
             item.cell_number || '',
@@ -413,6 +443,7 @@ const FoodAssistanceReport = () => {
                                                     <thead className="table-light" style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                                                 <tr>
                                                                 <th style={{minWidth: '120px'}}>File #</th>
+                                                                <th style={{minWidth: '160px'}}>Center</th>
                                                                 <th style={{minWidth: '150px'}}>Name</th>
                                                                 <th style={{minWidth: '120px'}}>Contact</th>
                                                                 <th style={{minWidth: '150px'}}>Hamper Type</th>
@@ -426,6 +457,7 @@ const FoodAssistanceReport = () => {
                                                             {groupItems.map((item, index) => (
                                                 <tr key={index}>
                                                                     <td><strong>{item.file_number || '-'}</strong></td>
+                                                                    <td>{getCenterName(item)}</td>
                                                                     <td>{item.name} {item.surname}</td>
                                                                     <td>{item.cell_number || '-'}</td>
                                                                     <td>
@@ -457,6 +489,9 @@ const FoodAssistanceReport = () => {
                                                     <th style={{cursor: 'pointer', minWidth: '120px'}} onClick={() => handleSort('file_number')}>
                                                         File Number {getSortIcon('file_number')}
                                                     </th>
+                                                    <th style={{cursor: 'pointer', minWidth: '160px'}} onClick={() => handleSort('center_id')}>
+                                                        Center {getSortIcon('center_id')}
+                                                    </th>
                                                     <th style={{cursor: 'pointer', minWidth: '150px'}} onClick={() => handleSort('name')}>
                                                         Name {getSortIcon('name')}
                                                     </th>
@@ -480,6 +515,7 @@ const FoodAssistanceReport = () => {
                                                 {paginatedData.map((item, index) => (
                                                     <tr key={index}>
                                                         <td><strong>{item.file_number || '-'}</strong></td>
+                                                        <td>{getCenterName(item)}</td>
                                                         <td>{item.name} {item.surname}</td>
                                                     <td>{item.cell_number || '-'}</td>
                                                     <td>
@@ -500,7 +536,7 @@ const FoodAssistanceReport = () => {
                                         </tbody>
                                             <tfoot className="table-active">
                                                 <tr>
-                                                <th colSpan="4" className="text-end">Total:</th>
+                                                <th colSpan="5" className="text-end">Total:</th>
                                                 <th className="text-end text-success">{formatCurrency(totalCost)}</th>
                                                 <th colSpan="3"></th>
                                             </tr>

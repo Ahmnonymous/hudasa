@@ -5,14 +5,14 @@ import { useRole } from "../../../helpers/useRole";
 import ConductAssessmentTab from "./tabs/ConductAssessmentTab";
 import AcademicResultsTab from "./tabs/AcademicResultsTab";
 import IslamicResultsTab from "./tabs/IslamicResultsTab";
-import SurveyTab from "./tabs/SurveyTab";
+import ParentQuestionnaireTab from "./tabs/ParentQuestionnaireTab";
 
 const DetailTabs = ({
   application,
   conductAssessments,
   academicResults,
   islamicResults,
-  surveys,
+  parentQuestionnaires,
   onUpdate,
   showAlert,
   lookupData,
@@ -31,7 +31,7 @@ const DetailTabs = ({
     { id: "conduct", label: "Conduct Assessment" },
     { id: "academic", label: "Academic Results" },
     { id: "islamic", label: "Islamic Results" },
-    { id: "survey", label: "Survey" },
+    { id: "parent-questionnaire", label: "Parent Questionnaire" },
   ];
 
   if (!application) {
@@ -88,12 +88,11 @@ const DetailTabs = ({
             </div>
 
             <div className="border rounded p-3 mb-3">
-              <SurveyTab
+              <ParentQuestionnaireTab
                 application={application}
-                surveys={surveys}
+                questionnaires={parentQuestionnaires}
                 onUpdate={onUpdate}
                 showAlert={showAlert}
-                lookupData={lookupData}
               />
             </div>
           </TabPane>
@@ -128,13 +127,12 @@ const DetailTabs = ({
             />
           </TabPane>
 
-          <TabPane tabId="survey">
-            <SurveyTab
+          <TabPane tabId="parent-questionnaire">
+            <ParentQuestionnaireTab
               application={application}
-              surveys={surveys}
+              questionnaires={parentQuestionnaires}
               onUpdate={onUpdate}
               showAlert={showAlert}
-              lookupData={lookupData}
             />
           </TabPane>
         </TabContent>

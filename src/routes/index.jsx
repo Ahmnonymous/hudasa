@@ -95,9 +95,9 @@ import TotalFinancialAssistanceReport from "../pages/Reports/TotalFinancialAssis
 import FinancialAssistanceReport from "../pages/Reports/FinancialAssistanceReport";
 import FoodAssistanceReport from "../pages/Reports/FoodAssistanceReport";
 import HomeVisitsReport from "../pages/Reports/HomeVisitsReport";
-import ApplicantProgramsReport from "../pages/Reports/ApplicantProgramsReport";
 import RelationshipReport from "../pages/Reports/RelationshipReport";
 import SkillsMatrixReport from "../pages/Reports/SkillsMatrixReport";
+import ParentQuestionnaireReports from "../pages/Reports/ParentQuestionnaireReports";
 
 // //  // Inner Authentication
 import Login1 from "../pages/AuthenticationInner/Login";
@@ -420,9 +420,9 @@ const authProtectedRoutes = [
   { path: "/reports/financial-assistance", component: <ProtectedRoute allowedRoles={[1, 2, 3]}><FinancialAssistanceReport /></ProtectedRoute> },
   { path: "/reports/food-assistance", component: <ProtectedRoute allowedRoles={[1, 2, 3]}><FoodAssistanceReport /></ProtectedRoute> },
   { path: "/reports/home-visits", component: <ProtectedRoute allowedRoles={[1, 2, 3]}><HomeVisitsReport /></ProtectedRoute> },
-  { path: "/reports/applicant-programs", component: <ProtectedRoute allowedRoles={[1, 2, 3]}><ApplicantProgramsReport /></ProtectedRoute> },
   { path: "/reports/relationship-report", component: <ProtectedRoute allowedRoles={[1, 2, 3]}><RelationshipReport /></ProtectedRoute> },
   { path: "/reports/skills-matrix", component: <ProtectedRoute allowedRoles={[1, 2, 3]}><SkillsMatrixReport /></ProtectedRoute> },
+  { path: "/reports/parent-questionnaire", component: <ProtectedRoute allowedRoles={[1, 2, 3]}><ParentQuestionnaireReports /></ProtectedRoute> },
 
   //   // this route should be at the end of all other routes
   //   // eslint-disable-next-line react/display-name

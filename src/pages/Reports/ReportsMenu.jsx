@@ -13,6 +13,14 @@ const ReportsMenu = () => {
             color: 'primary'
         },
         {
+            id: 'parent-questionnaire',
+            title: 'Parent Questionnaire',
+            description: 'Commitment insights, flagging and parental engagement analytics',
+            icon: 'bx bx-analyse',
+            path: '/reports/parent-questionnaire',
+            color: 'info'
+        },
+        {
             id: 'total-financial',
             title: 'Total Financial Assistance',
             description: 'Complete financial assistance summary including food and cash assistance',
@@ -44,14 +52,6 @@ const ReportsMenu = () => {
             icon: 'bx bx-car',
             path: '/reports/home-visits',
             color: 'info'
-        },
-        {
-            id: 'applicant-programs',
-            title: 'Applicant Programs',
-            description: 'Training programs and courses attended by applicants',
-            icon: 'bx bx-book-open',
-            path: '/reports/applicant-programs',
-            color: 'warning'
         },
         {
             id: 'relationship-report',

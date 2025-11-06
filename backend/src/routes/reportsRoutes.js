@@ -55,12 +55,6 @@ router.get('/relationship-report',
     ReportsController.getRelationshipReport.bind(ReportsController)
 );
 
-// Applicant Programs Report
-router.get('/applicant-programs', 
-    roleMiddleware([1, 2, 3]), // App Admin, HQ, Org Admin
-    ReportsController.getApplicantPrograms.bind(ReportsController)
-);
-
 // Financial Assessment Report
 router.get('/financial-assessment', 
     roleMiddleware([1, 2, 3]), // App Admin, HQ, Org Admin

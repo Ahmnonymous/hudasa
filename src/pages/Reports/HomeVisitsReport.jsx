@@ -3,10 +3,11 @@ import { Container, Card, CardBody, Row, Col, Table, Spinner, Alert, Button, Inp
 import { Link } from 'react-router-dom';
 import axiosApi from '../../helpers/api_helper';
 import Breadcrumbs from '../../components/Common/Breadcrumb';
-import { GET_HOME_VISITS_REPORT } from '../../helpers/url_helper';
+import { GET_HOME_VISITS_REPORT, API_BASE_URL } from '../../helpers/url_helper';
 
 const HomeVisitsReport = () => {
     const [data, setData] = useState([]);
+    const [centers, setCenters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -20,6 +21,10 @@ const HomeVisitsReport = () => {
 
     useEffect(() => {
         fetchData();
+    }, []);
+
+    useEffect(() => {
+        fetchCenters();
     }, []);
 
     const fetchData = async () => {
@@ -46,6 +51,29 @@ const HomeVisitsReport = () => {
         }
     };
 
+    const fetchCenters = async () => {
+        try {
+            const response = await axiosApi.get(`${API_BASE_URL}/centerDetail`);
+            setCenters(response.data || []);
+        } catch (err) {
+            console.error('Error fetching centers for home visits report:', err);
+        }
+    };
+
+    const getCenterName = (item) => {
+        if (!item) return 'N/A';
+        const centerId = item.center_id ?? item.Center_ID ?? item.centre_id ?? item.centreId ?? null;
+        const fallbackName = item.center_name || item.centre_name || item.center || item.centerName || null;
+        if (centerId !== null && centerId !== undefined) {
+            const center = centers.find(c => Number(c.id || c.ID) === Number(centerId));
+            if (center) {
+                return center.organisation_name || center.Organisation_Name || center.center_name || center.Center_Name || center.name || `Center ${centerId}`;
+            }
+            return fallbackName || `Center ${centerId}`;
+        }
+        return fallbackName || 'N/A';
+    };
+
     const processedData = useMemo(() => {
         let result = [...data];
 
@@ -55,7 +83,8 @@ const HomeVisitsReport = () => {
         item.surname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.file_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.representative?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.cell_number?.toLowerCase().includes(searchTerm.toLowerCase())
+                item.cell_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                getCenterName(item).toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -71,7 +100,7 @@ const HomeVisitsReport = () => {
         }
 
         return result;
-    }, [data, searchTerm, sortConfig]);
+    }, [data, searchTerm, sortConfig, centers]);
 
     const groupedData = useMemo(() => {
         if (!groupBy) return null;
@@ -109,12 +138,13 @@ const HomeVisitsReport = () => {
 
     const exportToCSV = () => {
         const headers = [
-            'File Number', 'Name', 'Surname', 'Cell Number', 'Visit Date',
+            'File Number', 'Center', 'Name', 'Surname', 'Cell Number', 'Visit Date',
             'Representative', 'Comments', 'Created By', 'Created At'
         ];
 
         const csvData = processedData.map(item => [
             item.file_number || '',
+            getCenterName(item),
             item.name || '',
             item.surname || '',
             item.cell_number || '',
@@ -320,6 +350,7 @@ const HomeVisitsReport = () => {
                                                     <thead className="table-light" style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                                                         <tr>
                                                             <th style={{minWidth: '120px'}}>File #</th>
+                                                            <th style={{minWidth: '160px'}}>Center</th>
                                                             <th style={{minWidth: '150px'}}>Name</th>
                                                             <th style={{minWidth: '120px'}}>Contact</th>
                                                             <th style={{minWidth: '100px'}}>Visit Date</th>
@@ -333,6 +364,7 @@ const HomeVisitsReport = () => {
                                                         {groupItems.map((item, index) => (
                                                 <tr key={index}>
                                                                 <td><strong>{item.file_number || '-'}</strong></td>
+                                                                <td>{getCenterName(item)}</td>
                                                                 <td>{item.name} {item.surname}</td>
                                                     <td>{item.cell_number || '-'}</td>
                                                     <td>{formatDate(item.visit_date)}</td>
@@ -355,6 +387,9 @@ const HomeVisitsReport = () => {
                                                     <th style={{cursor: 'pointer', minWidth: '120px'}} onClick={() => handleSort('file_number')}>
                                                         File Number {getSortIcon('file_number')}
                                                     </th>
+                                                    <th style={{cursor: 'pointer', minWidth: '160px'}} onClick={() => handleSort('center_id')}>
+                                                        Center {getSortIcon('center_id')}
+                                                    </th>
                                                     <th style={{cursor: 'pointer', minWidth: '150px'}} onClick={() => handleSort('name')}>
                                                         Name {getSortIcon('name')}
                                                     </th>
@@ -376,6 +411,7 @@ const HomeVisitsReport = () => {
                                                 {paginatedData.map((item, index) => (
                                                     <tr key={index}>
                                                         <td><strong>{item.file_number || '-'}</strong></td>
+                                                        <td>{getCenterName(item)}</td>
                                                         <td>{item.name} {item.surname}</td>
                                                         <td>{item.cell_number || '-'}</td>
                                                         <td>{formatDate(item.visit_date)}</td>

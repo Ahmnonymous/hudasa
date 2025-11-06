@@ -1,0 +1,1268 @@
+{
+  "environment": "staging",
+  "timestamp": "2025-11-06T22:20:59.409Z",
+  "tests": [
+    {
+      "test": "MadressaApplication - GET all (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null,
+      "data": "5 records"
+    },
+    {
+      "test": "MadressaApplication - CREATE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 201,
+      "error": null,
+      "data": {
+        "id": 28,
+        "applicant_relationship_id": "1",
+        "chronic_condition": "None",
+        "blood_type": "O+",
+        "family_doctor": "Dr. Test",
+        "contact_details": "123-456-7890",
+        "allegies": null,
+        "chronic_medication_required": null,
+        "allergy_medication_required": null,
+        "center_id": "1",
+        "created_by": "admin",
+        "created_at": "2025-11-06T22:20:59.487Z",
+        "updated_by": "admin",
+        "updated_at": "2025-11-06T22:20:59.487Z"
+      }
+    },
+    {
+      "test": "MadressaApplication - GET by ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "MadressaApplication - GET by Relationship ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "MadressaApplication - UPDATE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "MadressaApplication - DELETE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - GET all (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - GET by Madressah App ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - CREATE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 201,
+      "error": null,
+      "data": {
+        "id": 11,
+        "madressah_app_id": "1",
+        "school": "Test School",
+        "grade": "Grade 7",
+        "term": "Term 1",
+        "subject1": "A",
+        "subject1ave": null,
+        "subject1name": "Mathematics",
+        "subject2": null,
+        "subject2ave": null,
+        "subject2name": null,
+        "subject3": null,
+        "subject3ave": null,
+        "subject3name": null,
+        "subject4": null,
+        "subject4ave": null,
+        "subject4name": null,
+        "subject5": null,
+        "subject5ave": null,
+        "subject5name": null,
+        "subject6": null,
+        "subject6ave": null,
+        "subject6name": null,
+        "subject7": null,
+        "subject7ave": null,
+        "subject7name": null,
+        "subject8": null,
+        "subject8ave": null,
+        "subject8name": null,
+        "subject9": null,
+        "subject9ave": null,
+        "subject9name": null,
+        "days_absent": "2",
+        "comments": "Test academic results",
+        "report_upload": null,
+        "report_upload_filename": null,
+        "report_upload_mime": null,
+        "report_upload_size": null,
+        "center_id": "1",
+        "created_by": "admin",
+        "created_at": "2025-11-06T22:20:59.554Z",
+        "updated_by": "admin",
+        "updated_at": "2025-11-06T22:20:59.554Z"
+      }
+    },
+    {
+      "test": "AcademicResults - GET by ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - UPDATE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - DELETE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET all (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET by Madressah App ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - CREATE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 201,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET by ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - UPDATE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - DELETE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET all (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET by Madressah App ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - CREATE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 201,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET by ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - UPDATE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - DELETE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET all (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET by Madressah App ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - CREATE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 201,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET by ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - UPDATE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - DELETE (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - Reports (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - Flags (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Error Handling - CREATE without required fields (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 400,
+      "error": {
+        "error": "center_id is required. Either provide it directly or ensure the relationship has a center_id."
+      }
+    },
+    {
+      "test": "Error Handling - GET with invalid ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 404,
+      "error": {
+        "error": "Not found"
+      }
+    },
+    {
+      "test": "Error Handling - UPDATE with invalid ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 404,
+      "error": {
+        "error": "Not found"
+      }
+    },
+    {
+      "test": "Error Handling - DELETE with invalid ID (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 404,
+      "error": {
+        "error": "Not found"
+      }
+    },
+    {
+      "test": "Error Handling - AcademicResults CREATE without madressah_app_id (App Admin)",
+      "user": "admin",
+      "passed": true,
+      "status": 400,
+      "error": {
+        "error": "center_id is required. Please provide center_id or ensure the madressa application has a center_id."
+      }
+    },
+    {
+      "test": "MadressaApplication - GET all (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null,
+      "data": "5 records"
+    },
+    {
+      "test": "MadressaApplication - CREATE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 201,
+      "error": null,
+      "data": {
+        "id": 29,
+        "applicant_relationship_id": "1",
+        "chronic_condition": "None",
+        "blood_type": "O+",
+        "family_doctor": "Dr. Test",
+        "contact_details": "123-456-7890",
+        "allegies": null,
+        "chronic_medication_required": null,
+        "allergy_medication_required": null,
+        "center_id": "1",
+        "created_by": "hquser",
+        "created_at": "2025-11-06T22:20:59.722Z",
+        "updated_by": "hquser",
+        "updated_at": "2025-11-06T22:20:59.722Z"
+      }
+    },
+    {
+      "test": "MadressaApplication - GET by ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "MadressaApplication - GET by Relationship ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "MadressaApplication - UPDATE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "MadressaApplication - DELETE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - GET all (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - GET by Madressah App ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - CREATE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 201,
+      "error": null,
+      "data": {
+        "id": 12,
+        "madressah_app_id": "1",
+        "school": "Test School",
+        "grade": "Grade 7",
+        "term": "Term 1",
+        "subject1": "A",
+        "subject1ave": null,
+        "subject1name": "Mathematics",
+        "subject2": null,
+        "subject2ave": null,
+        "subject2name": null,
+        "subject3": null,
+        "subject3ave": null,
+        "subject3name": null,
+        "subject4": null,
+        "subject4ave": null,
+        "subject4name": null,
+        "subject5": null,
+        "subject5ave": null,
+        "subject5name": null,
+        "subject6": null,
+        "subject6ave": null,
+        "subject6name": null,
+        "subject7": null,
+        "subject7ave": null,
+        "subject7name": null,
+        "subject8": null,
+        "subject8ave": null,
+        "subject8name": null,
+        "subject9": null,
+        "subject9ave": null,
+        "subject9name": null,
+        "days_absent": "2",
+        "comments": "Test academic results",
+        "report_upload": null,
+        "report_upload_filename": null,
+        "report_upload_mime": null,
+        "report_upload_size": null,
+        "center_id": "1",
+        "created_by": "hquser",
+        "created_at": "2025-11-06T22:20:59.760Z",
+        "updated_by": "hquser",
+        "updated_at": "2025-11-06T22:20:59.760Z"
+      }
+    },
+    {
+      "test": "AcademicResults - GET by ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - UPDATE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - DELETE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET all (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET by Madressah App ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - CREATE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 201,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET by ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - UPDATE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - DELETE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET all (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET by Madressah App ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - CREATE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 201,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET by ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - UPDATE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - DELETE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET all (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET by Madressah App ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - CREATE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 201,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET by ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - UPDATE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - DELETE (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - Reports (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - Flags (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Error Handling - CREATE without required fields (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 500,
+      "error": {
+        "error": "Error creating record in Madressa_Application: null value in column \"applicant_relationship_id\" of relation \"madressah_application\" violates not-null constraint"
+      }
+    },
+    {
+      "test": "Error Handling - GET with invalid ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 404,
+      "error": {
+        "error": "Not found"
+      }
+    },
+    {
+      "test": "Error Handling - UPDATE with invalid ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 404,
+      "error": {
+        "error": "Not found"
+      }
+    },
+    {
+      "test": "Error Handling - DELETE with invalid ID (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 404,
+      "error": {
+        "error": "Not found"
+      }
+    },
+    {
+      "test": "Error Handling - AcademicResults CREATE without madressah_app_id (HQ)",
+      "user": "hquser",
+      "passed": true,
+      "status": 500,
+      "error": {
+        "error": "Error creating record in Academic_Results: Error creating record in Academic_Results: null value in column \"madressah_app_id\" of relation \"academic_results\" violates not-null constraint"
+      }
+    },
+    {
+      "test": "MadressaApplication - GET all (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null,
+      "data": "5 records"
+    },
+    {
+      "test": "MadressaApplication - CREATE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 201,
+      "error": null,
+      "data": {
+        "id": 31,
+        "applicant_relationship_id": "1",
+        "chronic_condition": "None",
+        "blood_type": "O+",
+        "family_doctor": "Dr. Test",
+        "contact_details": "123-456-7890",
+        "allegies": null,
+        "chronic_medication_required": null,
+        "allergy_medication_required": null,
+        "center_id": "1",
+        "created_by": "orgadmin",
+        "created_at": "2025-11-06T22:20:59.925Z",
+        "updated_by": "orgadmin",
+        "updated_at": "2025-11-06T22:20:59.925Z"
+      }
+    },
+    {
+      "test": "MadressaApplication - GET by ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "MadressaApplication - GET by Relationship ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "MadressaApplication - UPDATE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "MadressaApplication - DELETE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - GET all (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - GET by Madressah App ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - CREATE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 201,
+      "error": null,
+      "data": {
+        "id": 14,
+        "madressah_app_id": "1",
+        "school": "Test School",
+        "grade": "Grade 7",
+        "term": "Term 1",
+        "subject1": "A",
+        "subject1ave": null,
+        "subject1name": "Mathematics",
+        "subject2": null,
+        "subject2ave": null,
+        "subject2name": null,
+        "subject3": null,
+        "subject3ave": null,
+        "subject3name": null,
+        "subject4": null,
+        "subject4ave": null,
+        "subject4name": null,
+        "subject5": null,
+        "subject5ave": null,
+        "subject5name": null,
+        "subject6": null,
+        "subject6ave": null,
+        "subject6name": null,
+        "subject7": null,
+        "subject7ave": null,
+        "subject7name": null,
+        "subject8": null,
+        "subject8ave": null,
+        "subject8name": null,
+        "subject9": null,
+        "subject9ave": null,
+        "subject9name": null,
+        "days_absent": "2",
+        "comments": "Test academic results",
+        "report_upload": null,
+        "report_upload_filename": null,
+        "report_upload_mime": null,
+        "report_upload_size": null,
+        "center_id": "1",
+        "created_by": "orgadmin",
+        "created_at": "2025-11-06T22:20:59.976Z",
+        "updated_by": "orgadmin",
+        "updated_at": "2025-11-06T22:20:59.976Z"
+      }
+    },
+    {
+      "test": "AcademicResults - GET by ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - UPDATE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - DELETE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET all (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET by Madressah App ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - CREATE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 201,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET by ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - UPDATE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - DELETE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET all (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET by Madressah App ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - CREATE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 201,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET by ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - UPDATE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - DELETE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET all (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET by Madressah App ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - CREATE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 201,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET by ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - UPDATE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - DELETE (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - Reports (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - Flags (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Error Handling - CREATE without required fields (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 500,
+      "error": {
+        "error": "Error creating record in Madressa_Application: null value in column \"applicant_relationship_id\" of relation \"madressah_application\" violates not-null constraint"
+      }
+    },
+    {
+      "test": "Error Handling - GET with invalid ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 404,
+      "error": {
+        "error": "Not found"
+      }
+    },
+    {
+      "test": "Error Handling - UPDATE with invalid ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 404,
+      "error": {
+        "error": "Not found"
+      }
+    },
+    {
+      "test": "Error Handling - DELETE with invalid ID (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 404,
+      "error": {
+        "error": "Not found"
+      }
+    },
+    {
+      "test": "Error Handling - AcademicResults CREATE without madressah_app_id (Org Admin)",
+      "user": "orgadmin",
+      "passed": true,
+      "status": 500,
+      "error": {
+        "error": "Error creating record in Academic_Results: Error creating record in Academic_Results: null value in column \"madressah_app_id\" of relation \"academic_results\" violates not-null constraint"
+      }
+    },
+    {
+      "test": "MadressaApplication - GET all (Org Executive)",
+      "user": "orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null,
+      "data": "5 records"
+    },
+    {
+      "test": "AcademicResults - GET all (Org Executive)",
+      "user": "orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "AcademicResults - GET by Madressah App ID (Org Executive)",
+      "user": "orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET all (Org Executive)",
+      "user": "orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "IslamicResults - GET by Madressah App ID (Org Executive)",
+      "user": "orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET all (Org Executive)",
+      "user": "orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "ConductAssessment - GET by Madressah App ID (Org Executive)",
+      "user": "orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET all (Org Executive)",
+      "user": "orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "Parent Questionnaire - GET by Madressah App ID (Org Executive)",
+      "user": "orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null
+    },
+    {
+      "test": "MadressaApplication - GET all (Org Caseworker) - RBAC Blocked",
+      "user": "orgcaseuser",
+      "passed": true,
+      "status": 403,
+      "error": {
+        "msg": "Forbidden: Caseworkers can only access Applicants, Tasks, File Manager, Chat, and Lookup APIs",
+        "your_role": 5,
+        "role_name": "Org Caseworker",
+        "allowed_modules": [
+          "Dashboard",
+          "Applicant_Details",
+          "Tasks",
+          "Comments",
+          "Relationships",
+          "Home_Visit",
+          "Financial_Assistance",
+          "Food_Assistance",
+          "Attachments",
+          "Programs",
+          "Financial_Assessment",
+          "Applicant_Income",
+          "Applicant_Expense",
+          "Folders",
+          "Conversations"
+        ],
+        "attempted_route": "/api/madressaApplication"
+      },
+      "note": "Caseworkers correctly blocked from Madressa endpoints"
+    },
+    {
+      "test": "Error Handling - CREATE without required fields (Org Caseworker) - RBAC Blocked",
+      "user": "orgcaseuser",
+      "passed": true,
+      "status": 403,
+      "error": {
+        "msg": "Forbidden: Caseworkers can only access Applicants, Tasks, File Manager, Chat, and Lookup APIs",
+        "your_role": 5,
+        "role_name": "Org Caseworker",
+        "allowed_modules": [
+          "Dashboard",
+          "Applicant_Details",
+          "Tasks",
+          "Comments",
+          "Relationships",
+          "Home_Visit",
+          "Financial_Assistance",
+          "Food_Assistance",
+          "Attachments",
+          "Programs",
+          "Financial_Assessment",
+          "Applicant_Income",
+          "Applicant_Expense",
+          "Folders",
+          "Conversations"
+        ],
+        "attempted_route": "/api/madressaApplication"
+      },
+      "note": "Caseworkers correctly blocked from Madressa endpoints"
+    },
+    {
+      "test": "Error Handling - GET with invalid ID (Org Caseworker) - RBAC Blocked",
+      "user": "orgcaseuser",
+      "passed": true,
+      "status": 403,
+      "error": {
+        "msg": "Forbidden: Caseworkers can only access Applicants, Tasks, File Manager, Chat, and Lookup APIs",
+        "your_role": 5,
+        "role_name": "Org Caseworker",
+        "allowed_modules": [
+          "Dashboard",
+          "Applicant_Details",
+          "Tasks",
+          "Comments",
+          "Relationships",
+          "Home_Visit",
+          "Financial_Assistance",
+          "Food_Assistance",
+          "Attachments",
+          "Programs",
+          "Financial_Assessment",
+          "Applicant_Income",
+          "Applicant_Expense",
+          "Folders",
+          "Conversations"
+        ],
+        "attempted_route": "/api/madressaApplication"
+      },
+      "note": "Caseworkers correctly blocked from Madressa endpoints"
+    },
+    {
+      "test": "Error Handling - UPDATE with invalid ID (Org Caseworker) - RBAC Blocked",
+      "user": "orgcaseuser",
+      "passed": true,
+      "status": 403,
+      "error": {
+        "msg": "Forbidden: Caseworkers can only access Applicants, Tasks, File Manager, Chat, and Lookup APIs",
+        "your_role": 5,
+        "role_name": "Org Caseworker",
+        "allowed_modules": [
+          "Dashboard",
+          "Applicant_Details",
+          "Tasks",
+          "Comments",
+          "Relationships",
+          "Home_Visit",
+          "Financial_Assistance",
+          "Food_Assistance",
+          "Attachments",
+          "Programs",
+          "Financial_Assessment",
+          "Applicant_Income",
+          "Applicant_Expense",
+          "Folders",
+          "Conversations"
+        ],
+        "attempted_route": "/api/madressaApplication"
+      },
+      "note": "Caseworkers correctly blocked from Madressa endpoints"
+    },
+    {
+      "test": "Error Handling - DELETE with invalid ID (Org Caseworker) - RBAC Blocked",
+      "user": "orgcaseuser",
+      "passed": true,
+      "status": 403,
+      "error": {
+        "msg": "Forbidden: Caseworkers can only access Applicants, Tasks, File Manager, Chat, and Lookup APIs",
+        "your_role": 5,
+        "role_name": "Org Caseworker",
+        "allowed_modules": [
+          "Dashboard",
+          "Applicant_Details",
+          "Tasks",
+          "Comments",
+          "Relationships",
+          "Home_Visit",
+          "Financial_Assistance",
+          "Food_Assistance",
+          "Attachments",
+          "Programs",
+          "Financial_Assessment",
+          "Applicant_Income",
+          "Applicant_Expense",
+          "Folders",
+          "Conversations"
+        ],
+        "attempted_route": "/api/madressaApplication"
+      },
+      "note": "Caseworkers correctly blocked from Madressa endpoints"
+    },
+    {
+      "test": "Tenant Isolation - Same-center access (App Admin → HQ)",
+      "user": "admin → hquser",
+      "passed": true,
+      "status": 200,
+      "error": null,
+      "note": "Same center (1) - access should be allowed"
+    },
+    {
+      "test": "Tenant Isolation - Same-center access (App Admin → Org Admin)",
+      "user": "admin → orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null,
+      "note": "Same center (1) - access should be allowed"
+    },
+    {
+      "test": "Tenant Isolation - Same-center access (App Admin → Org Executive)",
+      "user": "admin → orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null,
+      "note": "Same center (1) - access should be allowed"
+    },
+    {
+      "test": "Tenant Isolation - Same-center access (HQ → Org Admin)",
+      "user": "hquser → orgadmin",
+      "passed": true,
+      "status": 200,
+      "error": null,
+      "note": "Same center (1) - access should be allowed"
+    },
+    {
+      "test": "Tenant Isolation - Same-center access (HQ → Org Executive)",
+      "user": "hquser → orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null,
+      "note": "Same center (1) - access should be allowed"
+    },
+    {
+      "test": "Tenant Isolation - Same-center access (Org Admin → Org Executive)",
+      "user": "orgadmin → orgexeuser",
+      "passed": true,
+      "status": 200,
+      "error": null,
+      "note": "Same center (1) - access should be allowed"
+    }
+  ],
+  "summary": {
+    "total": 131,
+    "passed": 131,
+    "failed": 0,
+    "errors": [],
+    "warnings": []
+  }
+}

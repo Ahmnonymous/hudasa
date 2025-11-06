@@ -100,6 +100,30 @@ const Lookups = () => {
     },
   ];
 
+  const hiddenLookupNames = new Set([
+    "Race",
+    "Dwelling Status",
+    "Marital Status",
+    "File Status",
+    "Blood Types",
+    "File Condition",
+    "Born Religion",
+    "Dwelling Type",
+    "Education Level",
+    "Employment Status",
+    "Gender",
+    "Tasks Status",
+    "Means of Communication",
+    "Policy Procedure Types",
+  ]);
+
+  const filteredLookupGroups = lookupGroups.map((group) => ({
+    ...group,
+    categories: group.categories.filter(
+      (category) => !hiddenLookupNames.has(category.name)
+    ),
+  }));
+
   // Meta title
   document.title = "Lookup Setup | Welfare App";
 
@@ -178,7 +202,7 @@ const Lookups = () => {
          {/* Full-width Row for the largest group: Applicant Details (2 columns) */}
          <Row className="mb-3">
            <Col lg={12}>
-             {renderGroupCard(lookupGroups[0], 0, true)}
+             {renderGroupCard(filteredLookupGroups[0], 0, true)}
            </Col>
          </Row>
 
@@ -186,18 +210,18 @@ const Lookups = () => {
         <Row className="g-3 h-100">
           {/* Left Column: Employee Set Up (4 items) + Applicant Sub Details (6 items) = 10 items */}
           <Col lg={6} className="d-flex flex-column">
-            {renderGroupCard(lookupGroups[1], 1)} {/* Employee Set Up */}
-            {renderGroupCard(lookupGroups[2], 2)} {/* Applicant Sub Details */}
+            {renderGroupCard(filteredLookupGroups[1], 1)} {/* Employee Set Up */}
+            {renderGroupCard(filteredLookupGroups[2], 2)} {/* Applicant Sub Details */}
             <div className="flex-grow-1"></div> {/* Spacer to fill remaining space */}
           </Col>
 
           {/* Right Column: Employee Training (4) + Financial (2) + Policy (2) + Supplier (1) + Community (1) = 10 items */}
           <Col lg={6} className="d-flex flex-column">
-            {renderGroupCard(lookupGroups[3], 3)} {/* Employee Training */}
-            {renderGroupCard(lookupGroups[4], 4)} {/* Financial Setup */}
-            {renderGroupCard(lookupGroups[5], 5)} {/* Policy Setup */}
-            {renderGroupCard(lookupGroups[6], 6)} {/* Supplier Setup */}
-            {renderGroupCard(lookupGroups[7], 7)} {/* Community Setup */}
+            {renderGroupCard(filteredLookupGroups[3], 3)} {/* Employee Training */}
+            {renderGroupCard(filteredLookupGroups[4], 4)} {/* Financial Setup */}
+            {renderGroupCard(filteredLookupGroups[5], 5)} {/* Policy Setup */}
+            {renderGroupCard(filteredLookupGroups[6], 6)} {/* Supplier Setup */}
+            {renderGroupCard(filteredLookupGroups[7], 7)} {/* Community Setup */}
             <div className="flex-grow-1"></div> {/* Spacer to fill remaining space */}
           </Col>
         </Row>

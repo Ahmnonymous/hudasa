@@ -3,10 +3,11 @@ import { Container, Card, CardBody, Row, Col, Table, Spinner, Alert, Button, Inp
 import { Link } from 'react-router-dom';
 import axiosApi from '../../helpers/api_helper';
 import Breadcrumbs from '../../components/Common/Breadcrumb';
-import { GET_SKILLS_MATRIX_REPORT } from '../../helpers/url_helper';
+import { GET_SKILLS_MATRIX_REPORT, API_BASE_URL } from '../../helpers/url_helper';
 
 const SkillsMatrixReport = () => {
     const [data, setData] = useState([]);
+    const [centers, setCenters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -25,6 +26,10 @@ const SkillsMatrixReport = () => {
 
     useEffect(() => {
         fetchData();
+    }, []);
+
+    useEffect(() => {
+        fetchCenters();
     }, []);
 
     const fetchData = async () => {
@@ -51,6 +56,29 @@ const SkillsMatrixReport = () => {
         }
     };
 
+    const fetchCenters = async () => {
+        try {
+            const response = await axiosApi.get(`${API_BASE_URL}/centerDetail`);
+            setCenters(response.data || []);
+        } catch (err) {
+            console.error('Error fetching centers for skills matrix report:', err);
+        }
+    };
+
+    const getCenterName = (item) => {
+        if (!item) return 'N/A';
+        const centerId = item.center_id ?? item.Center_ID ?? item.centre_id ?? item.centreId ?? null;
+        const fallbackName = item.center_name || item.centre_name || item.center || item.centerName || null;
+        if (centerId !== null && centerId !== undefined) {
+            const center = centers.find(c => Number(c.id || c.ID) === Number(centerId));
+            if (center) {
+                return center.organisation_name || center.Organisation_Name || center.center_name || center.Center_Name || center.name || `Center ${centerId}`;
+            }
+            return fallbackName || `Center ${centerId}`;
+        }
+        return fallbackName || 'N/A';
+    };
+
     const getUniqueValues = (field) => {
         return [...new Set(data.map(item => item[field]).filter(Boolean))].sort();
     };
@@ -64,7 +92,8 @@ const SkillsMatrixReport = () => {
                 item.surname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.course_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.institution_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.cell_number?.toLowerCase().includes(searchTerm.toLowerCase())
+                item.cell_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                getCenterName(item).toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -84,7 +113,7 @@ const SkillsMatrixReport = () => {
         }
 
         return result;
-    }, [data, searchTerm, filters, sortConfig]);
+    }, [data, searchTerm, filters, sortConfig, centers]);
 
     const groupedData = useMemo(() => {
         if (!groupBy) return null;
@@ -122,12 +151,13 @@ const SkillsMatrixReport = () => {
 
     const exportToCSV = () => {
         const headers = [
-            'Employee Name', 'ID Number', 'Department', 'Contact', 'Course',
+            'Employee Name', 'Center', 'ID Number', 'Department', 'Contact', 'Course',
             'Institution', 'Date Conducted', 'Date Expired', 'Outcome', 'Status', 'Created By'
         ];
 
         const csvData = processedData.map(item => [
             `${item.name} ${item.surname}`,
+            getCenterName(item),
             item.id_number || '',
             item.department_name || '',
             item.cell_number || '',
@@ -427,6 +457,7 @@ const SkillsMatrixReport = () => {
                                                     <thead className="table-light" style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                                                         <tr>
                                                             <th style={{minWidth: '150px'}}>Employee</th>
+                                                            <th style={{minWidth: '160px'}}>Center</th>
                                                             <th style={{minWidth: '120px'}}>ID Number</th>
                                                             <th style={{minWidth: '120px'}}>Department</th>
                                                             <th style={{minWidth: '120px'}}>Contact</th>
@@ -443,6 +474,7 @@ const SkillsMatrixReport = () => {
                                                         {groupItems.map((item, index) => (
                                                             <tr key={index}>
                                                                 <td><strong>{item.name} {item.surname}</strong></td>
+                                                                <td>{getCenterName(item)}</td>
                                                                 <td>{item.id_number || '-'}</td>
                                                                 <td><Badge color="secondary">{item.department_name || 'N/A'}</Badge></td>
                                                                 <td>{item.cell_number || '-'}</td>
@@ -478,6 +510,9 @@ const SkillsMatrixReport = () => {
                                                     <th style={{cursor: 'pointer', minWidth: '150px'}} onClick={() => handleSort('name')}>
                                                         Employee Name {getSortIcon('name')}
                                                     </th>
+                                                    <th style={{cursor: 'pointer', minWidth: '160px'}} onClick={() => handleSort('center_id')}>
+                                                        Center {getSortIcon('center_id')}
+                                                    </th>
                                                     <th style={{minWidth: '120px'}}>ID Number</th>
                                                     <th style={{cursor: 'pointer', minWidth: '120px'}} onClick={() => handleSort('department_name')}>
                                                         Department {getSortIcon('department_name')}
@@ -508,6 +543,7 @@ const SkillsMatrixReport = () => {
                                                     <td>
                                                         <strong>{item.name} {item.surname}</strong>
                                                     </td>
+                                                    <td>{getCenterName(item)}</td>
                                                     <td>{item.id_number || '-'}</td>
                                                     <td>
                                                         <Badge color="secondary">

@@ -264,6 +264,8 @@ const CreateApplicant = () => {
         formData.append("street_address", data.Street_Address || "");
         if (data.Suburb) formData.append("suburb", data.Suburb);
         if (data.Dwelling_Type) formData.append("dwelling_type", data.Dwelling_Type);
+        formData.append("flat_name", data.Flat_Name || "");
+        formData.append("flat_number", data.Flat_Number || "");
         if (data.Dwelling_Status) formData.append("dwelling_status", data.Dwelling_Status);
         if (data.Born_Religion_ID) formData.append("born_religion_id", data.Born_Religion_ID);
         if (data.Period_As_Muslim_ID) formData.append("period_as_muslim_id", data.Period_As_Muslim_ID);
@@ -301,6 +303,8 @@ const CreateApplicant = () => {
           street_address: data.Street_Address || null,
           suburb: data.Suburb && data.Suburb !== "" ? parseInt(data.Suburb) : null,
           dwelling_type: data.Dwelling_Type && data.Dwelling_Type !== "" ? parseInt(data.Dwelling_Type) : null,
+          flat_name: data.Flat_Name || null,
+          flat_number: data.Flat_Number || null,
           dwelling_status: data.Dwelling_Status && data.Dwelling_Status !== "" ? parseInt(data.Dwelling_Status) : null,
           health: data.Health_Conditions && data.Health_Conditions !== "" ? parseInt(data.Health_Conditions) : null,
           marital_status: data.Marital_Status && data.Marital_Status !== "" ? parseInt(data.Marital_Status) : null,

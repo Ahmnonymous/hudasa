@@ -22,7 +22,7 @@ const MadressaApplicationManagement = () => {
   const [conductAssessments, setConductAssessments] = useState([]);
   const [academicResults, setAcademicResults] = useState([]);
   const [islamicResults, setIslamicResults] = useState([]);
-  const [surveys, setSurveys] = useState([]);
+  const [parentQuestionnaires, setParentQuestionnaires] = useState([]);
 
   // Lookup data states
   const [lookupData, setLookupData] = useState({
@@ -97,18 +97,18 @@ const MadressaApplicationManagement = () => {
         conductAssessmentsRes,
         academicResultsRes,
         islamicResultsRes,
-        surveysRes,
+        parentQuestionnairesRes,
       ] = await Promise.all([
         axiosApi.get(`${API_BASE_URL}/conductAssessment?madressah_app_id=${applicationId}`),
         axiosApi.get(`${API_BASE_URL}/academicResults?madressah_app_id=${applicationId}`),
         axiosApi.get(`${API_BASE_URL}/islamicResults?madressah_app_id=${applicationId}`),
-        axiosApi.get(`${API_BASE_URL}/survey?madressah_app_id=${applicationId}`),
+        axiosApi.get(`${API_BASE_URL}/parent-questionnaire/madressah-app/${applicationId}`),
       ]);
 
       setConductAssessments(conductAssessmentsRes.data || []);
       setAcademicResults(academicResultsRes.data || []);
       setIslamicResults(islamicResultsRes.data || []);
-      setSurveys(surveysRes.data || []);
+      setParentQuestionnaires(parentQuestionnairesRes.data || []);
     } catch (error) {
       console.error("Error fetching application details:", error);
       showAlert("Failed to fetch application details", "warning");
@@ -182,7 +182,7 @@ const MadressaApplicationManagement = () => {
                   conductAssessments={conductAssessments}
                   academicResults={academicResults}
                   islamicResults={islamicResults}
-                  surveys={surveys}
+                  parentQuestionnaires={parentQuestionnaires}
                   onUpdate={handleUpdate}
                   showAlert={showAlert}
                   lookupData={lookupData}

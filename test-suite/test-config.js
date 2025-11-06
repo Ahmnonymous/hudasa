@@ -204,12 +204,14 @@ module.exports = {
         delete: "/conductAssessment/:id",
         getByAppId: "/conductAssessment/madressah-app/:madressahAppId"
       },
-      survey: {
-        list: "/survey",
-        create: "/survey",
-        update: "/survey/:id",
-        delete: "/survey/:id",
-        getByAppId: "/survey/madressah-app/:madressahAppId"
+      parentQuestionnaire: {
+        list: "/parent-questionnaire",
+        create: "/parent-questionnaire",
+        update: "/parent-questionnaire/:id",
+        delete: "/parent-questionnaire/:id",
+        getByAppId: "/parent-questionnaire/madressah-app/:madressahAppId",
+        reports: "/parent-questionnaire/reports",
+        flags: "/parent-questionnaire/flags"
       }
     }
   },

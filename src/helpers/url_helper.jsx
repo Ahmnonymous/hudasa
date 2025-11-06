@@ -137,6 +137,5 @@ export const GET_TOTAL_FINANCIAL_ASSISTANCE_REPORT = `${API_BASE_URL}/reports/to
 export const GET_FINANCIAL_ASSISTANCE_REPORT = `${API_BASE_URL}/reports/financial-assistance`;
 export const GET_FOOD_ASSISTANCE_REPORT = `${API_BASE_URL}/reports/food-assistance`;
 export const GET_HOME_VISITS_REPORT = `${API_BASE_URL}/reports/home-visits`;
-export const GET_APPLICANT_PROGRAMS_REPORT = `${API_BASE_URL}/reports/applicant-programs`;
 export const GET_RELATIONSHIP_REPORT = `${API_BASE_URL}/reports/relationship-report`;
 export const GET_SKILLS_MATRIX_REPORT = `${API_BASE_URL}/reports/skills-matrix`;

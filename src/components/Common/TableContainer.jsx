@@ -83,6 +83,7 @@ const TableContainer = ({
   isCustomPageSize,
   handleUserClick,
   isJobListGlobalFilter,
+  enableColumnFilters = true,
 }) => {
 
   const [columnFilters, setColumnFilters] = useState([]);
@@ -103,12 +104,13 @@ const TableContainer = ({
       fuzzy: fuzzyFilter,
     },
     state: {
-      columnFilters,
+      columnFilters: enableColumnFilters ? columnFilters : [],
       globalFilter,
     },
-    onColumnFiltersChange: setColumnFilters,
+    onColumnFiltersChange: enableColumnFilters ? setColumnFilters : undefined,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: fuzzyFilter,
+    enableFilters: enableColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -182,7 +184,7 @@ const TableContainer = ({
                               }
                               [header.column.getIsSorted()] ?? null}
                           </div>
-                          {header.column.getCanFilter() ? (
+                          {enableColumnFilters && header.column.getCanFilter() ? (
                             <div>
                               <Filter column={header.column} table={table} />
                             </div>

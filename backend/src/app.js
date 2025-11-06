@@ -72,6 +72,7 @@ const conductAssessmentRoutes = require("./routes/conductAssessmentRoutes");
 const academicResultsRoutes = require("./routes/academicResultsRoutes");
 const islamicResultsRoutes = require("./routes/islamicResultsRoutes");
 const surveyRoutes = require("./routes/surveyRoutes");
+const parentQuestionnaireRoutes = require("./routes/parentQuestionnaireRoutes");
 
 // ?? Community Module
 const maintenanceRoutes = require("./routes/maintenanceRoutes");
@@ -147,6 +148,7 @@ app.use("/api/conductAssessment", conductAssessmentRoutes);
 app.use("/api/academicResults", academicResultsRoutes);
 app.use("/api/islamicResults", islamicResultsRoutes);
 app.use("/api/survey", surveyRoutes);
+app.use("/api/parent-questionnaire", parentQuestionnaireRoutes);
 
 // ?? Islamic Centers & Community Module
 app.use("/api/maintenance", maintenanceRoutes);
