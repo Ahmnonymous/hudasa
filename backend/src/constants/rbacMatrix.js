@@ -66,7 +66,7 @@ const ROLE_DEFINITIONS = {
     access: "center-only",
     center_restriction: true,
     allowed_methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowed_modules: ["Dashboard", "Applicant_Details", "Tasks", "Comments", "Relationships", "Home_Visit", "Financial_Assistance", "Food_Assistance", "Attachments", "Programs", "Financial_Assessment", "Applicant_Income", "Applicant_Expense", "Madressa_Application", "Madressah_Application", "Conduct_Assessment", "Islamic_Results", "Academic_Results", "Parent_Questionnaire", "Folders", "Conversations"], // ✅ Added Folders, Conversations, Madressa Application, Conduct/Islamic/Academic Results, Parent Questionnaire for caseworker access
+    allowed_modules: ["Dashboard", "Applicant_Details", "Tasks", "Comments", "Relationships", "Home_Visit", "Financial_Assistance", "Food_Assistance", "Attachments", "Programs", "Financial_Assessment", "Applicant_Income", "Applicant_Expense", "Madressa_Application", "Madressah_Application", "Conduct_Assessment", "Islamic_Results", "Academic_Results", "Parent_Questionnaire", "Policy_and_Procedure", "Folders", "Conversations"], // ✅ Added Folders, Conversations, Madressa Application, Conduct/Islamic/Academic Results, Parent Questionnaire, Policy & Procedure for caseworker access
     description: "Caseworker - CRUD for Applicants and Tasks only within own center, plus access to Folders and Conversations",
   },
 };
@@ -101,6 +101,7 @@ const MODULE_ROUTE_MAP = {
   "Islamic_Results": "/api/islamicResults", // ✅ Allow Islamic Results routing
   "Academic_Results": "/api/academicResults", // ✅ Allow Academic Results routing
   "Parent_Questionnaire": "/api/parent-questionnaire", // ✅ Allow Parent Questionnaire routing
+  "Policy_and_Procedure": "/api/policyAndProcedure", // ✅ Allow Policy & Procedure routing
   "Lookup": "/api/lookup", // ✅ Added for Org Executive lookup access
 };
 

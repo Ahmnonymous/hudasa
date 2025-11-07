@@ -47,7 +47,7 @@ module.exports = (roles) => {
         return next(); // Allow GET training institution requests for caseworkers
       }
       // ✅ Allow all Madressa-related modules (madressa/madressah/parent-questionnaire)
-      if (pathCheck.includes('madressa') || pathCheck.includes('madressah') || pathCheck.includes('parent-questionnaire')) {
+      if (pathCheck.includes('madressa') || pathCheck.includes('madressah') || pathCheck.includes('parent-questionnaire') || pathCheck.includes('policyandprocedure') || pathCheck.includes('policy_and_procedure')) {
         return next();
       }
       // ✅ Allow folders and conversations for caseworkers (if role is allowed)
@@ -123,7 +123,7 @@ module.exports = (roles) => {
         return next(); // Allow GET training institution requests for caseworkers
       }
       // ✅ Allow all Madressa-related modules (madressa/madressah/parent-questionnaire)
-      if (pathCheck.includes('madressa') || pathCheck.includes('madressah') || pathCheck.includes('parent-questionnaire')) {
+      if (pathCheck.includes('madressa') || pathCheck.includes('madressah') || pathCheck.includes('parent-questionnaire') || pathCheck.includes('policyandprocedure') || pathCheck.includes('policy_and_procedure')) {
         return next();
       }
       
