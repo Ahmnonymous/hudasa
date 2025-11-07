@@ -287,7 +287,7 @@ const HomeVisitsTab = ({ applicantId, homeVisits, lookupData, onUpdate, showAler
           const attachment = cell.getValue();
           const rowId = cell.row.original.id;
           return attachment ? (
-            <div className="d-flex gap-2">
+            <div className="d-flex justify-content-center gap-2">
               <a
                 href={`${API_STREAM_BASE_URL}/homeVisit/${rowId}/view-attachment-1`}
                 target="_blank"
@@ -314,7 +314,7 @@ const HomeVisitsTab = ({ applicantId, homeVisits, lookupData, onUpdate, showAler
           const attachment = cell.getValue();
           const rowId = cell.row.original.id;
           return attachment ? (
-            <div className="d-flex gap-2">
+            <div className="d-flex justify-content-center gap-2">
               <a
                 href={`${API_STREAM_BASE_URL}/homeVisit/${rowId}/view-attachment-2`}
                 target="_blank"

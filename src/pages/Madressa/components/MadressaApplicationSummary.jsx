@@ -280,16 +280,31 @@ const MadressaApplicationSummary = ({ application, lookupData, onUpdate, showAle
                   <Controller
                     name="contact_details"
                     control={control}
+                    rules={{
+                      validate: (value) =>
+                        !value || /^\d{10}$/.test(value) || "Contact details must be exactly 10 digits",
+                    }}
                     render={({ field }) => (
                       <Input
                         id="contact_details"
                         type="text"
                         placeholder="Phone number"
+                        maxLength={10}
+                        invalid={!!errors.contact_details}
                         disabled={isOrgExecutive}
-                        {...field}
+                        value={field.value || ""}
+                        onChange={(event) =>
+                          field.onChange(event.target.value.replace(/\D/g, ""))
+                        }
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
                       />
                     )}
                   />
+                  {errors.contact_details && (
+                    <FormFeedback>{errors.contact_details.message}</FormFeedback>
+                  )}
                 </FormGroup>
               </Col>
 
@@ -568,16 +583,31 @@ const MadressaApplicationSummary = ({ application, lookupData, onUpdate, showAle
                   <Controller
                     name="contact_details"
                     control={control}
+                    rules={{
+                      validate: (value) =>
+                        !value || /^\d{10}$/.test(value) || "Contact details must be exactly 10 digits",
+                    }}
                     render={({ field }) => (
                       <Input
                         id="contact_details"
                         type="text"
                         placeholder="Phone number"
+                        maxLength={10}
+                        invalid={!!errors.contact_details}
                         disabled={isOrgExecutive}
-                        {...field}
+                        value={field.value || ""}
+                        onChange={(event) =>
+                          field.onChange(event.target.value.replace(/\D/g, ""))
+                        }
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
                       />
                     )}
                   />
+                  {errors.contact_details && (
+                    <FormFeedback>{errors.contact_details.message}</FormFeedback>
+                  )}
                 </FormGroup>
               </Col>
 

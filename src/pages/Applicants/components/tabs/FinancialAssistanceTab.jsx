@@ -22,7 +22,7 @@ import axiosApi from "../../../../helpers/api_helper";
 import { API_BASE_URL } from "../../../../helpers/url_helper";
 import { getHudasaUser, getAuditName } from "../../../../helpers/userStorage";
 
-const FinancialAssistanceTab = ({ applicantId, financialAssistance, lookupData, onUpdate, showAlert }) => {
+const FinancialAssistanceTab = ({ applicantId, applicant, relationships = [], financialAssistance, lookupData, onUpdate, showAlert }) => {
   const { isOrgExecutive } = useRole(); // Read-only check
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
@@ -135,6 +135,32 @@ const FinancialAssistanceTab = ({ applicantId, financialAssistance, lookupData, 
     const item = lookupArray.find((l) => l.id == id);
     return item ? item.name : "-";
   };
+
+  const recipientOptions = useMemo(() => {
+    const options = [];
+    const sanitize = (value) => (value || "").replace(/\s+/g, " ").trim();
+
+    if (applicant) {
+      const applicantName = sanitize(`${applicant?.name || ""} ${applicant?.surname || ""}`) || sanitize(applicant?.preferred_name) || "Applicant";
+      options.push({
+        key: `applicant-${applicant?.id ?? "self"}`,
+        value: applicantName,
+        label: `${applicantName} (Applicant)`,
+      });
+    }
+
+    (relationships || []).forEach((rel) => {
+      const relName = sanitize(`${rel?.name || ""} ${rel?.surname || ""}`) || sanitize(rel?.relative_name) || "Unknown";
+      const relationshipTypeName = getLookupName(lookupData?.relationshipTypes || [], rel?.relationship_type);
+      options.push({
+        key: `relationship-${rel?.id ?? relName}`,
+        value: relName,
+        label: relationshipTypeName && relationshipTypeName !== "-" ? `${relName} (${relationshipTypeName})` : relName,
+      });
+    });
+
+    return options;
+  }, [applicant, relationships, lookupData?.relationshipTypes]);
 
   const columns = useMemo(
     () => [
@@ -427,15 +453,33 @@ const FinancialAssistanceTab = ({ applicantId, financialAssistance, lookupData, 
                   <Controller
                     name="Give_To"
                     control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="Give_To"
-                        type="text"
-                        placeholder="Enter recipient"
-                        disabled={isOrgExecutive}
-                        {...field}
-                      />
-                    )}
+                    render={({ field }) => {
+                      const optionList = recipientOptions.some((option) => option.value === field.value)
+                        ? recipientOptions
+                        : field.value
+                        ? [...recipientOptions, { key: "existing-recipient", value: field.value, label: field.value }]
+                        : recipientOptions;
+
+                      return (
+                        <Input
+                          id="Give_To"
+                          type="select"
+                          disabled={isOrgExecutive}
+                          value={field.value || ""}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          innerRef={field.ref}
+                        >
+                          <option value="">Select recipient</option>
+                          {optionList.map((option) => (
+                            <option key={option.key} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </Input>
+                      );
+                    }}
                   />
                 </FormGroup>
               </Col>

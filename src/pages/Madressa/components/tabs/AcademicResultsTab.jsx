@@ -299,7 +299,7 @@ const AcademicResultsTab = ({ application, academicResults, onUpdate, showAlert,
           const filename = cell.getValue();
           const rowId = cell.row.original.id;
           return filename ? (
-            <div className="d-flex gap-2">
+            <div className="d-flex justify-content-center gap-2">
               <a
                 href={`${API_STREAM_BASE_URL}/academicResults/${rowId}/view-report`}
                 target="_blank"

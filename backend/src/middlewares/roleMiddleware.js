@@ -46,6 +46,10 @@ module.exports = (roles) => {
       if ((pathCheck.includes('traininginstitution') || pathCheck.includes('training_institution')) && method === 'GET') {
         return next(); // Allow GET training institution requests for caseworkers
       }
+      // ✅ Allow all Madressa-related modules (madressa/madressah/parent-questionnaire)
+      if (pathCheck.includes('madressa') || pathCheck.includes('madressah') || pathCheck.includes('parent-questionnaire')) {
+        return next();
+      }
       // ✅ Allow folders and conversations for caseworkers (if role is allowed)
       if ((pathCheck.includes('/folders') || pathCheck.includes('/conversations') || 
            pathCheck.includes('/personalfiles') || pathCheck.includes('/messages')) && allowedRoles.includes(userType)) {
@@ -117,6 +121,10 @@ module.exports = (roles) => {
       // Caseworkers need training institution data for applicant Programs tab
       if ((pathCheck.includes('traininginstitution') || pathCheck.includes('training_institution')) && method === 'GET') {
         return next(); // Allow GET training institution requests for caseworkers
+      }
+      // ✅ Allow all Madressa-related modules (madressa/madressah/parent-questionnaire)
+      if (pathCheck.includes('madressa') || pathCheck.includes('madressah') || pathCheck.includes('parent-questionnaire')) {
+        return next();
       }
       
       // ✅ Allow folders and conversations (File Manager and Chat)

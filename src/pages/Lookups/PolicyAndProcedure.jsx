@@ -396,7 +396,7 @@ const PolicyAndProcedure = () => {
           const row = cell.row.original;
           if (filename) {
             return (
-              <div className="d-flex gap-2">
+              <div className="d-flex justify-content-center gap-2">
                 <a
                   href={`${API_STREAM_BASE_URL}/policyAndProcedure/${row.id}/view-file`}
                   target="_blank"

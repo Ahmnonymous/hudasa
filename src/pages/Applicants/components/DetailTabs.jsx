@@ -14,6 +14,7 @@ import FinancialAssessmentTab from "./tabs/FinancialAssessmentTab";
 
 const DetailTabs = ({
   applicantId,
+  applicant,
   comments,
   tasks,
   relationships,
@@ -100,7 +101,15 @@ const DetailTabs = ({
             </div>
             
             <div className="border rounded p-3 mb-3">
-              <FinancialAssistanceTab applicantId={applicantId} financialAssistance={financialAssistanceForApplicant} lookupData={lookupData} onUpdate={onUpdate} showAlert={showAlert} />
+          <FinancialAssistanceTab
+            applicantId={applicantId}
+            applicant={applicant}
+            relationships={relationshipsForApplicant}
+            financialAssistance={financialAssistanceForApplicant}
+            lookupData={lookupData}
+            onUpdate={onUpdate}
+            showAlert={showAlert}
+          />
             </div>
             
             <div className="border rounded p-3 mb-3">
@@ -156,6 +165,8 @@ const DetailTabs = ({
           <TabPane tabId="financialAid">
             <FinancialAssistanceTab
               applicantId={applicantId}
+              applicant={applicant}
+              relationships={relationshipsForApplicant}
               financialAssistance={financialAssistanceForApplicant}
               lookupData={lookupData}
               onUpdate={onUpdate}

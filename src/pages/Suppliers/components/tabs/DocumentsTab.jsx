@@ -213,7 +213,7 @@ const DocumentsTab = ({ supplierId, documents, lookupData, onUpdate, showAlert }
           const filename = cell.getValue();
           const rowId = cell.row.original.id;
           return filename ? (
-            <div className="d-flex gap-2">
+            <div className="d-flex justify-content-center gap-2">
               <a
                 href={`${API_STREAM_BASE_URL}/supplierDocument/${rowId}/view-file`}
                 target="_blank"
