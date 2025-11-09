@@ -157,22 +157,6 @@ class MadressaQATest {
     
     console.log(`\n📚 Testing MadressaApplication endpoints for ${user.roleName}...`);
 
-    // Caseworkers (role 5) are not allowed to access Madressa endpoints
-    const isCaseworker = user.role === 5;
-    if (isCaseworker) {
-      // Test GET all - should be blocked (403)
-      const getAllResult = await this.makeRequest('GET', '/madressaApplication', token);
-      this.recordTest({
-        test: `MadressaApplication - GET all (${user.roleName}) - RBAC Blocked`,
-        user: user.username,
-        passed: !getAllResult.success && getAllResult.status === 403,
-        status: getAllResult.status,
-        error: getAllResult.error,
-        note: 'Caseworkers correctly blocked from Madressa endpoints'
-      });
-      return; // Skip all other tests for Caseworkers
-    }
-
     // Get a relationship ID first (required for creating applications)
     let relationshipId = null;
     let relationshipCenterId = null;
@@ -283,11 +267,6 @@ class MadressaQATest {
   async testAcademicResults(user, madressahAppId = null) {
     const token = this.tokens[user.username];
     const isReadOnly = user.readOnly || false;
-    
-    // Caseworkers (role 5) are not allowed to access Madressa endpoints
-    if (user.role === 5) {
-      return; // Skip all tests for Caseworkers
-    }
     
     console.log(`\n📖 Testing AcademicResults endpoints for ${user.roleName}...`);
 
@@ -407,11 +386,6 @@ class MadressaQATest {
     const token = this.tokens[user.username];
     const isReadOnly = user.readOnly || false;
     
-    // Caseworkers (role 5) are not allowed to access Madressa endpoints
-    if (user.role === 5) {
-      return; // Skip all tests for Caseworkers
-    }
-    
     console.log(`\n🕌 Testing IslamicResults endpoints for ${user.roleName}...`);
 
     // If no app ID provided, try to get one
@@ -526,11 +500,6 @@ class MadressaQATest {
   async testConductAssessment(user, madressahAppId = null) {
     const token = this.tokens[user.username];
     const isReadOnly = user.readOnly || false;
-    
-    // Caseworkers (role 5) are not allowed to access Madressa endpoints
-    if (user.role === 5) {
-      return; // Skip all tests for Caseworkers
-    }
     
     console.log(`\n📝 Testing ConductAssessment endpoints for ${user.roleName}...`);
 
@@ -654,12 +623,6 @@ class MadressaQATest {
   async testParentQuestionnaire(user, madressahAppId = null) {
     const token = this.tokens[user.username];
     const isReadOnly = user.readOnly || false;
-    
-    // Caseworkers (role 5) have restricted access to reports module
-    if (user.role === 5) {
-      console.log(`⏭️  Skipping parent questionnaire tests for ${user.roleName} (caseworker access not permitted)`);
-      return;
-    }
     
     console.log(`\n📋 Testing Parent Questionnaire endpoints for ${user.roleName}...`);
 
@@ -826,18 +789,6 @@ class MadressaQATest {
     
     console.log(`\n🔒 Testing Tenant Isolation between ${user1.roleName} and ${user2.roleName}...`);
 
-    // Skip if user2 is a Caseworker (they're blocked by RBAC, not tenant isolation)
-    if (user2.role === 5) {
-      console.log(`⏭️  Skipping tenant isolation test - ${user2.roleName} is blocked by RBAC, not tenant isolation`);
-      return;
-    }
-
-    // Skip if user1 is a Caseworker (they can't create Madressa records)
-    if (user1.role === 5) {
-      console.log(`⏭️  Skipping tenant isolation test - ${user1.roleName} cannot create Madressa records`);
-      return;
-    }
-
     // Note: We test both same-center and cross-center scenarios
     // Same center_id users should be able to access each other's data
 
@@ -940,56 +891,6 @@ class MadressaQATest {
     
     console.log(`\n⚠️  Testing Error Handling for ${user.roleName}...`);
 
-    // Caseworkers (role 5) are not allowed to access Madressa endpoints
-    const isCaseworker = user.role === 5;
-    if (isCaseworker) {
-      // Test CREATE without required fields - should be blocked (403) for Caseworkers
-      const invalidCreateResult = await this.makeRequest('POST', '/madressaApplication', token, {});
-      this.recordTest({
-        test: `Error Handling - CREATE without required fields (${user.roleName}) - RBAC Blocked`,
-        user: user.username,
-        passed: !invalidCreateResult.success && invalidCreateResult.status === 403,
-        status: invalidCreateResult.status,
-        error: invalidCreateResult.error,
-        note: 'Caseworkers correctly blocked from Madressa endpoints'
-      });
-      
-      // Test GET with invalid ID - should be blocked (403) for Caseworkers
-      const invalidGetResult = await this.makeRequest('GET', '/madressaApplication/999999', token);
-      this.recordTest({
-        test: `Error Handling - GET with invalid ID (${user.roleName}) - RBAC Blocked`,
-        user: user.username,
-        passed: !invalidGetResult.success && invalidGetResult.status === 403,
-        status: invalidGetResult.status,
-        error: invalidGetResult.error,
-        note: 'Caseworkers correctly blocked from Madressa endpoints'
-      });
-      
-      // Test UPDATE with invalid ID - should be blocked (403) for Caseworkers
-      const invalidUpdateResult = await this.makeRequest('PUT', '/madressaApplication/999999', token, { chronic_condition: 'Test' });
-      this.recordTest({
-        test: `Error Handling - UPDATE with invalid ID (${user.roleName}) - RBAC Blocked`,
-        user: user.username,
-        passed: !invalidUpdateResult.success && invalidUpdateResult.status === 403,
-        status: invalidUpdateResult.status,
-        error: invalidUpdateResult.error,
-        note: 'Caseworkers correctly blocked from Madressa endpoints'
-      });
-      
-      // Test DELETE with invalid ID - should be blocked (403) for Caseworkers
-      const invalidDeleteResult = await this.makeRequest('DELETE', '/madressaApplication/999999', token);
-      this.recordTest({
-        test: `Error Handling - DELETE with invalid ID (${user.roleName}) - RBAC Blocked`,
-        user: user.username,
-        passed: !invalidDeleteResult.success && invalidDeleteResult.status === 403,
-        status: invalidDeleteResult.status,
-        error: invalidDeleteResult.error,
-        note: 'Caseworkers correctly blocked from Madressa endpoints'
-      });
-      
-      return; // Skip remaining error handling tests for Caseworkers
-    }
-
     if (!isReadOnly) {
       // Test CREATE without required fields
       const invalidCreateResult = await this.makeRequest('POST', '/madressaApplication', token, {});
@@ -1083,7 +984,7 @@ class MadressaQATest {
       if (appResponse.success && appResponse.data && appResponse.data.length > 0) {
         appId = appResponse.data[0].id;
         console.log(`✅ Found existing MadressaApplication ID: ${appId}`);
-      } else if (!user.readOnly && user.role !== 5) {
+      } else if (!user.readOnly) {
         // Try to create an application for testing if none exists
         console.log(`⚠️  No existing MadressaApplication found, attempting to create one...`);
         const relResponse = await this.makeRequest('GET', '/relationships', this.tokens[user.username]);

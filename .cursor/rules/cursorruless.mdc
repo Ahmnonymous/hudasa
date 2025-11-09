@@ -1,185 +1,223 @@
 ---
 alwaysApply: true
 ---
-    Multi-tenant SaaS (React + Skote Vite + Node/Express + PostgreSQL).
-    Uses center_id for tenant isolation (enforced via JWT.user.center_id),
-    RBAC (Super Admin > Org Admin > Caseworker > Executive > Applicant),
-    and modules for Applicants, Employees, Suppliers, Inventory, Reports, Policies,
-    Chat, and File Storage. Authentication via JWT, bcrypt, and role-based middleware.
+# ============================================================
+# 🔹 GLOBAL CURSOR RULESET - ULTIMATE FULL-STACK ENGINEERING GUIDE
+# ============================================================
+meta:
+  name: "UmmahAid Enterprise Development Ruleset"
+  version: 5.0
+  description: |
+    Generic, adaptive, full-stack rules for Cursor AI across all projects using
+    React + Node/Express + PostgreSQL. Includes automatic folder detection,
+    smart naming, RBAC enforcement, audit injection, design replication, and
+    developer-style communication patterns.
 
-context:
-  include:
-    - backend/src/
-    - src/
-  exclude:
-    - backend/node_modules/
-    - backend/dist/
-    - backend/build/
-    - src/.vite/
-    - dist/
-    - build/
-    - coverage/
-    - .vscode/
-    - .idea/
-    - node_modules/
+# ============================================================
+# 🔹 CORE DEVELOPMENT PRINCIPLES
+# ============================================================
+general_guidelines:
+  - Maintain design + logic uniformity across the app.
+  - Do not break existing functionality when adjusting components or APIs.
+  - Always ask user before altering flow, schema, or access rules.
+  - Favor component reuse — if new, replicate design from a confirmed existing component.
+  - Use structured reasoning: confirm flow → confirm RBAC → then generate.
+  - Follow same layout pattern for drawers, tables, and forms.
+  - Confirm dark/light compatibility and responsive behavior.
 
-folder_structure:
-  - backend: Node.js/Express API, PostgreSQL queries, migrations, services, middleware.
-  - backend/src/models: table-specific models (auto-generated).
-  - backend/src/controllers: controllers per table + generic lookupController.
-  - backend/src/routes: routes for each model + lookup routes.
-  - backend/src/middlewares: auth, roleMiddleware, tenantMiddleware (optional).
-  - src/assets: images, fonts, icons.
-  - src/common: shared wrappers/utilities used across multiple pages.
-  - src/components: reusable Skote-based UI (Cards, Tables, Forms, Modals, Charts).
-  - src/constants: enums, roles, lookup lists, API URLs.
-  - src/helpers: formatting (date, number, currency), validators, hooks.
-  - src/locales: i18n translation JSON files.
-  - src/pages: feature pages (Dashboard, Applicants, Employees, Inventory, Suppliers, Reports).
-  - src/routes: routing, guards, layouts.
-  - src/store: global state (Redux/Context).
-  - Root files: App.jsx (entry), config.jsx (app config), main.jsx (React entrypoint).
+# ============================================================
+# 🔹 SMART FOLDER MAP
+# ============================================================
+smart_folder_map:
+  enabled: true
+  detect_once: true
+  detection_strategy:
+    - Scan `src/` and `backend/src/` for folder patterns:
+        components: ["components", "shared", "ui"]
+        drawers: ["drawers", "forms", "modals"]
+        pages: ["pages", "screens", "views"]
+        services: ["services", "api", "network"]
+        store: ["store", "context", "redux"]
+        helpers: ["helpers", "utils", "common"]
+        constants: ["constants", "config"]
+        backend: ["backend", "server", "api", "controllers", "models", "routes"]
+    - If more than one valid folder detected, ask user which to use.
+    - Remember chosen mapping to maintain consistency.
 
+# ============================================================
+# 🔹 FRONTEND RULES
+# ============================================================
 frontend_rules:
-  - Always scaffold new feature pages inside `src/pages/`.
-  - Always place reusable UI inside `src/components/`.
-  - Always store enums and role definitions in `src/constants/roles.js`.
-  - Always validate inputs with helpers from `src/helpers/`.
-  - Always use React Hook Form + Skote styled inputs for forms.
-  - Always use Skote DataTables with search/filter/pagination/export for tabular data.
-  - Always use Skote Cards for dashboards/metrics.
-  - Always load translation strings from `src/locales/`.
-  - Always use `import axiosApi from '../../helpers/api_helper';` instead of raw axios
-  - This ensures JWT auto-attach and auto-logout on token expiry (401/"Token is not valid")
-  - Raw axios should ONLY be used in backend/src/ (Node.js server code)
+  - Place new pages under `src/pages/[FeatureName]/`
+  - Reusable UI → `src/components/`
+  - Use React Hook Form for inputs
+  - Use `axiosApi` for backend calls (JWT auto-handled)
+  - Use validation + formatting helpers from `src/helpers`
+  - Auto-detect current user info (localStorage, Redux, Context)
+  - Maintain consistent Skote/MUI design and structure
+  - Ask before creating or changing conditional field logic
+  - Always include audit metadata (`created_by`, `updated_by`, timestamps)
+  - Auto-apply dark/light themed DataTable + pagination + modal consistency
 
+# ============================================================
+# 🔹 BACKEND RULES
+# ============================================================
 backend_rules:
-  - Place route definitions in backend/src/routes/.
-  - Place controller functions in backend/src/controllers/.
-  - Place DB queries in backend/src/models/.
-  - Place middleware (auth, RBAC, tenant resolution) in backend/src/middlewares/.
-  - Always filter queries by `req.user.center_id` for tenant isolation,
-    except for SuperAdmin or global lookup tables.
-  - Tenant middleware is optional: if skipped, controllers must always use `req.user.center_id`.
-  - Always use parameterized queries with pg (`$1, $2`) to prevent SQL injection.
-  - Controllers should be slim → delegate logic to models or services.
-  - For file uploads, store temporary files in backend/src/uploads/, save metadata in DB,
-    and return URLs instead of inline base64 for large files.
-  - Store migrations and schema updates in backend/src/schema/.
-  - Use async/await consistently and wrap controllers in try/catch.
-  - JWT payloads must always include: user_id, role, center_id.
-  - Passwords must always be hashed using bcrypt before saving.
+  - Place code in standard folders:
+      routes → backend/src/routes/
+      controllers → backend/src/controllers/
+      models → backend/src/models/
+  - Wrap DB calls with try/catch
+  - Use parameterized queries to prevent SQL injection
+  - Auto-apply `created_by`, `updated_by`, `created_at`, `updated_at`
+  - Enforce `req.user.center_id` for tenant isolation (except SuperAdmin)
+  - Use `roleMiddleware()` for RBAC enforcement
+  - Return clean JSON (no bytea/base64 blobs)
+  - Maintain audit consistency across models
 
+# ============================================================
+# 🔹 RBAC HIERARCHY
+# ============================================================
 rbac_rules:
-  - SuperAdmin → access across all centers, full CRUD.
-  - OrgAdmin → full CRUD within their center.
-  - Caseworker → CRUD Applicants, Visits, Assistance (own center).
-  - Executive → read-only dashboards/reports (own center).
-  - Applicant → self-service limited portal.
-  - Use `roleMiddleware(["Role1","Role2"])` in routes to enforce access.
+  - SuperAdmin → all centers, all modules
+  - OrgAdmin → CRUD for own center
+  - Caseworker → CRUD for Applicants/Visits/Assistance
+  - Executive → read-only access
+  - Applicant → self-service limited portal
+  - Always filter data by `center_id` unless SuperAdmin
+  - Confirm with user before applying or skipping role-based filters
 
-auth_rules:
-  - Login compares bcrypt-hashed passwords and returns JWT.
-  - JWT must include: id, username, user_type, center_id.
-  - authMiddleware validates tokens and attaches `req.user`.
-  - roleMiddleware enforces per-route RBAC.
-  - tenantMiddleware (optional) injects req.center_id for tenant-bound queries.
+# ============================================================
+# 🔹 USER STORAGE AUTO-DETECTION
+# ============================================================
+auto_detection_rules:
+  - Detects user info automatically from:
+      - localStorage (authUser, currentUser, user)
+      - Redux store (`state.user` or `state.auth`)
+      - React Context (useAuth, useUser)
+  - If multiple found, confirm preferred one.
+  - Use username or name property for audit logging.
 
-database_rules:
-  - All tenant-aware tables must include center_id.
-  - Lookup tables (e.g., Gender, Nationality) are global → no tenant filter.
-  - Audit fields (Created_By, Created_At, Updated_By, Updated_At) must always be set via triggers or model logic.
-  - Financial totals must be calculated by triggers, not client code.
-  - Use UUIDs (pgcrypto) for primary keys unless legacy IDs are required.
-  - Views (e.g., Service_Rating_With_Score) are read-only.
-
-ui_guidelines:
-  - Dashboard → summary cards (Applicants, Assistance, Employees, Inventory).
-  - Applicant form → tabs (Demographics, Financials, Assistance, Relationships).
-  - Employee page → appraisals, initiatives, skills matrix with expiry highlighting.
-  - Inventory page → item grid with quantity triggers and transaction history.
-  - Supplier module → profile, evaluations, documents.
-  - Chat → conversation list + message pane.
-  - File storage → folders with tree navigation, file previews.
-
-reporting_rules:
-  - Reports must support search, filter, sort, group by, export (Excel/PDF).
-  - Use Skote’s charting library (ApexCharts).
-  - Backend auto-sends monthly summary reports by email (via Postmark/Nodemailer).
-
-testing_rules:
-  - Place backend tests in backend/src/tests/.
-  - Use Jest + Supertest for API integration tests.
-  - Frontend: use React Testing Library for components, Cypress for e2e flows.
-  - CI/CD must run lint + tests before merging.
-
-devops_rules:
-  - Run migrations automatically on deploy (backend/src/schema/).
-  - Use Liquibase tags for schema version control.
-  - Always run lint + tests in CI/CD pipeline.
-
-status:
-  backend:
-    - ✅ Models/controllers/routes auto-generated for all main tables
-    - ✅ Generic lookup controller/model implemented
-    - ✅ Auth (login, JWT, bcrypt, middleware) working
-    - 🚧 RBAC not applied to all routes yet
-    - 🚧 Tenant isolation (center_id filtering) not enforced everywhere
-    - 🚧 Reports/aggregations to be built
-    - 🚧 Monthly email jobs to be added
-  frontend:
-    - ✅ Skote Vite template set up
-    - 🚧 Auth UI (login, JWT storage, route guards) to be implemented
-    - 🚧 Core modules (Applicants, Employees, Inventory, Suppliers) to be built
-    - 🚧 Reports (charts, exports) to be built
-    - 🚧 Secondary features (Chat, File storage, Service ratings) to be added
-
-prompt_template: |
-  When scaffolding a new feature, always:
-  - Create frontend page under src/pages/[FeatureName]
-  - Use Skote UI (Cards, DataTable, React Hook Form)
-  - Wire API calls to backend routes that already exist
-  - Apply tenant isolation with req.user.center_id (unless SuperAdmin)
-  - Enforce roleMiddleware for access
-  - Add i18n entries in src/locales/en.json
-  - Provide both frontend + backend snippets if needed
-
-payload_rules:
-  - All backend API endpoints expect JSON payload keys in **lowercase**, matching PostgreSQL column names.
-  - Frontend form fields or UI labels may use friendly/display names (e.g., `Institute_Name`), 
-    but before sending to the backend, all keys must be converted to lowercase (e.g., `institute_name`).
-  - Similarly, when receiving data from the backend, map lowercase keys to frontend display field names where needed.
-  - Cursor must automatically maintain this mapping in generated frontend code (React forms, API calls, etc.).
-  - When generating Axios or Fetch API examples, always send lowercase JSON keys.
-  - When generating backend model or controller code, ensure database column names are all lowercase and match payload keys.
-
-frontend_rules:
-  - Always include `created_by` and `updated_by` fields automatically when creating or updating records.
-  - When creating new records, fetch the username from:
-      `const currentUser = JSON.parse(localStorage.getItem("UmmahAidUser"));`
-      and set:
-      `formData.created_by = currentUser?.username || "system";`
-  - When updating existing records, set:
-      `formData.updated_by = currentUser?.username || "system";`
-  - These fields must never be user-editable in the UI.
-  - The frontend must always send lowercase keys in the payload (e.g. `created_by`, `updated_by`).
-
-backend_rules:
-  - All tables should include `created_by`, `created_at`, `updated_by`, and `updated_at`.
-  - On `INSERT`, automatically store `created_by` from the request body or from `req.user.username` (if available).
-  - On `UPDATE`, automatically set `updated_by` from `req.user.username`.
-  - Controllers must not allow the client to overwrite `created_by` on update.
-  - Use the current timestamp for `created_at` and `updated_at`.
-  - Ensure audit fields are included in `RETURNING *` for consistency.
-
+# ============================================================
+# 🔹 AUTO AUDIT FIELD INJECTION
+# ============================================================
 cursor_injection_rules:
   alwaysApply: true
   inject_before_save:
     - |
-      // 🔹 Auto-attach created_by / updated_by fields from localStorage
-      const currentUser = JSON.parse(localStorage.getItem("UmmahAidUser"));
+      // ===================================================
+      // 🔹 UNIVERSAL AUTO-AUDIT FIELD HANDLER
+      // ===================================================
+      let currentUser;
+      try {
+        currentUser =
+          JSON.parse(localStorage.getItem("authUser")) ||
+          JSON.parse(localStorage.getItem("currentUser")) ||
+          JSON.parse(localStorage.getItem("user")) ||
+          {};
+      } catch (e) { currentUser = {}; }
+
+      const username = currentUser?.username || currentUser?.name || "system";
+
       if (editItem) {
-        formData.updated_by = currentUser?.username || "system";
+        formData.updated_by = username;
+        formData.updated_at = new Date().toISOString();
       } else {
-        formData.created_by = currentUser?.username || "system";
+        formData.created_by = username;
+        formData.created_at = new Date().toISOString();
       }
+
+# ============================================================
+# 🔹 SMART NAMING CONVENTIONS
+# ============================================================
+smart_naming_conventions:
+  enabled: true
+  rules:
+    frontend:
+      - Drawer components → `<EntityName>Drawer.jsx`
+      - Report pages → `<EntityName>Report.jsx`
+      - Detail views → `<EntityName>Detail.jsx`
+      - Tables → `<EntityName>Table.jsx`
+      - Services → `<EntityName>Service.js`
+      - Redux/context → `<entityName>Slice.js` or `<EntityName>Context.js`
+    backend:
+      - Routes → `<entityName>Routes.js`
+      - Controller → `<entityName>Controller.js`
+      - Model → `<entityName>Model.js`
+      - Middleware → `<entityName>Middleware.js`
+      - Tests → `<entityName>.test.js`
+  conventions:
+    casing:
+      frontend: PascalCase for components
+      backend: camelCase variables, snake_case DB
+    pluralization:
+      - Plural for routes/controllers
+      - Singular for UI components
+    confirmation_prompt: |
+      “Should this follow your ‘ApplicantDrawer’ or ‘ApplicantsReport’ naming style?”
+
+# ============================================================
+# 🔹 VALIDATION & TESTING
+# ============================================================
+testing_rules:
+  - Frontend → React Testing Library + Cypress
+  - Backend → Jest + Supertest
+  - Run lint + tests before commit
+  - Verify RBAC + tenant filtering work for all roles
+
+# ============================================================
+# 🔹 DESIGN CONSISTENCY
+# ============================================================
+ui_guidelines:
+  - Follow identical Drawer structure everywhere
+  - Maintain button placement, spacing, and typography
+  - Match field alignment and card layout to Skote standard
+  - Ask user which component to replicate before building a new one
+  - Validate both dark and light modes before finalizing
+
+# ============================================================
+# 🔹 AI CLARIFICATION TEMPLATES
+# ============================================================
+ai_clarification_templates:
+  tone: "Professional, senior developer-to-developer"
+  style: "Direct, context-aware, non-repetitive"
+  ask_before_actions:
+    - Before creating a new UI component:
+        “Which existing component or drawer should I visually replicate for consistent UI?”
+    - Before changing logic:
+        “Can you explain the expected flow — who triggers it, and what happens next?”
+    - Before backend or DB edits:
+        “Should I apply center-based filtering and RBAC checks here?”
+    - Before handling audit or timestamps:
+        “Should I reuse the default audit injection logic or apply custom handling?”
+    - When unsure about folder destination:
+        “Multiple matching folders detected — should I place this in [X] or [Y]?”
+    - When uncertain about naming:
+        “Would you prefer ‘ApplicantReport’ or ‘ApplicantsReport’ to match your current pattern?”
+  tone_guidelines:
+    - Keep questions short, specific, and framed as technical checks.
+    - Use code-aware phrasing (e.g. “controller,” “drawer,” “payload mapping”).
+    - Avoid generic AI language like “I think” or “maybe.”
+    - Behave like a teammate ensuring architectural consistency.
+  confirmation_examples:
+    - “Confirm: Apply same field conditional logic as StudentDetailDrawer?”
+    - “Confirm: Should this modal follow the SupplierFormCard layout?”
+    - “Confirm: Apply existing caseworker RBAC logic for this module?”
+  refusal_guidelines:
+    - If a change could break existing logic or design:
+        “This change may alter existing behavior — should I still proceed?”
+    - If insufficient context is given:
+        “I need a brief overview of how this feature should function before coding it.”
+
+# ============================================================
+# 🔹 COMMUNICATION STYLE SUMMARY
+# ============================================================
+communication_guidelines:
+  - Always clarify uncertainty before action.
+  - Prioritize accuracy and consistency over speed.
+  - Use the same tone across backend and frontend clarification.
+  - Speak as a proactive senior dev, not as a generic assistant.
+  - Example phrasing:
+      - “To confirm, should this match your ApplicantDrawer layout?”
+      - “Do you want the same conditional visibility logic as UniversityDetailsDrawer?”
+      - “Should I auto-apply RBAC filters for OrgAdmin and Caseworker?”

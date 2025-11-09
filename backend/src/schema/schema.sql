@@ -213,6 +213,9 @@ CREATE TABLE Supplier_Category (
 CREATE TABLE Suburb (
     ID SERIAL PRIMARY KEY,
     Name VARCHAR(255) UNIQUE NOT NULL,
+    Province VARCHAR(100),
+    Municipality VARCHAR(255),
+    Organisations_Present TEXT,
     Created_By VARCHAR(255),
     Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
     Updated_By VARCHAR(255),
@@ -827,6 +830,9 @@ CREATE TABLE Applicant_Details (
     File_Condition BIGINT,
     File_Status BIGINT,
     Date_Intake DATE,
+    Date_of_Birth DATE,
+    Alternative_Name VARCHAR(255),
+    Company_Name VARCHAR(255),
     Highest_Education_Level BIGINT,
     Marital_Status BIGINT,
     Employment_Status BIGINT,
@@ -910,6 +916,8 @@ CREATE TABLE Relationships (
     Gender BIGINT,
     Highest_Education BIGINT,
     Health_Condition BIGINT,
+    Marital_Status BIGINT,
+    Religion BIGINT,
     Created_By VARCHAR(255),
     Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
     Updated_By VARCHAR(255),
@@ -921,6 +929,8 @@ CREATE TABLE Relationships (
     CONSTRAINT fk_gender_rel FOREIGN KEY (Gender) REFERENCES Gender(ID),
     CONSTRAINT fk_highest_education_rel FOREIGN KEY (Highest_Education) REFERENCES Education_Level(ID),
     CONSTRAINT fk_health_condition FOREIGN KEY (Health_Condition) REFERENCES Health_Conditions(ID),
+    CONSTRAINT fk_marital_status_rel FOREIGN KEY (Marital_Status) REFERENCES Marital_Status(ID),
+    CONSTRAINT fk_religion_rel FOREIGN KEY (Religion) REFERENCES Religion(ID),
     CONSTRAINT fk_center_id_rel FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
 );
 
@@ -930,6 +940,10 @@ CREATE TABLE Home_Visit (
     Visit_Date DATE,
     Representative VARCHAR(255),
     Comments TEXT,
+    Home_Visit_Type BIGINT,
+    Short_Term TEXT,
+    Medium_Term TEXT,
+    Long_Term TEXT,
     Attachment_1 BYTEA,
     Attachment_1_Filename VARCHAR(255),
     Attachment_1_Mime VARCHAR(255),
@@ -944,6 +958,7 @@ CREATE TABLE Home_Visit (
     Updated_At TIMESTAMPTZ NOT NULL DEFAULT now(),
     center_id BIGINT,
     CONSTRAINT fk_file_id_vis FOREIGN KEY (File_ID) REFERENCES Applicant_Details(ID),
+    CONSTRAINT fk_home_visit_type FOREIGN KEY (Home_Visit_Type) REFERENCES Home_Visit_Type(ID),
     CONSTRAINT fk_center_id_vis FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
 );
 
@@ -954,6 +969,10 @@ CREATE TABLE Financial_Assistance (
     Financial_Amount DECIMAL(12,2),
     Date_of_Assistance DATE,
     Assisted_By BIGINT,
+    Sector VARCHAR(255),
+    Program VARCHAR(255),
+    Project VARCHAR(255),
+    Give_To VARCHAR(255),
     Created_By VARCHAR(255),
     Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
     Updated_By VARCHAR(255),
@@ -972,6 +991,7 @@ CREATE TABLE Food_Assistance (
     Hamper_Type BIGINT,
     Financial_Cost DECIMAL(12,2),
     Assisted_By BIGINT,
+    Give_To VARCHAR(255),
     Created_By VARCHAR(255),
     Created_At TIMESTAMPTZ NOT NULL DEFAULT now(),
     Updated_By VARCHAR(255),
@@ -1601,44 +1621,6 @@ CREATE TABLE Suburb_Concerns (
     CONSTRAINT fk_center_id_concerns FOREIGN KEY (center_id) REFERENCES Center_Detail(ID)
 );
 
--- Alter existing tables to add missing columns
-ALTER TABLE Relationships
-    ADD COLUMN IF NOT EXISTS Marital_Status BIGINT,
-    ADD COLUMN IF NOT EXISTS Religion BIGINT;
-
-ALTER TABLE Relationships
-    ADD CONSTRAINT fk_marital_status_rel FOREIGN KEY (Marital_Status) REFERENCES Marital_Status(ID),
-    ADD CONSTRAINT fk_religion_rel FOREIGN KEY (Religion) REFERENCES Religion(ID);
-
-ALTER TABLE Home_Visit
-    ADD COLUMN IF NOT EXISTS Home_Visit_Type BIGINT,
-    ADD COLUMN IF NOT EXISTS Short_Term TEXT,
-    ADD COLUMN IF NOT EXISTS Medium_Term TEXT,
-    ADD COLUMN IF NOT EXISTS Long_Term TEXT;
-
-ALTER TABLE Home_Visit
-    ADD CONSTRAINT fk_home_visit_type FOREIGN KEY (Home_Visit_Type) REFERENCES Home_Visit_Type(ID);
-
-ALTER TABLE Food_Assistance
-    ADD COLUMN IF NOT EXISTS Give_To VARCHAR(255);
-
-ALTER TABLE Financial_Assistance
-    ADD COLUMN IF NOT EXISTS Sector VARCHAR(255),
-    ADD COLUMN IF NOT EXISTS Program VARCHAR(255),
-    ADD COLUMN IF NOT EXISTS Project VARCHAR(255),
-    ADD COLUMN IF NOT EXISTS Give_To VARCHAR(255);
-
-ALTER TABLE Applicant_Details
-    ADD COLUMN IF NOT EXISTS Date_of_Birth DATE,
-    ADD COLUMN IF NOT EXISTS Alternative_Name VARCHAR(255),
-    ADD COLUMN IF NOT EXISTS Company_Name VARCHAR(255);
-
-ALTER TABLE Suburb
-    ADD COLUMN IF NOT EXISTS Province VARCHAR(100),
-    ADD COLUMN IF NOT EXISTS Municipality VARCHAR(255),
-    ADD COLUMN IF NOT EXISTS Organisations_Present TEXT;
-
--- Indexes
 CREATE INDEX HSEQ_Toolbox_Meeting_Tasks_i1 ON HSEQ_Toolbox_Meeting_Tasks (HSEQ_Toolbox_Meeting_ID);
 CREATE INDEX idx_service_rating_datestamp ON Service_Rating (Datestamp);
 CREATE INDEX idx_service_rating_recommend ON Service_Rating (Would_Recommend);
