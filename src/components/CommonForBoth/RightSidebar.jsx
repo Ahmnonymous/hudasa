@@ -565,7 +565,7 @@ const RightSidebar = props => {
                 </div>
               </FormGroup>
 
-              <h6 className="text-center">Choose Layouts</h6>
+              {/* <h6 className="text-center">Choose Layouts</h6>
 
               <div className="mb-2">
                 <Link to="//skote-v-light.react.themesbrand.com" target="_blank">
@@ -591,7 +591,7 @@ const RightSidebar = props => {
                 target="_blank"
               >
                 <i className="mdi mdi-cart ms-1" /> Purchase Now
-              </Link>
+              </Link> */}
             </div>
           </div>
         </SimpleBar>
