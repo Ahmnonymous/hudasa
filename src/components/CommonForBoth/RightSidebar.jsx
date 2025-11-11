@@ -27,9 +27,6 @@ import bgimg1 from "../../assets/images/sidebar/img1.jpg";
 import bgimg2 from "../../assets/images/sidebar/img2.jpg";
 import bgimg3 from "../../assets/images/sidebar/img3.jpg";
 import bgimg4 from "../../assets/images/sidebar/img4.jpg";
-import layout1 from "../../assets/images/layouts/layout-1.jpg";
-import layout2 from "../../assets/images/layouts/layout-2.jpg";
-import layout3 from "../../assets/images/layouts/layout-3.jpg";
 
 //constants
 import {
@@ -47,8 +44,8 @@ const RightSidebar = props => {
   return (
     <React.Fragment>
       <div className="right-bar" id="right-bar">
-        <SimpleBar style={{ height: "900px" }}>
-          <div data-simplebar className="h-100">
+        <SimpleBar className="h-100">
+          <div className="h-100">
             <div className="rightbar-title px-3 py-4">
               <Link
                 to="#"
@@ -564,34 +561,6 @@ const RightSidebar = props => {
                   </label>
                 </div>
               </FormGroup>
-
-              {/* <h6 className="text-center">Choose Layouts</h6>
-
-              <div className="mb-2">
-                <Link to="//skote-v-light.react.themesbrand.com" target="_blank">
-                  <img src={layout1} className="img-fluid img-thumbnail" alt="" />
-                </Link>
-              </div>
-
-              <div className="mb-2">
-                <Link to="//skote-v-dark.react.themesbrand.com" target="_blank">
-                  <img src={layout2} className="img-fluid img-thumbnail" alt="" />
-                </Link>
-              </div>
-
-              <div className="mb-2">
-                <Link to="//skote-v-rtl.react.themesbrand.com" target="_blank">
-                  <img src={layout3} className="img-fluid img-thumbnail" alt="" />
-                </Link>
-              </div>
-
-              <Link
-                to="//1.envato.market/skotereact"
-                className="btn btn-primary btn-block mt-3"
-                target="_blank"
-              >
-                <i className="mdi mdi-cart ms-1" /> Purchase Now
-              </Link> */}
             </div>
           </div>
         </SimpleBar>
