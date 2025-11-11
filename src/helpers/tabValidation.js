@@ -2,6 +2,7 @@ export async function validateTabsAndNavigate(options) {
 	const {
 		requiredFields,
 		fieldTabMap,
+		tabLabelMap,
 		trigger,
 		getValues,
 		setActiveTab,
@@ -33,17 +34,23 @@ export async function validateTabsAndNavigate(options) {
 	const firstMissingTab = fieldTabMap[firstMissingField];
 	if (firstMissingTab) setActiveTab(firstMissingTab);
 
-	// Reuse existing alert pattern
-	showAlert(`Please fill required fields: ${missing.join(", ")}`, "danger");
+	const tabLabel = tabLabelMap?.[firstMissingTab];
+	const alertMessage = tabLabel
+		? `Please correct errors in the ${tabLabel} tab.`
+		: `Please fill required fields: ${missing.join(", ")}`;
+
+	showAlert(alertMessage, "danger");
 
 	// Scroll into view after tab switch
 	setTimeout(() => {
-		const el = document.getElementById(firstMissingField);
+		const el =
+			document.getElementById(firstMissingField) ||
+			document.querySelector(`[name="${firstMissingField}"]`);
 		if (el && typeof el.scrollIntoView === "function") {
 			el.scrollIntoView({ behavior: "smooth", block: "center" });
 			if (typeof el.focus === "function") el.focus();
 		}
-	}, 100);
+	}, 150);
 
 	return false;
 }

@@ -7,7 +7,7 @@ export const sanitizeTenDigit = (value) => {
 export const tenDigitRule = (isRequired = false, label = "Phone number") => {
   return {
     ...(isRequired ? { required: `${label} is required` } : {}),
-    validate: (v) => (!v ? true : /^\d{10}$/.test(v)) || `${label} must be exactly 10 digits`,
+    validate: (v) => (!v ? true : /^\d{10}$/.test(v)) || `${label} must be exactly 10 digits.`,
   };
 };
 

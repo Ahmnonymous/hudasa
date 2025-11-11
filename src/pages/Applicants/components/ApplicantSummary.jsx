@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Card,
   CardBody,
@@ -29,6 +29,7 @@ import axiosApi from "../../../helpers/api_helper";
 import { API_BASE_URL } from "../../../helpers/url_helper";
 import { getHudasaUser, getAuditName } from "../../../helpers/userStorage";
 import { sanitizeTenDigit, tenDigitRule } from "../../../helpers/phone";
+import { createFieldTabMap, handleTabbedFormErrors } from "../../../helpers/formErrorHandler";
 
 const ApplicantSummary = ({ applicant, lookupData, onUpdate, showAlert }) => {
   const { isOrgExecutive } = useRole(); // Read-only check
@@ -39,6 +40,60 @@ const ApplicantSummary = ({ applicant, lookupData, onUpdate, showAlert }) => {
   const [signatureDrawn, setSignatureDrawn] = useState(false);
   const [hideExistingSignature, setHideExistingSignature] = useState(false);
   const [signaturePreviewUrl, setSignaturePreviewUrl] = useState("");
+
+  const tabLabelMap = useMemo(
+    () => ({
+      "1": "Personal Info",
+      "2": "Contact & Address",
+      "3": "File Details",
+    }),
+    []
+  );
+
+  const tabFieldConfig = useMemo(
+    () => ({
+      "1": [
+        "Name",
+        "Surname",
+        "ID_Number",
+        "Race",
+        "Nationality",
+        "Nationality_Expiry_Date",
+        "Gender",
+        "Born_Religion_ID",
+        "Period_As_Muslim_ID",
+        "Highest_Education_Level",
+        "Marital_Status",
+        "Employment_Status",
+        "Health",
+        "Skills",
+      ],
+      "2": [
+        "Cell_Number",
+        "Alternate_Number",
+        "Email_Address",
+        "Suburb",
+        "Street_Address",
+        "Dwelling_Type",
+        "Dwelling_Status",
+        "Flat_Name",
+        "Flat_Number",
+      ],
+      "3": [
+        "File_Number",
+        "File_Condition",
+        "File_Status",
+        "Date_Intake",
+        "POPIA_Agreement",
+      ],
+    }),
+    []
+  );
+
+  const fieldTabMap = useMemo(
+    () => createFieldTabMap(tabFieldConfig),
+    [tabFieldConfig]
+  );
 
   const getCanvasPos = (e, canvas) => {
     const rect = canvas.getBoundingClientRect();
@@ -181,6 +236,16 @@ const ApplicantSummary = ({ applicant, lookupData, onUpdate, showAlert }) => {
     if (!modalOpen) {
       setActiveTab("1");
     }
+  };
+
+  const handleFormError = (formErrors) => {
+    handleTabbedFormErrors({
+      errors: formErrors,
+      fieldTabMap,
+      tabLabelMap,
+      setActiveTab,
+      showAlert,
+    });
   };
 
   const onSubmit = async (data) => {
@@ -458,7 +523,7 @@ const ApplicantSummary = ({ applicant, lookupData, onUpdate, showAlert }) => {
           Edit Applicant - {applicant.name} {applicant.surname}
         </ModalHeader>
 
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(onSubmit, handleFormError)}>
           <ModalBody>
             <Nav tabs>
               <NavItem>
@@ -519,11 +584,12 @@ const ApplicantSummary = ({ applicant, lookupData, onUpdate, showAlert }) => {
                   </Col>
                   <Col md={4}>
                     <FormGroup>
-                      <Label>ID Number</Label>
+                      <Label>ID Number <span className="text-danger">*</span></Label>
                       <Controller
                         name="ID_Number"
                         control={control}
                         rules={{
+                          required: "ID Number is required",
                           pattern: {
                             value: /^\d{13}$/,
                             message: "ID Number must be exactly 13 digits",
@@ -932,12 +998,16 @@ const ApplicantSummary = ({ applicant, lookupData, onUpdate, showAlert }) => {
                 <Row>
                   <Col md={4}>
                     <FormGroup>
-                      <Label>File Number</Label>
+                      <Label>File Number <span className="text-danger">*</span></Label>
                       <Controller
                         name="File_Number"
                         control={control}
-                        render={({ field }) => <Input type="text" {...field} />}
+                        rules={{ required: "File Number is required" }}
+                        render={({ field }) => (
+                          <Input type="text" invalid={!!errors.File_Number} {...field} />
+                        )}
                       />
+                      {errors.File_Number && <FormFeedback>{errors.File_Number.message}</FormFeedback>}
                     </FormGroup>
                   </Col>
                   <Col md={4}>

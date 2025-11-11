@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Container,
   Row,
@@ -20,6 +20,7 @@ import {
 import classnames from "classnames";
 import { useForm, Controller } from "react-hook-form";
 import { validateTabsAndNavigate } from "../../helpers/tabValidation";
+import { createFieldTabMap, handleTabbedFormErrors } from "../../helpers/formErrorHandler";
 import { useNavigate } from "react-router-dom";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import TopRightAlert from "../../components/Common/TopRightAlert";
@@ -51,6 +52,60 @@ const CreateApplicant = () => {
     bornReligion: [],
     periodAsMuslim: [],
   });
+
+  const tabLabelMap = useMemo(
+    () => ({
+      "1": "Personal Info",
+      "2": "Contact & Address",
+      "3": "File Details",
+    }),
+    []
+  );
+
+  const tabFieldConfig = useMemo(
+    () => ({
+      "1": [
+        "Name",
+        "Surname",
+        "ID_Number",
+        "Nationality",
+        "Nationality_Expiry_Date",
+        "Gender",
+        "Race",
+        "Employment_Status",
+        "Skills",
+        "Highest_Education",
+        "Born_Religion_ID",
+        "Period_As_Muslim_ID",
+        "Health_Conditions",
+        "Marital_Status",
+      ],
+      "2": [
+        "Cell_Number",
+        "Alternate_Number",
+        "Email_Address",
+        "Suburb",
+        "Street_Address",
+        "Dwelling_Type",
+        "Dwelling_Status",
+        "Flat_Name",
+        "Flat_Number",
+      ],
+      "3": [
+        "File_Number",
+        "Date_Intake",
+        "File_Condition",
+        "File_Status",
+        "POPIA_Agreement",
+      ],
+    }),
+    []
+  );
+
+  const fieldTabMap = useMemo(
+    () => createFieldTabMap(tabFieldConfig),
+    [tabFieldConfig]
+  );
 
   // Signature pad refs/state
   const signatureCanvasRef = useRef(null);
@@ -331,26 +386,33 @@ const CreateApplicant = () => {
   };
 
   // Required fields including POPIA
-  const requiredFields = ["Name", "Surname", "ID_Number", "File_Number", "POPIA_Agreement"];
-  const fieldTabMap = {
-    Name: "1",
-    Surname: "1",
-    ID_Number: "1",
-    File_Number: "3",
-    POPIA_Agreement: "3",
+  const requiredFields = useMemo(
+    () => ["Name", "Surname", "ID_Number", "File_Number", "POPIA_Agreement"],
+    []
+  );
+
+  const handleFormError = (formErrors) => {
+    handleTabbedFormErrors({
+      errors: formErrors,
+      fieldTabMap,
+      tabLabelMap,
+      setActiveTab,
+      showAlert,
+    });
   };
 
   const handleValidatedSubmit = async () => {
     const ok = await validateTabsAndNavigate({
       requiredFields,
       fieldTabMap,
+      tabLabelMap,
       trigger,
       getValues: (name) => getValues(name),
       setActiveTab,
       showAlert,
     });
     if (!ok) return;
-    return handleSubmit(onSubmit)();
+    return handleSubmit(onSubmit, handleFormError)();
   };
 
   return (
